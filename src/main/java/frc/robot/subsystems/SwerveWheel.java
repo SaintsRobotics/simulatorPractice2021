@@ -33,12 +33,12 @@ public class SwerveWheel {
         m_turningPIDController = new PIDController(.3, 0, 0);
         m_turningPIDController.enableContinuousInput(0, 2 * Math.PI);
         m_turningEncoder = encoder;
-
     }
 
     public void setState(SwerveModuleState state) {
         m_driveMotor.set(state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
-
+        m_turningPIDController.setSetpoint(state.angle.getRadians());
+        m_turningMotor.set(m_turningPIDController.calculate(m_turningEncoder.getRadians()));
     }
 
     public Translation2d getLocation() {
