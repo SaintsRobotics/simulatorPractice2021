@@ -99,6 +99,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_rotationPID.setTolerance(1 / 36); // if off by a lil bit, then dont do anything (is in radians)
 
                 m_gyro = new AHRS();
+                
         }
 
         public void move(double xSpeed, double ySpeed, double rotationSpeed, boolean isFieldRelative) {

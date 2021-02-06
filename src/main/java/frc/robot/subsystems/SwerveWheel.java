@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import frc.robot.AbsoluteEncoder;
+import frc.robot.Robot;
 import frc.robot.Constants.SwerveConstants;
 
 /**
@@ -38,7 +39,11 @@ public class SwerveWheel {
     public void setState(SwerveModuleState state) {
         m_driveMotor.set(state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
         m_turningPIDController.setSetpoint(state.angle.getRadians());
-        m_turningMotor.set(m_turningPIDController.calculate(m_turningEncoder.getRadians()));
+        double voltage = m_turningPIDController.calculate(m_turningEncoder.getRadians()); //desired turn voltage
+        if(Robot.isSimulation()){
+            
+        }
+        m_turningMotor.set(voltage);
     }
 
     public Translation2d getLocation() {

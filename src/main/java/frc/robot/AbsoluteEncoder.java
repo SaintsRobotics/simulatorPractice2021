@@ -24,6 +24,18 @@ public class AbsoluteEncoder {
         m_offset = offset;
     }
 
+    public void sendVoltage(double turnVoltage) {
+        double ratio = 5.0;
+        if(turnVoltage > 1){
+            turnVoltage = 1;
+        } else if (turnVoltage < -1){
+            turnVoltage = -1;
+        }
+        // starting position (in volts), add turnVoltage * gear ratio (V/s), multiply by scale factor for units
+        double output = turnVoltage;
+        return output;
+    }
+
     public double getDegrees() {
         if (isInverted) {
             return (5 - analogIn.getVoltage() - m_offset) * voltageToDegrees;

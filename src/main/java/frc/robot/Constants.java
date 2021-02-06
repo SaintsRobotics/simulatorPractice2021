@@ -54,10 +54,10 @@ public final class Constants {
 
         public static final double TRANSLATIONAL_FRICTION = 0.0205;
 
-        public static final double FRONT_LEFT_ROTATION_OFFSET = 2.254991;
-        public static final double FRONT_RIGHT_ROTATION_OFFSET = 2.466641;
-        public static final double BACK_LEFT_ROTATION_OFFSET = .279;
-        public static final double BACK_RIGHT_ROTATION_OFFSET = 3.25;
+        public static final double FRONT_LEFT_ROTATION_OFFSET = 0;
+        public static final double FRONT_RIGHT_ROTATION_OFFSET = 0;
+        public static final double BACK_LEFT_ROTATION_OFFSET = 0;
+        public static final double BACK_RIGHT_ROTATION_OFFSET = 0;
     }
 
 }
