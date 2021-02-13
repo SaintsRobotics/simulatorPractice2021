@@ -39,11 +39,13 @@ public class SwerveWheel {
     public void setState(SwerveModuleState state) {
         m_driveMotor.set(state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
         m_turningPIDController.setSetpoint(state.angle.getRadians());
-        double voltage = m_turningPIDController.calculate(m_turningEncoder.getRadians()); //desired turn voltage
-        if(Robot.isSimulation()){
-            
+
+        // desired turn voltage
+        double percentVoltage = m_turningPIDController.calculate(m_turningEncoder.getRadians());
+        if (Robot.isSimulation()) {
+            m_turningEncoder.sendVoltage(percentVoltage);
         }
-        m_turningMotor.set(voltage);
+        m_turningMotor.set(percentVoltage);
     }
 
     public Translation2d getLocation() {

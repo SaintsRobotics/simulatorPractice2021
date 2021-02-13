@@ -25,15 +25,30 @@ public class AbsoluteEncoder {
     }
 
     public void sendVoltage(double turnVoltage) {
-        double ratio = 5.0;
-        if(turnVoltage > 1){
+
+        // gear ratio between motor and wheel / encoder
+        double ratio = 12.8;
+
+        // maximum RPM for motor under 0 load
+        double motorRPM = 5500;
+
+        // how long it takes to run one loop of the periodic (in seconds)
+        double tickPeriod = Robot.kDefaultPeriod;
+        if (turnVoltage > 1) {
             turnVoltage = 1;
-        } else if (turnVoltage < -1){
+        } else if (turnVoltage < -1) {
             turnVoltage = -1;
         }
-        // starting position (in volts), add turnVoltage * gear ratio (V/s), multiply by scale factor for units
-        double output = turnVoltage;
-        return output;
+
+        // started with motorRPM and converted to wheel rotations per tick
+        // RPM * (min / sec) * (s / tick) * (wheel rotations / motor rotations)
+        double wheelRotationsPerTick = motorRPM / 60 * tickPeriod / ratio; // 0.143
+        double wheelRotationsSinceLastTick = wheelRotationsPerTick * turnVoltage;
+        double voltsSinceLastTick = 5 * wheelRotationsSinceLastTick;
+        double output = analogIn.getVoltage() + voltsSinceLastTick;
+
+        // convert output to a number between 0 and 5
+        output = (((output % 5) + 5) % 5);
     }
 
     public double getDegrees() {
