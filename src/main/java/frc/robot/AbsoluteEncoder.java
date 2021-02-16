@@ -24,6 +24,7 @@ public class AbsoluteEncoder {
         m_offset = offset;
     }
     //one thing it may be missing is that it has no simulation variable to print to
+    //or it may be that the value of analogIn.getVoltage() does not change even though we update (or plan to update) the encoder field in the simulator
     public void sendVoltage(double turnVoltage) {
 
         // gear ratio between motor and wheel / encoder
