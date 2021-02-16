@@ -11,6 +11,8 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -20,6 +22,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AbsoluteEncoder;
+import frc.robot.Robot;
 import frc.robot.Constants.SwervePorts;
 import frc.robot.Constants.SwerveConstants;
 
@@ -50,6 +53,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double m_rotationSpeed;
         private boolean m_isFieldRelative;
         private Gyro m_gyro;
+        private double currentHeading = 0.0; //for simulated current gyro reading (yaw)
 
         private SwerveDriveKinematics m_kinematics;
 
@@ -101,7 +105,12 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_gyro = new AHRS();
                 
         }
-
+        //gyro should update in periodic
+        //previous reading would be gyroAngle -> get in radians
+        //want calculate how gyro changes based on rotation 
+        //angular speed: omegaRad/Sec multiply by sec, add on
+        //manipulate in radians, convert to 2d again -> print radians
+        
         public void move(double xSpeed, double ySpeed, double rotationSpeed, boolean isFieldRelative) {
                 m_xSpeed = xSpeed;
                 m_ySpeed = ySpeed;
@@ -115,7 +124,8 @@ public class SwerveDrivetrain extends SubsystemBase {
 
         @Override
         public void periodic() {
-                Rotation2d gyroAngle = m_gyro.getRotation2d();
+                Rotation2d gyroAngle = m_gyro.getRotation2d(); 
+                //currentHeading = 0.0;
 
                 ChassisSpeeds desiredSpeed;
 
@@ -126,12 +136,22 @@ public class SwerveDrivetrain extends SubsystemBase {
                         desiredSpeed = new ChassisSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed);
                 }
 
+        
                 SwerveModuleState[] desiredSwerveModuleStates = m_kinematics.toSwerveModuleStates(desiredSpeed);
                 SwerveDriveKinematics.normalizeWheelSpeeds(desiredSwerveModuleStates, SwerveConstants.MAX_METERS_PER_SECOND);
                 m_frontLeftSwerveWheel.setState(desiredSwerveModuleStates[0]);
                 m_frontRightSwerveWheel.setState(desiredSwerveModuleStates[1]);
                 m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
                 m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
+
+                //calculate predicted gyro change since last tick
+                double angleSpeed = desiredSpeed.omegaRadiansPerSecond;
+                //double angleSpeed = 0.05;
+                double tickPeriod = Robot.kDefaultPeriod;
+                double incrementer = angleSpeed*tickPeriod;
+                double printHeading = currentHeading + incrementer;  
+                currentHeading = printHeading;
+                printSimulatedGyro(printHeading);
 
                 // after adjusting encoder code move to getAngle()
                 SmartDashboard.putNumber("Front Left Turning Encoder", m_frontLeftTurningEncoder.getRadians());
@@ -140,4 +160,16 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("Back Right Turning Encoder", m_backRightTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Gyro Heading", gyroAngle.getRadians());
         }
+        //print simulated gyro values continuously
+        public void printSimulatedGyro(double printHeading){ 
+                int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+                SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+                angle.set(printHeading);
+
+        }
+
+        public void resetSimulatedGyro(){
+                currentHeading = 0.0;
+        }
+
 }
