@@ -23,7 +23,7 @@ public class AbsoluteEncoder {
         isInverted = inverted;
         m_offset = offset;
     }
-
+    //one thing it may be missing is that it has no simulation variable to print to
     public void sendVoltage(double turnVoltage) {
 
         // gear ratio between motor and wheel / encoder
