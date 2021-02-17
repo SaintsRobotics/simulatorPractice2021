@@ -150,6 +150,9 @@ public class SwerveDrivetrain extends SubsystemBase {
                 double tickPeriod = Robot.kDefaultPeriod;
                 double incrementer = angleSpeed*tickPeriod;
                 double printHeading = currentHeading + incrementer;  
+                if(printHeading >= (2*Math.PI)){
+                        printHeading -= 2*Math.PI;
+                }
                 currentHeading = printHeading;
                 printSimulatedGyro(printHeading);
 
