@@ -53,7 +53,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double m_rotationSpeed;
         private boolean m_isFieldRelative;
         private Gyro m_gyro;
-        private double currentHeading = 0.0; //for simulated current gyro reading (yaw)
+        private double currentHeading; //for simulated current gyro reading (yaw)
 
         private SwerveDriveKinematics m_kinematics;
 
@@ -103,6 +103,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_rotationPID.setTolerance(1 / 36); // if off by a lil bit, then dont do anything (is in radians)
 
                 m_gyro = new AHRS();
+                currentHeading = 0.0;
                 
         }
         //gyro should update in periodic
@@ -150,9 +151,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 double tickPeriod = Robot.kDefaultPeriod;
                 double incrementer = angleSpeed*tickPeriod;
                 double printHeading = currentHeading + incrementer;  
-                if(printHeading >= (2*Math.PI)){
-                        printHeading -= 2*Math.PI;
-                }
+                printHeading = (((printHeading % (2*Math.PI)) + (2*Math.PI)) % (2*Math.PI)); //if heading > 2pi, angle is reduced to a value between -2pi and 2pi
                 currentHeading = printHeading;
                 printSimulatedGyro(printHeading);
 
@@ -164,7 +163,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("Gyro Heading", gyroAngle.getRadians());
         }
         //print simulated gyro values continuously
-        public void printSimulatedGyro(double printHeading){ 
+        public void printSimulatedGyro(double printHeading){  //missing conversion unit for yaw (see docs)
                 int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
                 SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
                 angle.set(printHeading);
