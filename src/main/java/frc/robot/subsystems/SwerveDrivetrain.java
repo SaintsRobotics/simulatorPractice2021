@@ -118,13 +118,13 @@ public class SwerveDrivetrain extends SubsystemBase {
 
         @Override
         public void periodic() {
-                Rotation2d gyroAngle = m_gyro.getRotation2d();
+                double gyroAngle = m_gyro.getYaw();
 
                 ChassisSpeeds desiredSpeed;
 
                 // convert to robot relative if in field relative
                 if (this.m_isFieldRelative) {
-                        desiredSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed, gyroAngle);
+                        desiredSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed, Rotation2d.fromDegrees(gyroAngle));
                 } else {
                         desiredSpeed = new ChassisSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed);
                 }
@@ -135,12 +135,12 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_frontRightSwerveWheel.setState(desiredSwerveModuleStates[1]);
                 m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
                 m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
-                double currentHeading = m_gyro.getYaw();
+                
                 double angleSpeed = Math.toDegrees(desiredSpeed.omegaRadiansPerSecond);
                 //double angleSpeed = 0.05;
                 double tickPeriod = Robot.kDefaultPeriod;
                 double incrementer = angleSpeed*tickPeriod;
-                double printHeading = currentHeading + incrementer;  
+                double printHeading = gyroAngle + incrementer;  
                 printHeading %= 360;
                 // if(printHeading >= (2*Math.PI)){
                 //         printHeading -= 2*Math.PI;
@@ -151,7 +151,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("Front Right Turning Encoder", m_frontRightTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Back Left Turning Encoder", m_backLeftTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Back Right Turning Encoder", m_backRightTurningEncoder.getRadians());
-                SmartDashboard.putNumber("Gyro Heading", m_gyro.getYaw());
+                SmartDashboard.putNumber("Gyro Heading", gyroAngle);
         }
 
         public void printSimulatedGyro(double printHeading){ 
