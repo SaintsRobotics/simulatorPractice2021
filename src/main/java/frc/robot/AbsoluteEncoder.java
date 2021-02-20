@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.simulation.AnalogInputSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,13 +21,14 @@ public class AbsoluteEncoder {
     private boolean isInverted;
     private double voltageToDegrees = 360 / 5;
     private double m_offset;
-
+    private int polarity;
     public AbsoluteEncoder(int channel, boolean inverted, double offset) {
         analogIn = new AnalogInput(channel);
         analogInSim = new AnalogInputSim(analogIn);
         analogInSim.setVoltage(0);
         isInverted = inverted;
         m_offset = offset;
+        polarity = isInverted ? -1 : 1;
     }
 
     public void sendVoltage(double turnVoltage) {
@@ -51,6 +53,8 @@ public class AbsoluteEncoder {
         double wheelRotationsPerTick = motorRPM / 60 * tickPeriod / gearRatio; // 0.143
         double wheelRotationsSinceLastTick = wheelRotationsPerTick * turnVoltage;
         double voltsSinceLastTick = 5 * wheelRotationsSinceLastTick;
+        voltsSinceLastTick *= polarity;
+
         double outputVoltage = analogIn.getVoltage() + voltsSinceLastTick;
 
         SmartDashboard.putNumber("turning voltage" + analogIn.getChannel(), turnVoltage);
