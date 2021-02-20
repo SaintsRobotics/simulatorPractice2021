@@ -42,7 +42,9 @@ public class AbsoluteEncoder {
     }
 
     /**
-     * TODO: write an explanation. code here is out of date atm
+     * Does some fancy mafs (mathematics) to figure out the number that the
+     * simulated absolute encoder should be reading. Read comments in source code
+     * below.
      * 
      * @param turnVoltage voltage that will go to the turning motor, range: [-1, 1]
      */
@@ -74,13 +76,17 @@ public class AbsoluteEncoder {
 
         // convert output to a number between 0 and 5
         outputVoltage = (((outputVoltage % 5) + 5) % 5);
+
+        // basically this hijacks the simulated absolute encoder to say that it's
+        // reading the voltage that u give it, range: [0, 5]
         analogInSim.setVoltage(outputVoltage);
 
     }
 
     /**
      * 
-     * @return the position of the wheel
+     * @return the position of the wheel, in degrees. zero points toward the front
+     *         of the bot
      */
     public double getDegrees() {
         if (isInverted) {
