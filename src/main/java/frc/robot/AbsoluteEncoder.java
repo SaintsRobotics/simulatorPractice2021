@@ -18,12 +18,29 @@ public class AbsoluteEncoder {
     private double voltageToDegrees = 360 / 5;
     private double m_offset;
 
+    /**
+     * Construct and absolute encoder, most likely a US Digital MA3 encoder.
+     * 
+     * @param channel  analog in (sometimes also refered to as AIO) port on the
+     *                 roboRIO
+     * @param inverted set this to TRUE if physically turning the encoder CLOCKWISE
+     *                 (looking down on it from the top of the bot) INCREASES the
+     *                 voltage it returns
+     * @param offset   swerve offset (in DEGREES), like we've been using for the
+     *                 past three years. This value is SUBTRACTED from the raw
+     *                 output
+     */
     public AbsoluteEncoder(int channel, boolean inverted, double offset) {
         analogIn = new AnalogInput(channel);
         isInverted = inverted;
         m_offset = offset;
     }
 
+    /**
+     * TODO: write an explanation. code here is out of date atm
+     * 
+     * @param turnVoltage voltage that will go to the turning motor, range: [-1, 1]
+     */
     public void sendVoltage(double turnVoltage) {
 
         // gear ratio between motor and wheel / encoder
@@ -51,6 +68,10 @@ public class AbsoluteEncoder {
         output = (((output % 5) + 5) % 5);
     }
 
+    /**
+     * 
+     * @return the position of the wheel
+     */
     public double getDegrees() {
         if (isInverted) {
             return (5 - analogIn.getVoltage() - m_offset) * voltageToDegrees;

@@ -40,11 +40,12 @@ public class SwerveWheel {
         m_driveMotor.set(state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
         m_turningPIDController.setSetpoint(state.angle.getRadians());
 
-        // desired turn voltage
+        // desired turn voltage to send to turning motor, range: [-1, 1]
         double percentVoltage = m_turningPIDController.calculate(m_turningEncoder.getRadians());
         if (Robot.isSimulation()) {
             m_turningEncoder.sendVoltage(percentVoltage);
         }
+
         m_turningMotor.set(percentVoltage);
     }
 
