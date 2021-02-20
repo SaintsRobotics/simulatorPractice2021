@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AbsoluteEncoder;
 import frc.robot.Robot;
+import frc.robot.Utils;
 import frc.robot.Constants.SwervePorts;
 import frc.robot.Constants.SwerveConstants;
 
@@ -151,7 +152,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("Front Right Turning Encoder", m_frontRightTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Back Left Turning Encoder", m_backLeftTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Back Right Turning Encoder", m_backRightTurningEncoder.getRadians());
-                SmartDashboard.putNumber("Gyro Heading", gyroAngle);
+                SmartDashboard.putNumber("Gyro Heading", Utils.normalizeAngle(m_gyro.getAngle(), 360));
         }
 
         public void printSimulatedGyro(double printHeading){ 
