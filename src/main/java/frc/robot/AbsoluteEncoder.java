@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.simulation.AnalogInputSim;
 
 /**
  * Add your docs here.
