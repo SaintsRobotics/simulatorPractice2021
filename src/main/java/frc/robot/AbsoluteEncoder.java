@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.simulation.AnalogInputSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,12 +27,12 @@ public class AbsoluteEncoder {
      * 
      * @param channel  analog in (sometimes also refered to as AIO) port on the
      *                 roboRIO
-     * @param inverted set this to TRUE if physically turning the encoder CLOCKWISE
-     *                 (looking down on it from the top of the bot) INCREASES the
-     *                 voltage it returns
-     * @param offset   swerve offset (in DEGREES), like we've been using for the
-     *                 past three years. This value is SUBTRACTED from the raw
-     *                 output
+     * @param inverted set this to <i>TRUE</i> if physically turning the wheel
+     *                 <i>CLOCKWISE</i> (looking down on it from the top of the bot)
+     *                 <i>INCREASES</i> the voltage it returns
+     * @param offset   swerve offset (in <i>DEGREES</i>), like we've been using for
+     *                 the past three years. This value is <i>SUBTRACTED</i> from
+     *                 the output.
      */
     public AbsoluteEncoder(int channel, boolean inverted, double offset) {
         analogIn = new AnalogInput(channel);
@@ -45,9 +44,8 @@ public class AbsoluteEncoder {
     }
 
     /**
-     * Does some fancy mafs (mathematics) to figure out the number that the
-     * simulated absolute encoder should be reading. Read comments in source code
-     * below.
+     * Does some fancy mafs (mathematics) to figure out the value that the simulated
+     * absolute encoder should be at. Read comments in source code below.
      * 
      * @param turnVoltage voltage that will go to the turning motor, range: [-1, 1]
      */
@@ -82,7 +80,7 @@ public class AbsoluteEncoder {
         // convert output to a number between 0 and 5
         outputVoltage = (((outputVoltage % 5) + 5) % 5);
 
-        // basically this hijacks the simulated absolute encoder to say that it's
+        // basically this "hijacks" the simulated absolute encoder to say that it's
         // reading the voltage that u give it, range: [0, 5]
         analogInSim.setVoltage(outputVoltage);
 
@@ -91,7 +89,8 @@ public class AbsoluteEncoder {
     /**
      * 
      * @return the position of the wheel, in degrees. zero points toward the front
-     *         of the bot
+     *         of the bot. the value increases as the swerve wheel is turned
+     *         clockwise.
      */
     public double getDegrees() {
         if (isInverted) {
@@ -102,6 +101,11 @@ public class AbsoluteEncoder {
 
     }
 
+    /**
+     * Simply calls the <code>{@code getDegrees()}</code> method for this object.
+     * 
+     * @return <code>{@code this.getDegrees()}</code> but in radians.
+     */
     public double getRadians() {
         return Math.toRadians(getDegrees());
     }
