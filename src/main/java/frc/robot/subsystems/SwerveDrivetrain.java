@@ -136,9 +136,9 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
                 m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
                 
+                // updates the gyro yaw value and prints it to the simulator
                 double m_degreeRotationSpeed = Math.toDegrees(m_rotationSpeed);
                 double m_degreesSinceLastTick = m_degreeRotationSpeed * Robot.kDefaultPeriod;
-
                 printSimulatedGyro(m_gyro.getYaw() + m_degreesSinceLastTick);
 
                 SmartDashboard.putNumber("Front Left Turning Encoder", m_frontLeftTurningEncoder.getRadians());
