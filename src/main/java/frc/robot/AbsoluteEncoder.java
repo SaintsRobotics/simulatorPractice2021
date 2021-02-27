@@ -94,10 +94,10 @@ public class AbsoluteEncoder {
      */
     public double getDegrees() {
         if (isInverted) {
-            return (5 - analogIn.getVoltage() - m_offset) * voltageToDegrees;
+            return (5 - analogIn.getVoltage() ) * voltageToDegrees - m_offset;
         }
 
-        return (analogIn.getVoltage() - m_offset) * voltageToDegrees;
+        return (analogIn.getVoltage() ) * voltageToDegrees - m_offset;
 
     }
 
