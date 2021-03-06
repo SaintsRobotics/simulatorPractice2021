@@ -137,22 +137,16 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
                 m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
                 
-                double angleSpeed = Math.toDegrees(desiredSpeed.omegaRadiansPerSecond);
-                //double angleSpeed = 0.05;
-                double tickPeriod = Robot.kDefaultPeriod;
-                double incrementer = angleSpeed*tickPeriod;
-                double printHeading = gyroAngle + incrementer;  
-                printHeading %= 360;
-                // if(printHeading >= (2*Math.PI)){
-                //         printHeading -= 2*Math.PI;
-                // }
-                printSimulatedGyro(printHeading);
-                // after adjusting encoder code move to getAngle()
+                // updates the gyro yaw value and prints it to the simulator
+                double m_degreeRotationSpeed = Math.toDegrees(m_rotationSpeed);
+                double m_degreesSinceLastTick = m_degreeRotationSpeed * Robot.kDefaultPeriod;
+                printSimulatedGyro(m_gyro.getYaw() + m_degreesSinceLastTick);
+
                 SmartDashboard.putNumber("Front Left Turning Encoder", m_frontLeftTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Front Right Turning Encoder", m_frontRightTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Back Left Turning Encoder", m_backLeftTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Back Right Turning Encoder", m_backRightTurningEncoder.getRadians());
-                SmartDashboard.putNumber("Gyro Heading", Utils.normalizeAngle(m_gyro.getAngle(), 360));
+                SmartDashboard.putNumber("Gyro Heading", m_gyro.getYaw());
         }
 
         public void printSimulatedGyro(double printHeading){ 
