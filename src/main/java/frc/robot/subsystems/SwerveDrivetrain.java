@@ -154,7 +154,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 printHeading = (((printHeading % (2*Math.PI)) + (2*Math.PI)) % (2*Math.PI)); //if heading > 2pi, angle is reduced to a value between -2pi and 2pi
                 currentHeading = printHeading;
                 printSimulatedGyro(printHeading);
-
+                
                 // after adjusting encoder code move to getAngle()
                 SmartDashboard.putNumber("Front Left Turning Encoder", m_frontLeftTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Front Right Turning Encoder", m_frontRightTurningEncoder.getRadians());
@@ -166,7 +166,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         public void printSimulatedGyro(double printHeading){  //missing conversion unit for yaw (see docs)
                 int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
                 SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-                angle.set(printHeading);
+                angle.set(printHeading*(180/Math.PI));
 
         }
 
