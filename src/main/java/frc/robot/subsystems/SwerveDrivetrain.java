@@ -52,8 +52,9 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double m_ySpeed;
         private double m_rotationSpeed;
         private boolean m_isFieldRelative;
-        private Gyro m_gyro;
+        //private Gyro m_gyro;
         private double currentHeading; //for simulated current gyro reading (yaw)
+        private AHRS m_gyro;
 
         private SwerveDriveKinematics m_kinematics;
 
@@ -144,6 +145,11 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_frontRightSwerveWheel.setState(desiredSwerveModuleStates[1]);
                 m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
                 m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
+                
+                // updates the gyro yaw value and prints it to the simulator
+                double m_degreeRotationSpeed = Math.toDegrees(m_rotationSpeed);
+                double m_degreesSinceLastTick = m_degreeRotationSpeed * Robot.kDefaultPeriod;
+                printSimulatedGyro(m_gyro.getYaw() + m_degreesSinceLastTick);
 
                 //calculate predicted gyro change since last tick
                 double angleSpeed = desiredSpeed.omegaRadiansPerSecond;
@@ -160,8 +166,16 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("Front Right Turning Encoder", m_frontRightTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Back Left Turning Encoder", m_backLeftTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Back Right Turning Encoder", m_backRightTurningEncoder.getRadians());
-                SmartDashboard.putNumber("Gyro Heading", gyroAngle.getRadians());
+                SmartDashboard.putNumber("Gyro Heading", m_gyro.getYaw());
         }
+        /*
+        public void printSimulatedGyro(double printHeading){ 
+                int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+                SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+                angle.set(printHeading);
+
+        }
+        */
         //print simulated gyro values continuously
         public void printSimulatedGyro(double printHeading){  //missing conversion unit for yaw (see docs)
                 int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
