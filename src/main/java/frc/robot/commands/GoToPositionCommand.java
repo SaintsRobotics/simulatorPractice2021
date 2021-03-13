@@ -7,31 +7,48 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
+
+import javax.security.auth.x500.X500PrivateCredential;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Utils;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.Constants.SwerveConstants;
 
 public class GoToPositionCommand extends CommandBase {
     private SwerveDrivetrain m_drivetrain;
-    private XboxController m_controller;
-    private Translation2d m_currentPosition;
-    private Translation2d m_targetPosition;
+    private Pose2d m_currentPosition;
+    private PIDController m_xPID;
+    private PIDController m_yPID;
+    private PIDController m_rotationPID;
+    private int m_counter;
+
 
     /**
      * Creates a new GoToPositionCommand.
      */
-    public GoToPositionCommand(SwerveDrivetrain drivetrain, Translation2d currentPosition,
-            Translation2d targetPosition) {
+    public GoToPositionCommand(SwerveDrivetrain drivetrain, double targetX, double targetY, double targetRotation) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(drivetrain);
         m_drivetrain = drivetrain;
-        m_currentPosition = currentPosition;
-        m_targetPosition = targetPosition;
 
+        m_xPID = new PIDController(10, 0, 0);
+        m_yPID = new PIDController(10, 0, 0);
+        m_rotationPID = new PIDController(10, 0, 0);
+
+        m_xPID.setSetpoint(targetX);
+        m_yPID.setSetpoint(targetY);
+        m_rotationPID.setSetpoint(targetRotation);
+
+        m_xPID.setTolerance(0.05);
+        m_yPID.setTolerance(0.05);
+        m_rotationPID.setTolerance(0.05);
     }
 
     // Called when the command is initially scheduled.
@@ -42,20 +59,28 @@ public class GoToPositionCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-
-        // m_drivetrain.move(xSpeed, ySpeed, rotSpeed, false);
-
+        m_currentPosition = m_drivetrain.getCurrentPosition();
+        m_drivetrain.move(
+            m_xPID.calculate(m_currentPosition.getX()),
+            m_yPID.calculate(m_currentPosition.getY()),
+            m_rotationPID.calculate(m_currentPosition.getRotation().getRadians()),
+            true);
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        // m_drivetrain.move(0, 0, 0, false);
+        m_drivetrain.move(0, 0, 0, false);
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        if (m_xPID.atSetpoint() && m_yPID.atSetpoint() && m_rotationPID.atSetpoint()) {
+            m_counter++;
+        } else {
+            m_counter = 0;
+        }
+        return m_counter > 10;
     }
 }

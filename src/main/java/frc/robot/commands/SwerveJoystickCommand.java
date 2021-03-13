@@ -41,7 +41,7 @@ public class SwerveJoystickCommand extends CommandBase {
     double x = Utils.oddSquare(Utils.deadZones(-m_controller.getY(Hand.kLeft), 0.2))
         * SwerveConstants.MAX_METERS_PER_SECOND; // apply functions to controller values to 1) check deadzone 2) apply
     // quadratic relation between controller/speed
-    double y = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kLeft), 0.2))
+    double y = Utils.oddSquare(Utils.deadZones(-m_controller.getX(Hand.kLeft), 0.2))
         * SwerveConstants.MAX_METERS_PER_SECOND;
     double rot = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kRight), 0.2))
         * SwerveConstants.MAX_RADIANS_PER_SECOND;
