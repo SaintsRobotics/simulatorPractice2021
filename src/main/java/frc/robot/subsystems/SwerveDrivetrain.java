@@ -18,7 +18,10 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AbsoluteEncoder;
@@ -54,9 +57,10 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double m_rotationSpeed;
         private boolean m_isFieldRelative;
         private AHRS m_gyro;
-
+        private SwerveDriveOdometry m_odometry;
         private SwerveDriveKinematics m_kinematics;
-
+        private double time;
+        
         // need pid to save headings/dynamic controls
         private PIDController m_rotationPID;
 
@@ -64,6 +68,7 @@ public class SwerveDrivetrain extends SubsystemBase {
          * Creates a new SwerveDrivetrain.
          */
         public SwerveDrivetrain() {
+                
                 m_frontLeftDriveMotor = new CANSparkMax(SwervePorts.FRONT_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
                 m_frontRightDriveMotor = new CANSparkMax(SwervePorts.FRONT_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
                 m_backLeftDriveMotor = new CANSparkMax(SwervePorts.BACK_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
@@ -103,7 +108,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_rotationPID.setTolerance(1 / 36); // if off by a lil bit, then dont do anything (is in radians)
 
                 m_gyro = new AHRS();
-                
+                m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
         }
 
         public void move(double xSpeed, double ySpeed, double rotationSpeed, boolean isFieldRelative) {
@@ -120,7 +125,9 @@ public class SwerveDrivetrain extends SubsystemBase {
         @Override
         public void periodic() {
                 double gyroAngle = m_gyro.getYaw();
-
+               
+                m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(),   m_frontRightSwerveWheel.getState(),m_backLeftSwerveWheel.getState(),   m_backRightSwerveWheel.getState());
+                        
                 ChassisSpeeds desiredSpeed;
 
                 // convert to robot relative if in field relative
@@ -141,7 +148,9 @@ public class SwerveDrivetrain extends SubsystemBase {
                 double m_degreeRotationSpeed = Math.toDegrees(m_rotationSpeed);
                 double m_degreesSinceLastTick = m_degreeRotationSpeed * Robot.kDefaultPeriod;
                 printSimulatedGyro(m_gyro.getYaw() + m_degreesSinceLastTick);
-
+                SmartDashboard.putNumber("OdometryX", m_odometry.getPoseMeters().getX());
+                SmartDashboard.putNumber("OdometryY", m_odometry.getPoseMeters().getY());
+                SmartDashboard.putNumber("Odometryrot", m_odometry.getPoseMeters().getRotation().getDegrees());
                 SmartDashboard.putNumber("Front Left Turning Encoder", m_frontLeftTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Front Right Turning Encoder", m_frontRightTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Back Left Turning Encoder", m_backLeftTurningEncoder.getRadians());

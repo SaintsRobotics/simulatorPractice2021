@@ -10,7 +10,9 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import frc.robot.AbsoluteEncoder;
 import frc.robot.Robot;
@@ -48,10 +50,13 @@ public class SwerveWheel {
         }
 
         m_turningMotor.set(percentVoltage);
+        m_state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(m_turningEncoder.getRadians()));
     }
 
     public Translation2d getLocation() {
         return m_location;
     }
-
+    public SwerveModuleState getState(){
+        return m_state;
+    }
 }
