@@ -60,6 +60,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         private SwerveDriveOdometry m_odometry;
         private SwerveDriveKinematics m_kinematics;
         private double time;
+        private final Field2d m_field = new Field2d();
         
         // need pid to save headings/dynamic controls
         private PIDController m_rotationPID;
@@ -68,7 +69,7 @@ public class SwerveDrivetrain extends SubsystemBase {
          * Creates a new SwerveDrivetrain.
          */
         public SwerveDrivetrain() {
-                
+                SmartDashboard.putData("Field", m_field);
                 m_frontLeftDriveMotor = new CANSparkMax(SwervePorts.FRONT_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
                 m_frontRightDriveMotor = new CANSparkMax(SwervePorts.FRONT_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
                 m_backLeftDriveMotor = new CANSparkMax(SwervePorts.BACK_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
@@ -124,10 +125,12 @@ public class SwerveDrivetrain extends SubsystemBase {
 
         @Override
         public void periodic() {
-                double gyroAngle = m_gyro.getYaw();
-               
-                m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(),   m_frontRightSwerveWheel.getState(),m_backLeftSwerveWheel.getState(),   m_backRightSwerveWheel.getState());
-                        
+               double gyroAngle = m_gyro.getYaw();
+               if (time > 10){
+                        m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(),   m_frontRightSwerveWheel.getState(),m_backLeftSwerveWheel.getState(),   m_backRightSwerveWheel.getState());
+                        m_field.setRobotPose(m_odometry.getPoseMeters());
+                }
+                time ++;        
                 ChassisSpeeds desiredSpeed;
 
                 // convert to robot relative if in field relative
@@ -156,6 +159,8 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("Back Left Turning Encoder", m_backLeftTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Back Right Turning Encoder", m_backRightTurningEncoder.getRadians());
                 SmartDashboard.putNumber("Gyro Heading", m_gyro.getYaw());
+                
+                
         }
 
         public void printSimulatedGyro(double printHeading){ 
