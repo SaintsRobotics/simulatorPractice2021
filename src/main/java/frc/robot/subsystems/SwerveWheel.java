@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import frc.robot.AbsoluteEncoder;
 import frc.robot.Robot;
@@ -50,16 +51,13 @@ public class SwerveWheel {
         }
 
         m_turningMotor.set(percentVoltage);
-        //update state with encoder value because desired state's angle may not be the angle of the wheel just yet
         m_state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(m_turningEncoder.getRadians()));
     }
 
     public Translation2d getLocation() {
         return m_location;
     }
-
     public SwerveModuleState getState(){
         return m_state;
     }
-
 }
