@@ -28,6 +28,7 @@ public class SwerveWheel {
     private PIDController m_turningPIDController;
     private AbsoluteEncoder m_turningEncoder;
     private SwerveModuleState m_state;
+    private int inversionConstant;
 
     public SwerveWheel(CANSparkMax driveMotor, CANSparkMax turningMotor, double x, double y, AbsoluteEncoder encoder) {
         m_driveMotor = driveMotor;
@@ -39,8 +40,11 @@ public class SwerveWheel {
     }
 
     public void setState(SwerveModuleState state) {
-        //m_state = state; dont do this because state passed in is not always accurate
-        m_driveMotor.set(state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
+        
+        inversionConstant = 1; //spin wheel forwards if 1, backwards if -1
+   
+
+        //m_turningPIDController.setSetpoint(smartInversion(state.angle.getRadians()));
         m_turningPIDController.setSetpoint(state.angle.getRadians());
 
         // desired turn voltage to send to turning motor, range: [-1, 1]
@@ -50,6 +54,7 @@ public class SwerveWheel {
             m_turningEncoder.sendVoltage(percentVoltage);
         }
 
+        m_driveMotor.set(inversionConstant * state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
         m_turningMotor.set(percentVoltage);
         m_state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(m_turningEncoder.getRadians()));
     }
@@ -59,5 +64,14 @@ public class SwerveWheel {
     }
     public SwerveModuleState getState(){
         return m_state;
+    }
+
+    public double smartInversion(double goal){
+        double current = m_turningEncoder.getRadians(); 
+        if(Math.abs(goal-current) > (Math.PI/2)){
+            goal += Math.PI; //adjusts desired state angle of wheel
+            inversionConstant = -1; //inverts wheel speed
+        }
+        return goal;
     }
 }
