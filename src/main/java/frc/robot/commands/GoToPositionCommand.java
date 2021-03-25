@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import frc.robot.Constants;
 import frc.robot.Utils;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.Constants.SwerveConstants;
@@ -38,15 +39,15 @@ public class GoToPositionCommand extends CommandBase {
         addRequirements(drivetrain);
         m_drivetrain = drivetrain;
 
-        m_xPID = new PIDController(10, 0, 0);
-        m_yPID = new PIDController(10, 0, 0);
-        m_rotationPID = new PIDController(10, 0, 0);
+        m_xPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
+        m_yPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
+        m_rotationPID = new PIDController(Math.PI, 0, 0);
 
         m_xPID.setSetpoint(targetX);
         m_yPID.setSetpoint(targetY);
         m_rotationPID.setSetpoint(targetRotation);
 
-        m_xPID.setTolerance(0.05);
+        m_xPID.setTolerance(0.05); 
         m_yPID.setTolerance(0.05);
         m_rotationPID.setTolerance(0.05);
     }
