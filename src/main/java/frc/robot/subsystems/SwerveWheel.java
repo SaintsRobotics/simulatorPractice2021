@@ -28,7 +28,6 @@ public class SwerveWheel {
     private PIDController m_turningPIDController;
     private AbsoluteEncoder m_turningEncoder;
     private SwerveModuleState m_state;
-    private int inversionConstant;
 
     public SwerveWheel(CANSparkMax driveMotor, CANSparkMax turningMotor, double x, double y, AbsoluteEncoder encoder) {
         m_driveMotor = driveMotor;
@@ -40,38 +39,53 @@ public class SwerveWheel {
     }
 
     public void setState(SwerveModuleState state) {
-        
-        inversionConstant = 1; //spin wheel forwards if 1, backwards if -1
-   
+        state = smartInversion(state);
 
-        //m_turningPIDController.setSetpoint(smartInversion(state.angle.getRadians()));
         m_turningPIDController.setSetpoint(state.angle.getRadians());
 
         // desired turn voltage to send to turning motor, range: [-1, 1]
         double percentVoltage = m_turningPIDController.calculate(m_turningEncoder.getRadians());
-        
+
         if (Robot.isSimulation()) {
             m_turningEncoder.sendVoltage(percentVoltage);
         }
 
-        m_driveMotor.set(inversionConstant * state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
+        m_driveMotor.set(state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
         m_turningMotor.set(percentVoltage);
         m_state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(m_turningEncoder.getRadians()));
+        // m_state is the ACTUAL CURRENT state of the wheel, not the state given to us
+        // by SwerveSubsystem.
+        // The difference is that m_state had smart inversion math done to it, and it's
+        // the current angle of the wheel, not the PID angle setpoint.
     }
 
     public Translation2d getLocation() {
         return m_location;
     }
-    public SwerveModuleState getState(){
+
+    public SwerveModuleState getState() {
         return m_state;
     }
 
-    public double smartInversion(double goal){
-        double current = m_turningEncoder.getRadians(); 
-        if(Math.abs(goal-current) > (Math.PI/2)){
-            goal += Math.PI; //adjusts desired state angle of wheel
-            inversionConstant = -1; //inverts wheel speed
+    public SwerveModuleState smartInversion(SwerveModuleState state) {
+        double targetVeloicty = state.speedMetersPerSecond;
+        double targetAngle = state.angle.getRadians();
+
+        double currentAngle = m_turningEncoder.getRadians();
+        double angleDiff = Math.abs(targetAngle - currentAngle);
+
+        if (angleDiff > Math.PI) {
+            angleDiff = 2 * Math.PI - angleDiff;
         }
-        return goal;
+        // this is literally the same thing the pid does; we're just trynna keep up
+
+        if (angleDiff > (Math.PI / 2)) {
+            targetAngle += Math.PI; // adjusts desired state angle of wheel
+            targetAngle = (((targetAngle % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI)); // another mod-add-mod cuz
+                                                                                             // why not
+            targetVeloicty *= -1; // inverts wheel speed
+        }
+
+        return new SwerveModuleState(targetVeloicty, new Rotation2d(targetAngle));
     }
 }
