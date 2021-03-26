@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.AbsoluteEncoder;
 import frc.robot.Robot;
 import frc.robot.Constants.SwerveConstants;
@@ -34,7 +35,7 @@ public class SwerveWheel {
         m_turningMotor = turningMotor;
         m_location = new Translation2d(x, y);
         m_turningPIDController = new PIDController(.3, 0, 0);
-        m_turningPIDController.enableContinuousInput(0, 2 * Math.PI);
+        m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
         m_turningEncoder = encoder;
     }
 
@@ -70,6 +71,7 @@ public class SwerveWheel {
     public SwerveModuleState smartInversion(SwerveModuleState state) {
         double targetVeloicty = state.speedMetersPerSecond;
         double targetAngle = state.angle.getRadians();
+        SmartDashboard.putNumber("target angle 1", targetAngle);
 
         double currentAngle = m_turningEncoder.getRadians();
         double angleDiff = Math.abs(targetAngle - currentAngle);
@@ -85,6 +87,9 @@ public class SwerveWheel {
                                                                                              // why not
             targetVeloicty *= -1; // inverts wheel speed
         }
+
+        SmartDashboard.putNumber("Angle dif", angleDiff);
+        SmartDashboard.putNumber("target angle 2", targetAngle);
 
         return new SwerveModuleState(targetVeloicty, new Rotation2d(targetAngle));
     }
