@@ -138,6 +138,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                if (time > 10){
                         m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(),   m_frontRightSwerveWheel.getState(),m_backLeftSwerveWheel.getState(),   m_backRightSwerveWheel.getState());
                         m_field.setRobotPose(m_odometry.getPoseMeters());
+                        //m_field.setRobotPose(new Pose2d(10.0, 10.0, new Rotation2d(0)));
                 }
                 time ++;        
                 ChassisSpeeds desiredSpeed;
