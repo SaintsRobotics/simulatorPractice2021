@@ -89,19 +89,11 @@ public class AbsoluteEncoder {
 
     /**
      * 
-     * @return the position of the wheel, in degrees. zero points toward the front
+     * @return the position of the as a Rotation2d. zero points toward the front
      *         of the bot. the value increases as the swerve wheel is turned
      *         clockwise.
      */
-    private double getDegrees() {
-        if (isInverted) {
-            return (5 - analogIn.getVoltage() ) * voltageToRadians - m_offset;
-        }
-
-        return (analogIn.getVoltage() ) * voltageToRadians - m_offset;
-
-    }
-
+    
     public Rotation2d getAngle() {
         if (isInverted) {
             return new Rotation2d((5 - analogIn.getVoltage() ) * voltageToRadians - m_offset);

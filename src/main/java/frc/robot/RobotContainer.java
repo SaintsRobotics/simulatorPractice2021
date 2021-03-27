@@ -56,7 +56,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain, 3, 3, Math.PI);
-    GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 10, 0, 2 * Math.PI);
+    GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 4, 1, 2 * Math.PI);
 
     return firstPosition.andThen(secondPosition);
   }
