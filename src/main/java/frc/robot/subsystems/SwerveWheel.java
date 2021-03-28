@@ -34,29 +34,41 @@ public class SwerveWheel {
         m_turningMotor = turningMotor;
         m_location = new Translation2d(x, y);
         m_turningPIDController = new PIDController(.3, 0, 0);
-        m_turningPIDController.enableContinuousInput(0, 2 * Math.PI);
+        m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
         m_turningEncoder = encoder;
+        m_state = new SwerveModuleState();
     }
 
     public void setState(SwerveModuleState state) {
-        m_driveMotor.set(state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
+
+        // literally just smart inversion
+        state = SwerveModuleState.optimize(state, m_turningEncoder.getAngle());
+
         m_turningPIDController.setSetpoint(state.angle.getRadians());
 
         // desired turn voltage to send to turning motor, range: [-1, 1]
-        double percentVoltage = m_turningPIDController.calculate(m_turningEncoder.getRadians());
-        
+        double percentVoltage = m_turningPIDController.calculate(m_turningEncoder.getAngle().getRadians());
+
         if (Robot.isSimulation()) {
             m_turningEncoder.sendVoltage(percentVoltage);
         }
 
+        m_driveMotor.set(state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
         m_turningMotor.set(percentVoltage);
-        m_state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(m_turningEncoder.getRadians()));
+        m_state = new SwerveModuleState(state.speedMetersPerSecond, m_turningEncoder.getAngle());
     }
 
     public Translation2d getLocation() {
         return m_location;
     }
-    public SwerveModuleState getState(){
+
+    public SwerveModuleState getState() {
         return m_state;
+    }
+
+    public void setVelocity(double speed) {
+        m_state.speedMetersPerSecond = speed;
+        m_driveMotor.set(speed / SwerveConstants.MAX_METERS_PER_SECOND);
+        m_turningMotor.set(0);
     }
 }
