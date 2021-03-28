@@ -56,9 +56,18 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain, 2.29, 1.52, 0);
-    GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 4.57, 3, 2 * Math.PI);
+    GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 4.57, 2.25, 2 * Math.PI);
+    GoToPositionCommand thirdPosition = new GoToPositionCommand(swerveDrivetrain, 6.86, 1.52, 0);
+    GoToPositionCommand fourthPosition = new GoToPositionCommand(swerveDrivetrain, 7.6, .76, 2 * Math.PI);
+    GoToPositionCommand fifthPosition = new GoToPositionCommand(swerveDrivetrain, 8.4, 1.52, 0);
+    GoToPositionCommand sixthPosition = new GoToPositionCommand(swerveDrivetrain, 7.6, 2.25, 2 * Math.PI);
+    GoToPositionCommand seventhPosition = new GoToPositionCommand(swerveDrivetrain, 6.86, 1.52, 0);
+    GoToPositionCommand eigthPosition = new GoToPositionCommand(swerveDrivetrain, 4.57, .76, 2 * Math.PI);
+    GoToPositionCommand ninethPositionCommand = new GoToPositionCommand(swerveDrivetrain, 2.3, 1.5, 0);
+    GoToPositionCommand tenthPosition = new GoToPositionCommand(swerveDrivetrain, 1, 2.5, 0);
+    return firstPosition.andThen(secondPosition, thirdPosition).andThen(fourthPosition,fifthPosition).andThen(sixthPosition, seventhPosition).andThen( eigthPosition, ninethPositionCommand, tenthPosition);
 
-    return firstPosition.andThen(secondPosition);
+    
   }
 
   public Command getTeleCommand() {
