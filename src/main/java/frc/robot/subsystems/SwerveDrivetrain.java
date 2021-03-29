@@ -57,6 +57,8 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double m_ySpeed;
         private double m_rotationSpeed;
         private boolean m_isFieldRelative;
+        //private Gyro m_gyro;
+        private double currentHeading; //for simulated current gyro reading (yaw)
         private AHRS m_gyro;
         private SwerveDriveOdometry m_odometry;
         private SwerveDriveKinematics m_kinematics;
@@ -120,7 +122,12 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_gyro = new AHRS();
                 m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
         }
-
+        //gyro should update in periodic
+        //previous reading would be gyroAngle -> get in radians
+        //want calculate how gyro changes based on rotation 
+        //angular speed: omegaRad/Sec multiply by sec, add on
+        //manipulate in radians, convert to 2d again -> print radians
+        
         public void move(double xSpeed, double ySpeed, double rotationSpeed, boolean isFieldRelative) {
                 m_xSpeed = xSpeed;
                 m_ySpeed = ySpeed;
@@ -135,25 +142,35 @@ public class SwerveDrivetrain extends SubsystemBase {
         @Override
         public void periodic() {
                double gyroAngle = m_gyro.getYaw();
-               if (time > 10){
-                        m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(),   m_frontRightSwerveWheel.getState(),m_backLeftSwerveWheel.getState(),   m_backRightSwerveWheel.getState());
+                if (time > 10){
+                        m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(), m_frontRightSwerveWheel.getState(),m_backLeftSwerveWheel.getState(),   m_backRightSwerveWheel.getState());
                         m_field.setRobotPose(m_odometry.getPoseMeters());
                         //m_field.setRobotPose(new Pose2d(10.0, 10.0, new Rotation2d(0)));
                 }
                 time ++;        
                 ChassisSpeeds desiredSpeed;
 
+                
+
                 // convert to robot relative if in field relative
                 if (this.m_isFieldRelative) {
                         desiredSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed,
-                                        Rotation2d.fromDegrees(gyroAngle));
+                                        Rotation2d.fromDegrees(-gyroAngle));
                 } else {
                         desiredSpeed = new ChassisSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed);
                 }
 
+        
                 SwerveModuleState[] desiredSwerveModuleStates = m_kinematics.toSwerveModuleStates(desiredSpeed);
                 SwerveDriveKinematics.normalizeWheelSpeeds(desiredSwerveModuleStates,
                                 SwerveConstants.MAX_METERS_PER_SECOND);
+                if (desiredSpeed.vxMetersPerSecond == 0 && desiredSpeed.vyMetersPerSecond == 0 && desiredSpeed.omegaRadiansPerSecond == 0) {
+                        m_frontLeftSwerveWheel.setState(m_frontLeftSwerveWheel.getState());
+                        m_frontRightSwerveWheel.setState(desiredSwerveModuleStates[1]);
+                        m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
+                        m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
+                } 
+                
                 m_frontLeftSwerveWheel.setState(desiredSwerveModuleStates[0]);
                 m_frontRightSwerveWheel.setState(desiredSwerveModuleStates[1]);
                 m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
@@ -166,10 +183,10 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("OdometryX", m_odometry.getPoseMeters().getX());
                 SmartDashboard.putNumber("OdometryY", m_odometry.getPoseMeters().getY());
                 SmartDashboard.putNumber("Odometryrot", m_odometry.getPoseMeters().getRotation().getDegrees());
-                SmartDashboard.putNumber("Front Left Turning Encoder", m_frontLeftTurningEncoder.getRadians());
-                SmartDashboard.putNumber("Front Right Turning Encoder", m_frontRightTurningEncoder.getRadians());
-                SmartDashboard.putNumber("Back Left Turning Encoder", m_backLeftTurningEncoder.getRadians());
-                SmartDashboard.putNumber("Back Right Turning Encoder", m_backRightTurningEncoder.getRadians());
+                SmartDashboard.putNumber("Front Left Turning Encoder", m_frontLeftTurningEncoder.getAngle().getRadians());
+                SmartDashboard.putNumber("Front Right Turning Encoder", m_frontRightTurningEncoder.getAngle().getRadians());
+                SmartDashboard.putNumber("Back Left Turning Encoder", m_backLeftTurningEncoder.getAngle().getRadians());
+                SmartDashboard.putNumber("Back Right Turning Encoder", m_backRightTurningEncoder.getAngle().getRadians());
                 SmartDashboard.putNumber("Gyro Heading", m_gyro.getYaw());
                 
                 
@@ -185,4 +202,6 @@ public class SwerveDrivetrain extends SubsystemBase {
         public Pose2d getCurrentPosition() {
                 return m_odometry.getPoseMeters();
         }
+
+        
 }

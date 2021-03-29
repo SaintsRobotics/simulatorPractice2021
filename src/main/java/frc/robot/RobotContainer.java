@@ -28,7 +28,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
-  GoToPositionCommand goToPositionCommand = new GoToPositionCommand(swerveDrivetrain, 1, 1, 0);
+  
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.

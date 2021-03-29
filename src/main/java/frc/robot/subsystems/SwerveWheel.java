@@ -35,26 +35,27 @@ public class SwerveWheel {
         m_turningMotor = turningMotor;
         m_location = new Translation2d(x, y);
         m_turningPIDController = new PIDController(.3, 0, 0);
-        m_turningPIDController.enableContinuousInput(0, 2 * Math.PI);
+        m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
         m_turningEncoder = encoder;
     }
 
     public void setState(SwerveModuleState state) {
-        inversionConstant = 1;
 
-        m_turningPIDController.setSetpoint(smartInversion(state.angle.getRadians()));
+        state = SwerveModuleState.optimize(state, m_turningEncoder.getAngle());
+
+        //m_turningPIDController.setSetpoint(smartInversion(state.angle.getRadians()));
+        m_turningPIDController.setSetpoint(state.angle.getRadians());
 
         // desired turn voltage to send to turning motor, range: [-1, 1]
-        double percentVoltage = m_turningPIDController.calculate(m_turningEncoder.getRadians());
+        double percentVoltage = m_turningPIDController.calculate(m_turningEncoder.getAngle().getRadians());
         
         if (Robot.isSimulation()) {
             m_turningEncoder.sendVoltage(percentVoltage);
         }
 
-        m_driveMotor.set(inversionConstant * state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
-
+        m_driveMotor.set(state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
         m_turningMotor.set(percentVoltage);
-        m_state = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(m_turningEncoder.getRadians()));
+        m_state = new SwerveModuleState(state.speedMetersPerSecond, m_turningEncoder.getAngle());
     }
 
     public Translation2d getLocation() {
@@ -64,14 +65,4 @@ public class SwerveWheel {
     public SwerveModuleState getState() {
         return m_state;
     }
-
-    public double smartInversion(double goal) {
-        double current = m_turningEncoder.getRadians();
-        if (Math.abs(goal-current) > (Math.PI/2)) {
-            goal += Math.PI;
-            inversionConstant = -1;
-        }
-        return goal;
-    }
-
 }

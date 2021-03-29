@@ -47,7 +47,7 @@ public class GoToPositionCommand extends CommandBase {
         m_yPID.setSetpoint(targetY);
         m_rotationPID.setSetpoint(targetRotation);
 
-        m_xPID.setTolerance(0.05);
+        m_xPID.setTolerance(0.05); 
         m_yPID.setTolerance(0.05);
         m_rotationPID.setTolerance(0.05);
     }
