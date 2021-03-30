@@ -28,7 +28,6 @@ public class SwerveWheel {
     private PIDController m_turningPIDController;
     private AbsoluteEncoder m_turningEncoder;
     private SwerveModuleState m_state;
-    private int inversionConstant;
 
     public SwerveWheel(CANSparkMax driveMotor, CANSparkMax turningMotor, double x, double y, AbsoluteEncoder encoder) {
         m_driveMotor = driveMotor;
@@ -37,18 +36,18 @@ public class SwerveWheel {
         m_turningPIDController = new PIDController(.3, 0, 0);
         m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
         m_turningEncoder = encoder;
+        m_state = new SwerveModuleState();
     }
 
     public void setState(SwerveModuleState state) {
 
+        // literally just smart inversion
         state = SwerveModuleState.optimize(state, m_turningEncoder.getAngle());
 
-        //m_turningPIDController.setSetpoint(smartInversion(state.angle.getRadians()));
         m_turningPIDController.setSetpoint(state.angle.getRadians());
 
         // desired turn voltage to send to turning motor, range: [-1, 1]
         double percentVoltage = m_turningPIDController.calculate(m_turningEncoder.getAngle().getRadians());
-        
         if (Robot.isSimulation()) {
             m_turningEncoder.sendVoltage(percentVoltage);
         }
@@ -64,5 +63,11 @@ public class SwerveWheel {
 
     public SwerveModuleState getState() {
         return m_state;
+    }
+
+    public void setVelocity(double speed) {
+        m_state.speedMetersPerSecond = speed;
+        m_driveMotor.set(speed / SwerveConstants.MAX_METERS_PER_SECOND);
+        m_turningMotor.set(0);
     }
 }

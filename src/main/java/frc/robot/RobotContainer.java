@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.GoToPositionCommand;
+import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.ResetOdometryCommand;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -28,6 +30,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
+  ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
+  ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
   
 
   /**
@@ -55,10 +59,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain, 3, 3, 0);
-    GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 0, 0, Math.PI);
-    return firstPosition;
-    //.andThen(secondPosition);
+    GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain, 3, 3, Math.PI);
+    GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 4, 1, 2 * Math.PI);
+
+    return firstPosition.andThen(secondPosition);
   }
 
   public Command getTeleCommand() {

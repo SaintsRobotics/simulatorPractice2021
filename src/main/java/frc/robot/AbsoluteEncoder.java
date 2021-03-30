@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.AnalogInputSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -18,7 +19,7 @@ public class AbsoluteEncoder {
     private AnalogInput analogIn;
     private AnalogInputSim analogInSim;
     private boolean isInverted;
-    private double voltageToDegrees = 360 / 5;
+    private double voltageToRadians = (2 * Math.PI) / 5;
     private double m_offset;
     private int polarity;
 
@@ -94,19 +95,17 @@ public class AbsoluteEncoder {
      */
     public double getDegrees() {
         if (isInverted) {
-            return (5 - analogIn.getVoltage() ) * voltageToDegrees - m_offset;
+            return (5 - analogIn.getVoltage() ) * voltageToRadians - m_offset;
         }
 
-        return (analogIn.getVoltage() ) * voltageToDegrees - m_offset;
+        return (analogIn.getVoltage() ) * voltageToRadians - m_offset;
 
     }
 
-    /**
-     * Simply calls the <code>{@code getDegrees()}</code> method for this object.
-     * 
-     * @return <code>{@code this.getDegrees()}</code> but in radians.
-     */
-    public double getRadians() {
-        return Math.toRadians(getDegrees());
+    public Rotation2d getAngle() {
+        if (isInverted) {
+            return new Rotation2d((5 - analogIn.getVoltage()) * voltageToRadians - m_offset);
+        }
+        return new Rotation2d((analogIn.getVoltage()) * voltageToRadians - m_offset);
     }
 }
