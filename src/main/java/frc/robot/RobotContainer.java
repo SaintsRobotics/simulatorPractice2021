@@ -55,10 +55,21 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain, 3, 3, Math.PI);
-    GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 4, 1, 2 * Math.PI);
+    GoToPositionCommand P1 = new GoToPositionCommand(swerveDrivetrain, 0, 0, 0);
+    GoToPositionCommand P2 = new GoToPositionCommand(swerveDrivetrain, 2.286, 0, 0);
+    GoToPositionCommand P3 = new GoToPositionCommand(swerveDrivetrain, 2.286, 3.408, 0);
+    GoToPositionCommand P4 = new GoToPositionCommand(swerveDrivetrain, 6.858, 3.408, 0);
+    GoToPositionCommand P5 = new GoToPositionCommand(swerveDrivetrain, 6.858, 0, 0);
+    GoToPositionCommand P6 = new GoToPositionCommand(swerveDrivetrain, 8.382, 0, 0);
+    GoToPositionCommand P7 = new GoToPositionCommand(swerveDrivetrain, 8.382, 3.408, 0);
+    GoToPositionCommand P8 = new GoToPositionCommand(swerveDrivetrain, 6.858, 3.408, 0);
+    GoToPositionCommand P9 = new GoToPositionCommand(swerveDrivetrain, 6.858, 0, 0);
+    GoToPositionCommand P10 = new GoToPositionCommand(swerveDrivetrain, 2.286, 0, 0);
+    GoToPositionCommand P11 = new GoToPositionCommand(swerveDrivetrain, 2.286, 3.408, 0);
+    GoToPositionCommand P12 = new GoToPositionCommand(swerveDrivetrain, 0, 3.408, 0);
 
-    return firstPosition.andThen(secondPosition);
+    SequentialCommandGroup autonomousGroup = new SequentialCommandGroup(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12);
+    return autonomousGroup;
   }
 
   public Command getTeleCommand() {

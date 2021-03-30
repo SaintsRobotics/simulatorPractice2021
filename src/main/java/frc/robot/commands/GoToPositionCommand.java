@@ -65,7 +65,8 @@ public class GoToPositionCommand extends CommandBase {
         m_drivetrain.move(
             m_xPID.calculate(m_currentPosition.getX()),
             m_yPID.calculate(m_currentPosition.getY()),
-            -m_rotationPID.calculate(m_currentPosition.getRotation().getRadians()),
+            //-m_rotationPID.calculate(m_currentPosition.getRotation().getRadians()),
+            m_currentPosition.getRotation().getRadians() + 20,
             true);
     }
 
