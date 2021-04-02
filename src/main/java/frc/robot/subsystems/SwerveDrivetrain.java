@@ -183,7 +183,9 @@ public class SwerveDrivetrain extends SubsystemBase {
                 // updates the gyro yaw value and prints it to the simulator
                 double m_degreeRotationSpeed = Math.toDegrees(m_rotationSpeed);
                 double m_degreesSinceLastTick = m_degreeRotationSpeed * Robot.kDefaultPeriod;
+
                 printSimulatedGyro(m_gyro.getYaw() + m_degreesSinceLastTick + m_gyroOffset);
+
 
                 SmartDashboard.putNumber("OdometryX", m_odometry.getPoseMeters().getX());
                 SmartDashboard.putNumber("OdometryY", m_odometry.getPoseMeters().getY());
@@ -210,6 +212,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 return m_odometry.getPoseMeters();
         }
 
+
         // this is kinda broken
         public void resetGyro() {
                 if (Robot.isReal()) {
@@ -226,4 +229,5 @@ public class SwerveDrivetrain extends SubsystemBase {
         public void resetOdometry(Pose2d position, Rotation2d angle) {
                 m_odometry.resetPosition(position, angle);
         }
+
 }
