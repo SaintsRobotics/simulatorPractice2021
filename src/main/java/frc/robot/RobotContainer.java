@@ -55,10 +55,17 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain, 3, 3, Math.PI);
-    GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 4, 1, 2 * Math.PI);
+    GoToPositionCommand pos1 = new GoToPositionCommand(swerveDrivetrain, 0, 0, 0);
+    GoToPositionCommand pos2 = new GoToPositionCommand(swerveDrivetrain, 4.5, 3, 0);
+    GoToPositionCommand pos3 = new GoToPositionCommand(swerveDrivetrain, 7.5, 1, 0);
+    GoToPositionCommand pos4 = new GoToPositionCommand(swerveDrivetrain, 8.5, 1.75, Math.PI/2);
+    GoToPositionCommand pos5 = new GoToPositionCommand(swerveDrivetrain, 7.5, 3, Math.PI);
+    GoToPositionCommand pos6 = new GoToPositionCommand(swerveDrivetrain, 4.5, 1, Math.PI);
+    GoToPositionCommand pos7 = new GoToPositionCommand(swerveDrivetrain, 0, 3, Math.PI);
 
-    return firstPosition.andThen(secondPosition);
+    //GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 4, 1, 2 * Math.PI);
+
+    return pos1.andThen(pos2).andThen(pos3).andThen(pos4).andThen(pos5).andThen(pos6).andThen(pos7);
   }
 
   public Command getTeleCommand() {
