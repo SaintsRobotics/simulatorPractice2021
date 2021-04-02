@@ -68,10 +68,22 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain, 3, 3, Math.PI);
-    GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 4, 1, 2 * Math.PI);
-
-    return firstPosition.andThen(secondPosition);
+    GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain, 0.762, 0.762, 0);
+    GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 3.048, 2.286, Math.PI/4);
+    GoToPositionCommand thirdPosition = new GoToPositionCommand(swerveDrivetrain, 4.572, 2.794, 0);
+    GoToPositionCommand fourthPosition = new GoToPositionCommand(swerveDrivetrain, 5.715, 2.54, -Math.PI/4);
+    GoToPositionCommand fifthPosition = new GoToPositionCommand(swerveDrivetrain, 6.7, 1.524, -Math.PI/4);
+    GoToPositionCommand sixthPosition = new GoToPositionCommand(swerveDrivetrain, 7.62, 0.762, 0);
+    GoToPositionCommand seventhPosition = new GoToPositionCommand(swerveDrivetrain, 8.763, 1.524, Math.PI/2);
+    GoToPositionCommand eighthPosition = new GoToPositionCommand(swerveDrivetrain, 7.62, 2.54, -Math.PI);
+    GoToPositionCommand ninthPosition = new GoToPositionCommand(swerveDrivetrain, 6.7, 1.524, -3*Math.PI/4);
+    GoToPositionCommand tenthPosition = new GoToPositionCommand(swerveDrivetrain, 6.096, 0.762, -Math.PI);
+    GoToPositionCommand elePosition = new GoToPositionCommand(swerveDrivetrain, 3.048, 0.635, 4*Math.PI/5);
+    GoToPositionCommand twePosition = new GoToPositionCommand(swerveDrivetrain, 1.778, 2.032, 3*Math.PI/4);
+    GoToPositionCommand lastPosition = new GoToPositionCommand(swerveDrivetrain, 0.762, 2.286, -Math.PI);
+    return new SequentialCommandGroup(firstPosition, secondPosition, thirdPosition, fourthPosition, fifthPosition, sixthPosition, seventhPosition, eighthPosition
+    , ninthPosition, tenthPosition, elePosition, twePosition, lastPosition);
+    
   }
 
   public Command getTeleCommand() {
