@@ -68,6 +68,8 @@ public class SwerveDrivetrain extends SubsystemBase {
         // need pid to save headings/dynamic controls
         private PIDController m_rotationPID;
 
+        private double m_gyroOffset = 0;
+
         /**
          * Creates a new SwerveDrivetrain.
          */
@@ -143,7 +145,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         public void periodic() {
                 double gyroAngle = m_gyro.getYaw();
                 if (time > 10) {
-                        
+
                         m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(),
                                         m_frontRightSwerveWheel.getState(), m_backLeftSwerveWheel.getState(),
                                         m_backRightSwerveWheel.getState());
@@ -181,7 +183,9 @@ public class SwerveDrivetrain extends SubsystemBase {
                 // updates the gyro yaw value and prints it to the simulator
                 double m_degreeRotationSpeed = Math.toDegrees(m_rotationSpeed);
                 double m_degreesSinceLastTick = m_degreeRotationSpeed * Robot.kDefaultPeriod;
-                printSimulatedGyro(m_gyro.getYaw() + m_degreesSinceLastTick);
+
+                printSimulatedGyro(m_gyro.getYaw() + m_degreesSinceLastTick + m_gyroOffset);
+
 
                 SmartDashboard.putNumber("OdometryX", m_odometry.getPoseMeters().getX());
                 SmartDashboard.putNumber("OdometryY", m_odometry.getPoseMeters().getY());
@@ -206,6 +210,24 @@ public class SwerveDrivetrain extends SubsystemBase {
 
         public Pose2d getCurrentPosition() {
                 return m_odometry.getPoseMeters();
+        }
+
+
+        // this is kinda broken
+        public void resetGyro() {
+                if (Robot.isReal()) {
+                        m_gyro.reset();
+                } else {
+                        m_gyroOffset = m_gyro.getYaw();
+                }
+        }
+
+        public void resetOdometry() {
+                m_odometry.resetPosition(new Pose2d(), new Rotation2d());
+        }
+
+        public void resetOdometry(Pose2d position, Rotation2d angle) {
+                m_odometry.resetPosition(position, angle);
         }
 
 }
