@@ -41,7 +41,7 @@ public class GoToPositionCommand extends CommandBase {
 
         m_xPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
         m_yPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
-        m_rotationPID = new PIDController(Math.PI, 0, 0);
+        m_rotationPID = new PIDController(Math.PI * 6, 0, 0);
 
         m_xPID.setSetpoint(targetX);
         m_yPID.setSetpoint(targetY);
@@ -49,7 +49,8 @@ public class GoToPositionCommand extends CommandBase {
 
         m_xPID.setTolerance(0.05); 
         m_yPID.setTolerance(0.05);
-        m_rotationPID.setTolerance(0.05);
+        m_rotationPID.setTolerance(Math.PI/24);
+        m_rotationPID.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     // Called when the command is initially scheduled.
@@ -64,7 +65,7 @@ public class GoToPositionCommand extends CommandBase {
         m_drivetrain.move(
             m_xPID.calculate(m_currentPosition.getX()),
             m_yPID.calculate(m_currentPosition.getY()),
-            m_rotationPID.calculate(m_currentPosition.getRotation().getRadians()),
+            -m_rotationPID.calculate(m_currentPosition.getRotation().getRadians()),
             true);
     }
 
