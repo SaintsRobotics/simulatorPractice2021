@@ -56,16 +56,22 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     GoToPositionCommand pos1 = new GoToPositionCommand(swerveDrivetrain, 0, 0, 0);
+    GoToPositionCommand pos1a = new GoToPositionCommand(swerveDrivetrain, 2.25, 1.5, Math.PI/4);
     GoToPositionCommand pos2 = new GoToPositionCommand(swerveDrivetrain, 4.5, 3, 0);
+    GoToPositionCommand pos2a = new GoToPositionCommand(swerveDrivetrain, 6.5, 2, 7*Math.PI/4);
     GoToPositionCommand pos3 = new GoToPositionCommand(swerveDrivetrain, 7.5, 1, 0);
     GoToPositionCommand pos4 = new GoToPositionCommand(swerveDrivetrain, 8.5, 1.75, Math.PI/2);
     GoToPositionCommand pos5 = new GoToPositionCommand(swerveDrivetrain, 7.5, 3, Math.PI);
-    GoToPositionCommand pos6 = new GoToPositionCommand(swerveDrivetrain, 4.5, 1, Math.PI);
+    GoToPositionCommand pos5a = new GoToPositionCommand(swerveDrivetrain, 6.5, 1, 5*Math.PI/4);
+    GoToPositionCommand pos6 = new GoToPositionCommand(swerveDrivetrain, 4.5, 0.5, Math.PI);
+    GoToPositionCommand pos6a = new GoToPositionCommand(swerveDrivetrain, 2.25, 2, 3*Math.PI/4);
     GoToPositionCommand pos7 = new GoToPositionCommand(swerveDrivetrain, 0, 3, Math.PI);
 
     //GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 4, 1, 2 * Math.PI);
 
-    return pos1.andThen(pos2).andThen(pos3).andThen(pos4).andThen(pos5).andThen(pos6).andThen(pos7);
+    return pos1.andThen(pos1a).andThen(pos2).andThen(pos2a).andThen(pos3).andThen(pos4).andThen(pos5).andThen(pos5a).andThen(pos6).andThen(pos6a).andThen(pos7);
+    //return pos1.andThen(pos2).andThen(pos3).andThen(pos4).andThen(pos5).andThen(pos6).andThen(pos7);
+
   }
 
   public Command getTeleCommand() {
