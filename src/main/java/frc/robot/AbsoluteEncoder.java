@@ -19,7 +19,9 @@ public class AbsoluteEncoder {
     private AnalogInput analogIn;
     private AnalogInputSim analogInSim;
     private boolean isInverted;
+
     private double voltageToRadians = Math.PI * 2 / 5;
+
     private double m_offset;
     private int polarity;
 
@@ -96,6 +98,7 @@ public class AbsoluteEncoder {
     
     public Rotation2d getAngle() {
         if (isInverted) {
+
             return new Rotation2d((5 - analogIn.getVoltage() ) * voltageToRadians - m_offset);
         }
 

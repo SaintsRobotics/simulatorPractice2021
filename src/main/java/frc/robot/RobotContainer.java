@@ -8,11 +8,15 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.GoToPositionCommand;
+import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.ResetOdometryCommand;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -28,6 +32,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
+  ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
+  ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
+
+  XboxController m_controller = new XboxController(0);
   
 
   /**
@@ -46,6 +54,11 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    JoystickButton resetGyroButton = new JoystickButton(m_controller, 1);
+    resetGyroButton.whenPressed(m_resetGyroCommand);
+
+    JoystickButton resetOdometryButton = new JoystickButton(m_controller, 2);
+    resetOdometryButton.whenPressed(m_resetOdometryCommand);
   }
 
   /**
