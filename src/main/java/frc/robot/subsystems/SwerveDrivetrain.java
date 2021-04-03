@@ -61,7 +61,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double currentHeading; // for simulated current gyro reading (yaw)
         private AHRS m_gyro;
         private SwerveDriveOdometry m_odometry;
-        private SwerveDriveKinematics m_kinematics;
+        public SwerveDriveKinematics m_kinematics;
         private double time;
         private final Field2d m_field = new Field2d();
         // need pid to save headings/dynamic controls
@@ -138,6 +138,11 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("X Speed", m_xSpeed);
                 SmartDashboard.putNumber("Y Speed", m_ySpeed);
                 SmartDashboard.putNumber("Rotation Speed", m_rotationSpeed);
+        }
+
+        public void move(SwerveModuleState... moduleStates) {
+                ChassisSpeeds speeds = m_kinematics.toChassisSpeeds(moduleStates);
+                move(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
         }
 
         @Override

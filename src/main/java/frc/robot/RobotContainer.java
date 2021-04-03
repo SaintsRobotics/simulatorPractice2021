@@ -7,12 +7,24 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.GoToPositionCommand;
 import frc.robot.commands.ResetGyroCommand;
@@ -91,7 +103,27 @@ public class RobotContainer {
     // thirdPosition).andThen(fourthPosition,fifthPosition).andThen(sixthPosition,
     // seventhPosition).andThen( eigthPosition, ninethPositionCommand,
     // tenthPosition);
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(new Translation2d(5, 5), new Translation2d(3, 3)),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(3, 0, new Rotation2d(0)),
+        new TrajectoryConfig(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 3.9));
 
+    PIDController xPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
+    PIDController yPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
+    ProfiledPIDController rotPID = new ProfiledPIDController(Math.PI * 6, 0.0, 0.0,
+        new TrapezoidProfile.Constraints(Constants.SwerveConstants.MAX_RADIANS_PER_SECOND, 7.6));
+    xPID.setTolerance(.05);
+    yPID.setTolerance(0.05);
+    rotPID.setTolerance(Math.PI / 24);
+    rotPID.enableContinuousInput(-Math.PI, Math.PI);
+    SwerveControllerCommand pathFollowCommand = new SwerveControllerCommand(exampleTrajectory,
+        swerveDrivetrain::getCurrentPosition, swerveDrivetrain.m_kinematics, xPID, yPID, rotPID, swerveDrivetrain::move,
+        swerveDrivetrain);
+    return pathFollowCommand.andThen(swerveJoystickCommand);
   }
 
   public Command getTeleCommand() {
