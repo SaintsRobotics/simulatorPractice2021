@@ -134,8 +134,8 @@ public class RobotContainer {
     rotPID.setTolerance(Math.PI / 24);
     rotPID.enableContinuousInput(-Math.PI, Math.PI);
     SwerveControllerCommand pathFollowCommand = new SwerveControllerCommand(trajectory,
-        swerveDrivetrain::getCurrentPosition, swerveDrivetrain.m_kinematics, xPID, yPID, rotPID, swerveDrivetrain::move,
-        swerveDrivetrain);
+        swerveDrivetrain::getCurrentPosition, swerveDrivetrain.getKinematics(), xPID, yPID, rotPID,
+        swerveDrivetrain::move, swerveDrivetrain);
     return pathFollowCommand.andThen(new SwerveJoystickCommand(swerveDrivetrain));
   }
 

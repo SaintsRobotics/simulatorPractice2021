@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AbsoluteEncoder;
 import frc.robot.Robot;
@@ -61,7 +62,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double currentHeading; // for simulated current gyro reading (yaw)
         private AHRS m_gyro;
         private SwerveDriveOdometry m_odometry;
-        public SwerveDriveKinematics m_kinematics;
+        private SwerveDriveKinematics m_kinematics;
         private double time;
         private final Field2d m_field = new Field2d();
         // need pid to save headings/dynamic controls
@@ -123,6 +124,11 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_gyro = new AHRS();
                 m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
         }
+
+        public SwerveDriveKinematics getKinematics() {
+                return m_kinematics;
+        }
+
         // gyro should update in periodic
         // previous reading would be gyroAngle -> get in radians
         // want calculate how gyro changes based on rotation
