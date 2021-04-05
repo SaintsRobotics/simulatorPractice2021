@@ -7,12 +7,29 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.GoToPositionCommand;
 import frc.robot.commands.ResetGyroCommand;
@@ -34,9 +51,9 @@ public class RobotContainer {
   SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
   ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
   ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
-
+  String trajectoryJSON = "output/Slalom.wpilib.json";
+  Trajectory trajectory = new Trajectory();
   XboxController m_controller = new XboxController(0);
-  
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -68,10 +85,58 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain, 3, 3, Math.PI);
-    GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 4, 1, 2 * Math.PI);
+    // GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain,
+    // 2.29, 1.52, 0);
+    // GoToPositionCommand secondPosition = new
+    // GoToPositionCommand(swerveDrivetrain, 4.57, 2.25, 2 * Math.PI);
+    // GoToPositionCommand thirdPosition = new GoToPositionCommand(swerveDrivetrain,
+    // 6.86, 1.52, 0);
+    // GoToPositionCommand fourthPosition = new
+    // GoToPositionCommand(swerveDrivetrain, 7.6, .76, 2 * Math.PI);
+    // GoToPositionCommand fifthPosition = new GoToPositionCommand(swerveDrivetrain,
+    // 8.4, 1.52, 0);
+    // GoToPositionCommand sixthPosition = new GoToPositionCommand(swerveDrivetrain,
+    // 7.6, 2.25, 2 * Math.PI);
+    // GoToPositionCommand seventhPosition = new
+    // GoToPositionCommand(swerveDrivetrain, 6.86, 1.52, 0);
+    // GoToPositionCommand eigthPosition = new GoToPositionCommand(swerveDrivetrain,
+    // 4.57, .76, 2 * Math.PI);
+    // GoToPositionCommand ninethPositionCommand = new
+    // GoToPositionCommand(swerveDrivetrain, 2.3, 1.5, 0);
+    // GoToPositionCommand tenthPosition = new GoToPositionCommand(swerveDrivetrain,
+    // 1, 2.5, 0);
+    // return firstPosition.andThen(secondPosition,
+    // thirdPosition).andThen(fourthPosition,fifthPosition).andThen(sixthPosition,
+    // seventhPosition).andThen( eigthPosition, ninethPositionCommand,
+    // tenthPosition);
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(new Translation2d(5, 5), new Translation2d(3, 3)),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(3, 0, new Rotation2d(Math.PI)),
+        new TrajectoryConfig(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 7.9));
 
-    return firstPosition.andThen(secondPosition);
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
+
+    PIDController xPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
+    PIDController yPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
+    ProfiledPIDController rotPID = new ProfiledPIDController(-Math.PI * 6, 0.0, 0.0,
+        new TrapezoidProfile.Constraints(Constants.SwerveConstants.MAX_RADIANS_PER_SECOND, 2.6));
+    xPID.setTolerance(.05);
+    yPID.setTolerance(0.05);
+    rotPID.setTolerance(Math.PI / 24);
+    rotPID.enableContinuousInput(-Math.PI, Math.PI);
+    SwerveControllerCommand pathFollowCommand = new SwerveControllerCommand(trajectory,
+        swerveDrivetrain::getCurrentPosition, swerveDrivetrain.getKinematics(), xPID, yPID, rotPID,
+        swerveDrivetrain::move, swerveDrivetrain);
+    return pathFollowCommand.andThen(new SwerveJoystickCommand(swerveDrivetrain));
   }
 
   public Command getTeleCommand() {
