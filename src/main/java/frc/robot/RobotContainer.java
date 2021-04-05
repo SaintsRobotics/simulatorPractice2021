@@ -6,13 +6,16 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
-
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.GoToPositionCommand;
 import frc.robot.commands.ResetGyroCommand;
@@ -29,7 +32,7 @@ import frc.robot.subsystems.SwerveDrivetrain;
  */
 public class RobotContainer {
 
-  // The robot's subsystems and commands are defined here...
+  // The robot's subsystems and commands are defined here...the ones button bound/fundamental
   SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
   ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
@@ -68,6 +71,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
+    /*
     GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain, 0.762, 0.762, 0);
     GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 3.048, 2.286, Math.PI/4);
     GoToPositionCommand thirdPosition = new GoToPositionCommand(swerveDrivetrain, 4.572, 2.794, 0);
@@ -83,7 +87,18 @@ public class RobotContainer {
     GoToPositionCommand lastPosition = new GoToPositionCommand(swerveDrivetrain, 0.762, 2.286, -Math.PI);
     return new SequentialCommandGroup(firstPosition, secondPosition, thirdPosition, fourthPosition, fifthPosition, sixthPosition, seventhPosition, eighthPosition
     , ninthPosition, tenthPosition, elePosition, twePosition, lastPosition);
-    
+    */
+    PIDController xPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
+    PIDController yPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
+    ProfiledPIDController rotPID = new ProfiledPIDController(Math.PI*6, 0, 0, new TrapezoidProfile.Constraints(Constants.SwerveConstants.MAX_RADIANS_PER_SECOND, 7.6)); //same P as in GoToPos
+    xPID.setTolerance(0.05); 
+    yPID.setTolerance(0.05);
+    rotPID.setTolerance(Math.PI/24);
+    rotPID.enableContinuousInput(-Math.PI, Math.PI);
+    SwerveControllerCommand pathFollowCommand = new SwerveControllerCommand(trajectory, swerveDrivetrain::getCurrentPosition, swerveDrivetrain.m_kinematics, xPID, yPID, rotPID, swerveDrivetrain::move, swerveDrivetrain,
+        null, null); //Supplier supplies return value of a method as a parameter, used if method value keeps changing -> allows to get new values each time we execute() 
+      //use same controllers as in GoToPos (because same usage here)
+    return pathFollowCommand.andThen(); //pathFollowCommand has no end
   }
 
   public Command getTeleCommand() {
