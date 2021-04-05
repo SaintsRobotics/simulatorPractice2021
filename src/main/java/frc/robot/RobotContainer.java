@@ -7,8 +7,12 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -19,6 +23,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.XboxController;
 
@@ -46,7 +51,8 @@ public class RobotContainer {
   SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
   ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
   ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
-
+  String trajectoryJSON = "output/Slalom.wpilib.json";
+  Trajectory trajectory = new Trajectory();
   XboxController m_controller = new XboxController(0);
 
   /**
@@ -109,21 +115,28 @@ public class RobotContainer {
         // Pass through these two interior waypoints, making an 's' curve path
         List.of(new Translation2d(5, 5), new Translation2d(3, 3)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        new TrajectoryConfig(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 3.9));
+        new Pose2d(3, 0, new Rotation2d(Math.PI)),
+        new TrajectoryConfig(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 7.9));
+
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
 
     PIDController xPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
     PIDController yPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
-    ProfiledPIDController rotPID = new ProfiledPIDController(Math.PI * 6, 0.0, 0.0,
-        new TrapezoidProfile.Constraints(Constants.SwerveConstants.MAX_RADIANS_PER_SECOND, 7.6));
+    ProfiledPIDController rotPID = new ProfiledPIDController(-Math.PI * 6, 0.0, 0.0,
+        new TrapezoidProfile.Constraints(Constants.SwerveConstants.MAX_RADIANS_PER_SECOND, 2.6));
     xPID.setTolerance(.05);
     yPID.setTolerance(0.05);
     rotPID.setTolerance(Math.PI / 24);
     rotPID.enableContinuousInput(-Math.PI, Math.PI);
-    SwerveControllerCommand pathFollowCommand = new SwerveControllerCommand(exampleTrajectory,
+    SwerveControllerCommand pathFollowCommand = new SwerveControllerCommand(trajectory,
         swerveDrivetrain::getCurrentPosition, swerveDrivetrain.m_kinematics, xPID, yPID, rotPID, swerveDrivetrain::move,
         swerveDrivetrain);
-    return pathFollowCommand.andThen(swerveJoystickCommand);
+    return pathFollowCommand.andThen(new SwerveJoystickCommand(swerveDrivetrain));
   }
 
   public Command getTeleCommand() {

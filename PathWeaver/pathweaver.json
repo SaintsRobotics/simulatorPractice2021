@@ -5,5 +5,5 @@
   "maxAcceleration": 3.9,
   "wheelBase": 0.67,
   "gameName": "Slalom Path",
-  "outputDir": ""
+  "outputDir": "../src/main/deploy"
 }
