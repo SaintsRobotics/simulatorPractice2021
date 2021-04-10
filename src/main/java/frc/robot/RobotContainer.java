@@ -31,7 +31,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.commands.GoToPositionCommand;
+
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetOdometryCommand;
 import frc.robot.commands.SwerveJoystickCommand;
@@ -136,10 +138,18 @@ public class RobotContainer {
     SwerveControllerCommand pathFollowCommand = new SwerveControllerCommand(trajectory,
         swerveDrivetrain::getCurrentPosition, swerveDrivetrain.getKinematics(), xPID, yPID, rotPID,
         swerveDrivetrain::move, swerveDrivetrain);
-    return pathFollowCommand.andThen(new SwerveJoystickCommand(swerveDrivetrain));
+
+    //return pathFollowCommand.andThen(new SwerveJoystickCommand(swerveDrivetrain));
+    return new FieldRelativeMoveCommand(swerveDrivetrain).withX(1).withY(1).withR(0).andThen(new FieldRelativeMoveCommand(swerveDrivetrain).withX(2).withY(2).withR(Math.PI));
   }
 
   public Command getTeleCommand() {
     return swerveJoystickCommand;
   }
+
+  public Command getTestCommand() {
+    //return new MoveOneMeterCommand(swerveDrivetrain).andThen(new MoveOneMeterCommand(swerveDrivetrain));
+    return null;
+  }
+
 }
