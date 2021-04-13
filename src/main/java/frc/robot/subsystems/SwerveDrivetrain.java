@@ -62,7 +62,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double currentHeading; // for simulated current gyro reading (yaw)
         private AHRS m_gyro;
         private SwerveDriveOdometry m_odometry;
-        private SwerveDriveKinematics m_kinematics;
+        public SwerveDriveKinematics m_kinematics;
         private double time;
         private final Field2d m_field = new Field2d();
         // need pid to save headings/dynamic controls
