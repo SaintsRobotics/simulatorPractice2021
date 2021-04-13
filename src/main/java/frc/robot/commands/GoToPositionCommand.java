@@ -30,9 +30,6 @@ public abstract class GoToPositionCommand extends CommandBase {
     protected PIDController m_rotationPID;
     private int m_counter;
 
-    
-
-
     /**
      * Creates a new GoToPositionCommand.
      */
@@ -45,30 +42,22 @@ public abstract class GoToPositionCommand extends CommandBase {
         m_yPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
         m_rotationPID = new PIDController(Math.PI * 6, 0, 0);
 
-   
-        
-
-        m_xPID.setTolerance(0.05); 
+        m_xPID.setTolerance(0.05);
         m_yPID.setTolerance(0.05);
-        m_rotationPID.setTolerance(Math.PI/24);
+        m_rotationPID.setTolerance(Math.PI / 24);
         m_rotationPID.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     // Called when the command is initially scheduled.
-    
+
     public abstract void initialize();
-        
-    
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         m_currentPosition = m_drivetrain.getCurrentPosition();
-        m_drivetrain.move(
-            m_xPID.calculate(m_currentPosition.getX()),
-            m_yPID.calculate(m_currentPosition.getY()),
-            -m_rotationPID.calculate(m_currentPosition.getRotation().getRadians()),
-            true);
+        m_drivetrain.move(m_xPID.calculate(m_currentPosition.getX()), m_yPID.calculate(m_currentPosition.getY()),
+                -m_rotationPID.calculate(m_currentPosition.getRotation().getRadians()), true);
     }
 
     // Called once the command ends or is interrupted.
@@ -88,5 +77,4 @@ public abstract class GoToPositionCommand extends CommandBase {
         return m_counter > 10;
     }
 
-    //new GoToPositionCommand(subsystem, targetY).withX(15).withRotation(15);
 }
