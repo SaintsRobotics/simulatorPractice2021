@@ -22,19 +22,18 @@ import frc.robot.Utils;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.Constants.SwerveConstants;
 
-public class GoToPositionCommand extends CommandBase {
+public abstract class GoToPositionCommand extends CommandBase {
     private SwerveDrivetrain m_drivetrain;
     private Pose2d m_currentPosition;
-    private PIDController m_xPID;
-    private PIDController m_yPID;
-    private PIDController m_rotationPID;
+    protected PIDController m_xPID;
+    protected PIDController m_yPID;
+    protected PIDController m_rotationPID;
     private int m_counter;
-
 
     /**
      * Creates a new GoToPositionCommand.
      */
-    public GoToPositionCommand(SwerveDrivetrain drivetrain, double targetX, double targetY, double targetRotation) {
+    public GoToPositionCommand(SwerveDrivetrain drivetrain) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(drivetrain);
         m_drivetrain = drivetrain;
@@ -43,31 +42,22 @@ public class GoToPositionCommand extends CommandBase {
         m_yPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
         m_rotationPID = new PIDController(Math.PI * 6, 0, 0);
 
-        m_xPID.setSetpoint(targetX);
-        m_yPID.setSetpoint(targetY);
-        m_rotationPID.setSetpoint(targetRotation);
-
-        m_xPID.setTolerance(0.05); 
+        m_xPID.setTolerance(0.05);
         m_yPID.setTolerance(0.05);
-        m_rotationPID.setTolerance(Math.PI/24);
+        m_rotationPID.setTolerance(Math.PI / 24);
         m_rotationPID.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-    }
+
+    public abstract void initialize();
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         m_currentPosition = m_drivetrain.getCurrentPosition();
-        m_drivetrain.move(
-            m_xPID.calculate(m_currentPosition.getX()),
-            m_yPID.calculate(m_currentPosition.getY()),
-            //-m_rotationPID.calculate(m_currentPosition.getRotation().getRadians()),
-            m_currentPosition.getRotation().getRadians() + 20,
-            true);
+        m_drivetrain.move(m_xPID.calculate(m_currentPosition.getX()), m_yPID.calculate(m_currentPosition.getY()),
+                -m_rotationPID.calculate(m_currentPosition.getRotation().getRadians()), true);
     }
 
     // Called once the command ends or is interrupted.
@@ -86,4 +76,5 @@ public class GoToPositionCommand extends CommandBase {
         }
         return m_counter > 10;
     }
+
 }
