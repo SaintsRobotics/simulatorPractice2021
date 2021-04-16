@@ -23,7 +23,7 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.Constants.SwerveConstants;
 
 public abstract class GoToPositionCommand extends CommandBase {
-    private SwerveDrivetrain m_drivetrain;
+    protected SwerveDrivetrain m_drivetrain;
     private Pose2d m_currentPosition;
     protected PIDController m_xPID;
     protected PIDController m_yPID;
