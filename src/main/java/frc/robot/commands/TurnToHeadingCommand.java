@@ -12,6 +12,8 @@ public class TurnToHeadingCommand extends GoToPositionCommand {
 
   @Override
   public void initialize() {
+    m_xPID.setSetpoint(m_drivetrain.getCurrentPosition().getX());
+    m_yPID.setSetpoint(m_drivetrain.getCurrentPosition().getY());
     m_rotationPID.setSetpoint(m_targetRotation);
   }
 
