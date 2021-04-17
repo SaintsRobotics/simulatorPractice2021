@@ -48,7 +48,8 @@ import frc.robot.subsystems.SwerveDrivetrain;
  */
 public class RobotContainer {
 
-  // The robot's subsystems and commands are defined here...the ones button bound/fundamental
+  // The robot's subsystems and commands are defined here...the ones button
+  // bound/fundamental
   SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
   ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
@@ -86,39 +87,22 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    // GoToPositionCommand firstPosition = new GoToPositionCommand(swerveDrivetrain,
-    // 2.29, 1.52, 0);
-    // GoToPositionCommand secondPosition = new
-    // GoToPositionCommand(swerveDrivetrain, 4.57, 2.25, 2 * Math.PI);
-    // GoToPositionCommand thirdPosition = new GoToPositionCommand(swerveDrivetrain,
-    // 6.86, 1.52, 0);
-    // GoToPositionCommand fourthPosition = new
-    // GoToPositionCommand(swerveDrivetrain, 7.6, .76, 2 * Math.PI);
-    // GoToPositionCommand fifthPosition = new GoToPositionCommand(swerveDrivetrain,
-    // 8.4, 1.52, 0);
-    // GoToPositionCommand sixthPosition = new GoToPositionCommand(swerveDrivetrain,
-    // 7.6, 2.25, 2 * Math.PI);
-    // GoToPositionCommand seventhPosition = new
-    // GoToPositionCommand(swerveDrivetrain, 6.86, 1.52, 0);
-    // GoToPositionCommand eigthPosition = new GoToPositionCommand(swerveDrivetrain,
-    // 4.57, .76, 2 * Math.PI);
-    // GoToPositionCommand ninethPositionCommand = new
-    // GoToPositionCommand(swerveDrivetrain, 2.3, 1.5, 0);
-    // GoToPositionCommand tenthPosition = new GoToPositionCommand(swerveDrivetrain,
-    // 1, 2.5, 0);
-    // return firstPosition.andThen(secondPosition,
-    // thirdPosition).andThen(fourthPosition,fifthPosition).andThen(sixthPosition,
-    // seventhPosition).andThen( eigthPosition, ninethPositionCommand,
-    // tenthPosition);
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(5, 5), new Translation2d(3, 3)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(Math.PI)),
-        new TrajectoryConfig(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 7.9));
+
+    return new FieldRelativeMoveCommand(swerveDrivetrain).withX(1).withY(1).withR(0)
+        .andThen(new FieldRelativeMoveCommand(swerveDrivetrain).withX(2).withY(2).withR(Math.PI));
+  }
+
+  public Command getTeleCommand() {
+    return swerveJoystickCommand;
+  }
+
+  public Command getTestCommand() {
+    // return new MoveOneMeterCommand(swerveDrivetrain).andThen(new
+    // MoveOneMeterCommand(swerveDrivetrain));
+    return null;
+  }
+
+  public Command pathFollowCommand() {
 
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
@@ -135,21 +119,9 @@ public class RobotContainer {
     yPID.setTolerance(0.05);
     rotPID.setTolerance(Math.PI / 24);
     rotPID.enableContinuousInput(-Math.PI, Math.PI);
-    SwerveControllerCommand pathFollowCommand = new SwerveControllerCommand(trajectory,
-        swerveDrivetrain::getCurrentPosition, swerveDrivetrain.getKinematics(), xPID, yPID, rotPID,
-        swerveDrivetrain::move, swerveDrivetrain);
+    return new SwerveControllerCommand(trajectory, swerveDrivetrain::getCurrentPosition,
+        swerveDrivetrain.getKinematics(), xPID, yPID, rotPID, swerveDrivetrain::move, swerveDrivetrain);
 
-    //return pathFollowCommand.andThen(new SwerveJoystickCommand(swerveDrivetrain));
-    return new FieldRelativeMoveCommand(swerveDrivetrain).withX(1).withY(1).withR(0).andThen(new FieldRelativeMoveCommand(swerveDrivetrain).withX(2).withY(2).withR(Math.PI));
-  }
-
-  public Command getTeleCommand() {
-    return swerveJoystickCommand;
-  }
-
-  public Command getTestCommand() {
-    //return new MoveOneMeterCommand(swerveDrivetrain).andThen(new MoveOneMeterCommand(swerveDrivetrain));
-    return null;
   }
 
 }
