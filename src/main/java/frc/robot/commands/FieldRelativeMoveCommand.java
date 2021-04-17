@@ -9,6 +9,9 @@ import java.lang.reflect.Field;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveDrivetrain;
 
+/**
+ * Class to autonomously move the robot to a designated field relative position 
+ */
 public class FieldRelativeMoveCommand extends GoToPositionCommand {
   /** Creates a new FieldRelativeMoveCommand. */
   private double m_targetX;
@@ -28,18 +31,32 @@ public class FieldRelativeMoveCommand extends GoToPositionCommand {
     m_rotationPID.setSetpoint(m_targetR);
   }
 
-  //for method chaining 
+  /**
+   * Updates command with new parameters
+   * @param tX Target field relative X position
+   * @return Returns updated FieldRelativeCommand 
+   */
   public FieldRelativeMoveCommand withX(double tX){ //e.g. creates command with some "x"
     m_targetX = tX;
     return this;
   }
 
+  /**
+   * Updates command with new parameters
+   * @param tY Target field relative Y position
+   * @return Returns updated FieldRelativeCommand 
+   */
   public FieldRelativeMoveCommand withY(double tY){
     m_targetY = tY;
     return this;
 
   }
 
+   /**
+   * Updates command with new parameters
+   * @param tR Target field relative rotation
+   * @return Returns updated FieldRelativeCommand 
+   */
   public FieldRelativeMoveCommand withR(double tR){
     m_targetR = tR;
     return this;
