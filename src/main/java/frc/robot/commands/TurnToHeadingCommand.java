@@ -10,7 +10,7 @@ package frc.robot.commands;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class TurnToHeadingCommand extends GoToPositionCommand {
-    private double m_targetHeading;
+    private double m_targetHeading = m_drivetrain.getCurrentPosition().getRotation().getRadians();
 
     /**
      * Constructs the command.

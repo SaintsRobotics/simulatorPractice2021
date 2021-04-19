@@ -11,9 +11,9 @@ import frc.robot.subsystems.SwerveDrivetrain;
 
 public class FieldRelativeMoveCommand extends GoToPositionCommand {
   /** Creates a new FieldRelativeMoveCommand. */
-  private double m_targetX;
-  private double m_targetY;
-  private double m_targetR;
+  private double m_targetX = m_drivetrain.getCurrentPosition().getX();
+  private double m_targetY = m_drivetrain.getCurrentPosition().getY();;
+  private double m_targetR = m_drivetrain.getCurrentPosition().getRotation().getRadians();
 
   public FieldRelativeMoveCommand(SwerveDrivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.

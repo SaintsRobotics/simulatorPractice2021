@@ -10,7 +10,7 @@ package frc.robot.commands;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class MoveOneMeterCommand extends GoToPositionCommand {
-    private double m_direction;
+    private double m_direction = m_drivetrain.getCurrentPosition().getRotation().getRadians();
 
     /**
      * Constructs the command.

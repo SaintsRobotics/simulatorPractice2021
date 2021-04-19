@@ -10,8 +10,8 @@ package frc.robot.commands;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class MoveDirectionCommand extends GoToPositionCommand {
-    private double m_xChange;
-    private double m_yChange;
+    private double m_xChange = 0;
+    private double m_yChange = 0;
 
     /**
      * Constructs the command.
