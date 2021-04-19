@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AbsoluteEncoder;
 import frc.robot.Robot;
@@ -61,12 +62,13 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double currentHeading; // for simulated current gyro reading (yaw)
         private AHRS m_gyro;
         private SwerveDriveOdometry m_odometry;
-        private SwerveDriveKinematics m_kinematics;
+        public SwerveDriveKinematics m_kinematics;
         private double time;
         private final Field2d m_field = new Field2d();
-
         // need pid to save headings/dynamic controls
         private PIDController m_rotationPID;
+
+        private double m_gyroOffset = 0;
 
         /**
          * Creates a new SwerveDrivetrain.
@@ -122,6 +124,11 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_gyro = new AHRS();
                 m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
         }
+
+        public SwerveDriveKinematics getKinematics() {
+                return m_kinematics;
+        }
+
         // gyro should update in periodic
         // previous reading would be gyroAngle -> get in radians
         // want calculate how gyro changes based on rotation
@@ -139,11 +146,16 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("Rotation Speed", m_rotationSpeed);
         }
 
+        public void move(SwerveModuleState... moduleStates) {
+                ChassisSpeeds speeds = m_kinematics.toChassisSpeeds(moduleStates);
+                move(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
+        }
+
         @Override
         public void periodic() {
                 double gyroAngle = m_gyro.getYaw();
                 if (time > 10) {
-                        
+
                         m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(),
                                         m_frontRightSwerveWheel.getState(), m_backLeftSwerveWheel.getState(),
                                         m_backRightSwerveWheel.getState());
@@ -181,7 +193,8 @@ public class SwerveDrivetrain extends SubsystemBase {
                 // updates the gyro yaw value and prints it to the simulator
                 double m_degreeRotationSpeed = Math.toDegrees(m_rotationSpeed);
                 double m_degreesSinceLastTick = m_degreeRotationSpeed * Robot.kDefaultPeriod;
-                printSimulatedGyro(m_gyro.getYaw() + m_degreesSinceLastTick);
+
+                printSimulatedGyro(m_gyro.getYaw() + m_degreesSinceLastTick + m_gyroOffset);
 
                 SmartDashboard.putNumber("OdometryX", m_odometry.getPoseMeters().getX());
                 SmartDashboard.putNumber("OdometryY", m_odometry.getPoseMeters().getY());
@@ -206,6 +219,23 @@ public class SwerveDrivetrain extends SubsystemBase {
 
         public Pose2d getCurrentPosition() {
                 return m_odometry.getPoseMeters();
+        }
+
+        // this is kinda broken
+        public void resetGyro() {
+                if (Robot.isReal()) {
+                        m_gyro.reset();
+                } else {
+                        m_gyroOffset = m_gyro.getYaw();
+                }
+        }
+
+        public void resetOdometry() {
+                m_odometry.resetPosition(new Pose2d(), new Rotation2d());
+        }
+
+        public void resetOdometry(Pose2d position, Rotation2d angle) {
+                m_odometry.resetPosition(position, angle);
         }
 
 }

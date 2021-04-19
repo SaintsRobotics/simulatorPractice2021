@@ -7,12 +7,35 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.commands.GoToPositionCommand;
+
+import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.ResetOdometryCommand;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -25,10 +48,15 @@ import frc.robot.subsystems.SwerveDrivetrain;
  */
 public class RobotContainer {
 
-  // The robot's subsystems and commands are defined here...
+  // The robot's subsystems and commands are defined here...the ones button
+  // bound/fundamental
   SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
-  
+  ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
+  ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
+  String trajectoryJSON = "output/Slalom.wpilib.json";
+  Trajectory trajectory = new Trajectory();
+  XboxController m_controller = new XboxController(0);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -46,6 +74,11 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    JoystickButton resetGyroButton = new JoystickButton(m_controller, 1);
+    resetGyroButton.whenPressed(m_resetGyroCommand);
+
+    JoystickButton resetOdometryButton = new JoystickButton(m_controller, 2);
+    resetOdometryButton.whenPressed(m_resetOdometryCommand);
   }
 
   /**
@@ -54,27 +87,41 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    GoToPositionCommand pos1 = new GoToPositionCommand(swerveDrivetrain, 0, 0, 0);
-    GoToPositionCommand pos1a = new GoToPositionCommand(swerveDrivetrain, 2.25, 1.5, Math.PI/4);
-    GoToPositionCommand pos2 = new GoToPositionCommand(swerveDrivetrain, 4.5, 3, 0);
-    GoToPositionCommand pos2a = new GoToPositionCommand(swerveDrivetrain, 6.5, 2, 7*Math.PI/4);
-    GoToPositionCommand pos3 = new GoToPositionCommand(swerveDrivetrain, 7.5, 1, 0);
-    GoToPositionCommand pos4 = new GoToPositionCommand(swerveDrivetrain, 8.5, 1.75, Math.PI/2);
-    GoToPositionCommand pos5 = new GoToPositionCommand(swerveDrivetrain, 7.5, 3, Math.PI);
-    GoToPositionCommand pos5a = new GoToPositionCommand(swerveDrivetrain, 6.5, 1, 5*Math.PI/4);
-    GoToPositionCommand pos6 = new GoToPositionCommand(swerveDrivetrain, 4.5, 0.5, Math.PI);
-    GoToPositionCommand pos6a = new GoToPositionCommand(swerveDrivetrain, 2.25, 2, 3*Math.PI/4);
-    GoToPositionCommand pos7 = new GoToPositionCommand(swerveDrivetrain, 0, 3, Math.PI);
 
-    //GoToPositionCommand secondPosition = new GoToPositionCommand(swerveDrivetrain, 4, 1, 2 * Math.PI);
-
-    return pos1.andThen(pos1a).andThen(pos2).andThen(pos2a).andThen(pos3).andThen(pos4).andThen(pos5).andThen(pos5a).andThen(pos6).andThen(pos6a).andThen(pos7);
-    //return pos1.andThen(pos2).andThen(pos3).andThen(pos4).andThen(pos5).andThen(pos6).andThen(pos7);
-
+    return new FieldRelativeMoveCommand(swerveDrivetrain).withX(1).withY(1).withR(0)
+        .andThen(new FieldRelativeMoveCommand(swerveDrivetrain).withX(2).withY(2).withR(Math.PI));
   }
 
   public Command getTeleCommand() {
     return swerveJoystickCommand;
   }
+
+  public Command getTestCommand() {
+    // return new MoveOneMeterCommand(swerveDrivetrain).andThen(new
+    // MoveOneMeterCommand(swerveDrivetrain));
+    return null;
+  }
+
+  public Command pathFollowCommand() {
+
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
+
+    PIDController xPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
+    PIDController yPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
+    ProfiledPIDController rotPID = new ProfiledPIDController(-Math.PI * 6, 0.0, 0.0,
+        new TrapezoidProfile.Constraints(Constants.SwerveConstants.MAX_RADIANS_PER_SECOND, 2.6));
+    xPID.setTolerance(.05);
+    yPID.setTolerance(0.05);
+    rotPID.setTolerance(Math.PI / 24);
+    rotPID.enableContinuousInput(-Math.PI, Math.PI);
+    return new SwerveControllerCommand(trajectory, swerveDrivetrain::getCurrentPosition,
+        swerveDrivetrain.getKinematics(), xPID, yPID, rotPID, swerveDrivetrain::move, swerveDrivetrain);
+
+  }
+
 }
