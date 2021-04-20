@@ -22,13 +22,17 @@ import frc.robot.Utils;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.Constants.SwerveConstants;
 
-public abstract class GoToPositionCommand extends CommandBase {
+public class GoToPositionCommand extends CommandBase {
     protected SwerveDrivetrain m_drivetrain;
     private Pose2d m_currentPosition;
     protected PIDController m_xPID;
     protected PIDController m_yPID;
     protected PIDController m_rotationPID;
     private int m_counter;
+
+    protected double m_targetX = Constants.defaultNull;
+    protected double m_targetY = Constants.defaultNull;
+    protected double m_targetRotation = Constants.defaultNull;
 
     /**
      * Creates a new GoToPositionCommand.
@@ -50,7 +54,25 @@ public abstract class GoToPositionCommand extends CommandBase {
 
     // Called when the command is initially scheduled.
 
-    public abstract void initialize();
+    public void initialize() {
+        if (m_targetX != Constants.defaultNull) {
+            m_xPID.setSetpoint(m_targetX);
+        } else {
+            m_xPID.setSetpoint(m_drivetrain.getCurrentPosition().getX());
+        }
+
+        if (m_targetY != Constants.defaultNull) {
+            m_yPID.setSetpoint(m_targetY);
+        } else {
+            m_yPID.setSetpoint(m_drivetrain.getCurrentPosition().getY());
+        }
+        
+        if (m_targetRotation != Constants.defaultNull) {
+            m_rotationPID.setSetpoint(m_targetRotation);
+        } else {
+            m_rotationPID.setSetpoint(m_drivetrain.getCurrentPosition().getRotation().getRadians());
+        }
+    }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override

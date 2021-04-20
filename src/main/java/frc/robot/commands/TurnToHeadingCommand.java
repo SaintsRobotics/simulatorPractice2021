@@ -5,13 +5,22 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+
+/* ideas for default to current pos
+    1. use boolean flags when "with" commands are called combined with if statements in initialize
+         (might use two arrays to keep things neat instead of having like 6 variables)
+    2. could we use the thing where you passed in methods to use as values so they could be updated
+        so like instead of initially declaring them and setting them as the current VALUE
+        we could declare them and set them to be the most updated result of *this method*
+    3. how would we feel about gotoposition having a getcurrentpos method and a gettargetpos method
+        in gotoposition the targetpos is by default the currentpos
+        but child methods can override if necessary
+*/
 package frc.robot.commands;
 
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class TurnToHeadingCommand extends GoToPositionCommand {
-    private double m_targetHeading = m_drivetrain.getCurrentPosition().getRotation().getRadians();
-
     /**
      * Constructs the command.
      * 
@@ -21,26 +30,14 @@ public class TurnToHeadingCommand extends GoToPositionCommand {
         super(drivetrain);
     }
 
-    @Override
-    /**
-     * Sets target setpoints for all three PIDs.Target rotation is value that is fed in, x and y positions should not change.
-     */
-    public void initialize() {
-        // TODO Auto-generated method stub
-        m_rotationPID.setSetpoint(m_targetHeading);
-        m_yPID.setSetpoint(m_drivetrain.getCurrentPosition().getY());
-        m_xPID.setSetpoint(m_drivetrain.getCurrentPosition().getX());
-
-    }
-    
     /**
      * Sets the target rotation.
      * 
      * @param targetHeading the desired heading (a value in radians)
      * @return returning the object allows for method chaining.
      */
-    public TurnToHeadingCommand withRotation (double targetHeading){
-        m_targetHeading = targetHeading;
+    public TurnToHeadingCommand withHeading (double targetHeading){
+        m_targetRotation = targetHeading;
         return this;
     }
     

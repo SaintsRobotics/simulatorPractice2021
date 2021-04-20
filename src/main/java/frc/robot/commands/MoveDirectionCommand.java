@@ -10,8 +10,8 @@ package frc.robot.commands;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class MoveDirectionCommand extends GoToPositionCommand {
-    private double m_xChange = 0;
-    private double m_yChange = 0;
+    private double m_direction = 0;
+    private double m_distance = 0;
 
     /**
      * Constructs the command.
@@ -26,36 +26,37 @@ public class MoveDirectionCommand extends GoToPositionCommand {
     @Override
     /**
      * Sets target setpoints for all three PIDs. 
-     * Target X position is the current position plus the change in x
-     * Target Y position is the current position plus the change in y
+     * Target X position is the current position plus the x component of one meter in a specified direction
+     * Target Y position is the current position plus the y component of one meter in a specified direction
      * Rotation does not change.
      */
     public void initialize() {
-        m_xPID.setSetpoint(m_drivetrain.getCurrentPosition().getX() + m_xChange);
-        m_yPID.setSetpoint(m_drivetrain.getCurrentPosition().getY() + m_yChange);
-        m_rotationPID.setSetpoint(m_drivetrain.getCurrentPosition().getRotation().getRadians());
+        m_targetX = m_drivetrain.getCurrentPosition().getX() + Math.cos(m_direction) * m_distance;
+        m_targetY = m_drivetrain.getCurrentPosition().getY() + Math.sin(m_direction) * m_distance;
+        super.initialize();
+    }
 
+    /**
+     * Specifies the target direction.
+     * 
+     * @param direction the desired direction (a value in radians)
+     * @return returning the object allows for method chaining.
+     */
+
+    public MoveDirectionCommand withDirection (double direction) {
+        m_direction = direction;
+        return this;
+    }
+
+    public MoveDirectionCommand withDistance (double distance) {
+        m_distance = distance;    
+        return this;
+    }
+
+    public MoveDirectionCommand withHeading (double rotation) {
+        m_targetRotation = rotation;    
+        return this;
     }
     
-    /**
-     * Sets the target change in x.
-     * 
-     * @param x the desired change in x 
-     * @return returning the object allows for method chaining.
-     */
-    public MoveDirectionCommand withChangeInX (double x) {
-        m_xChange = x;
-        return this;
-    }
 
-    /**
-     * Sets the target change in y.
-     * 
-     * @param y the desired change in y 
-     * @return returning the object allows for method chaining.
-     */
-    public MoveDirectionCommand withChangeInY (double y) {
-        m_yChange = y;
-        return this;
-    }
 }
