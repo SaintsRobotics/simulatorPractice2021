@@ -26,9 +26,9 @@ public class MoveDirectionCommand extends GoToPositionCommand {
     @Override
     /**
      * Sets target setpoints for all three PIDs. 
-     * Target X position is the current position plus the x component of one meter in a specified direction
-     * Target Y position is the current position plus the y component of one meter in a specified direction
-     * Rotation does not change.
+     * Target X position is the current position plus the x component of the desired displacement in a specified direction
+     * Target Y position is the current position plus the y component of the desired displacement in a specified direction
+     * Rotation can be set in withHeading()
      */
     public void initialize() {
         m_targetX = m_drivetrain.getCurrentPosition().getX() + Math.cos(m_direction) * m_distance;
@@ -40,7 +40,7 @@ public class MoveDirectionCommand extends GoToPositionCommand {
      * Specifies the target direction.
      * 
      * @param direction the desired direction (a value in radians)
-     * @return returning the object allows for method chaining.
+     * @return returning the object allows for method chaining
      */
 
     public MoveDirectionCommand withDirection (double direction) {
@@ -48,11 +48,21 @@ public class MoveDirectionCommand extends GoToPositionCommand {
         return this;
     }
 
+   /**
+   * Specifies distance to travel
+   * @param distance the desired distance to travel
+   * @return returning the object allows for method chaining
+   */
     public MoveDirectionCommand withDistance (double distance) {
         m_distance = distance;    
         return this;
     }
 
+   /**
+   * Changes robot heading
+   * @param rotation desired field relative heading
+   * @return returning the object allows for method chaining
+   */
     public MoveDirectionCommand withHeading (double rotation) {
         m_targetRotation = rotation;    
         return this;
