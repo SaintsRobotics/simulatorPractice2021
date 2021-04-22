@@ -9,6 +9,9 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.SwerveDrivetrain;
 
+/**
+* Moves robot a predefined x and y displacement
+*/
 public class RobotRelativeMoveCommand extends GoToPositionCommand {
     private double m_xChange = 0;
     private double m_yChange = 0;
