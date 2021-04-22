@@ -9,6 +9,9 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.SwerveDrivetrain;
 
+/**
+* Moves a specified distance in a specified field relative direction
+*/
 public class MoveDirectionCommand extends GoToPositionCommand {
     private double m_direction = 0;
     private double m_distance = 0;
