@@ -35,7 +35,7 @@ public class GoToPositionCommand extends CommandBase {
     protected double m_targetRotation = Constants.defaultNull;
 
     /**
-     * Creates a new GoToPositionCommand.
+     * Creates a new GoToPositionCommand. Child classes pass in targetX, targetY, targetR setpoints. If nothing is passed in, the current position is used as the setpoint.
      */
     public GoToPositionCommand(SwerveDrivetrain drivetrain) {
         // Use addRequirements() here to declare subsystem dependencies.
