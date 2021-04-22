@@ -20,6 +20,9 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.SwerveDrivetrain;
 
+/**
+* Turns robot to field relative heading
+*/
 public class TurnToHeadingCommand extends GoToPositionCommand {
     /**
      * Constructs the command.
