@@ -40,7 +40,7 @@ public class MoveDirectionCommand extends GoToPositionCommand {
     }
 
     /**
-     * Specifies the target direction.
+     * Specifies the target direction - the direction in which the robot travels
      * 
      * @param direction the desired direction (a value in radians)
      * @return returning the object allows for method chaining
@@ -62,7 +62,7 @@ public class MoveDirectionCommand extends GoToPositionCommand {
     }
 
    /**
-   * Changes robot heading
+   * Changes robot heading - the angle the robot should turn to
    * @param rotation desired field relative heading
    * @return returning the object allows for method chaining
    */
