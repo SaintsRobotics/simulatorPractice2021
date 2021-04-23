@@ -34,7 +34,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.commands.GoToPositionCommand;
 import frc.robot.commands.MoveDirectionCommand;
-import frc.robot.commands.MoveOneMeterCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetOdometryCommand;
 import frc.robot.commands.SwerveJoystickCommand;
@@ -89,16 +88,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    /*
-    return new FieldRelativeMoveCommand(swerveDrivetrain).withX(1).withY(1).withR(0)
-        .andThen(new FieldRelativeMoveCommand(swerveDrivetrain).withX(2).withY(2).withR(Math.PI))
-        .andThen(new TurnToHeadingCommand(swerveDrivetrain).withR(Math.PI/2))
-        .andThen(new MoveDirectionCommand(swerveDrivetrain).withX(1).withY(1).withR(Math.PI/2))
-        .andThen(new MoveOneMeterCommand(swerveDrivetrain).withR(-Math.PI/4));
-      */
-    return new FieldRelativeMoveCommand(swerveDrivetrain).withX(2).withY(1).withR(0)
-    .andThen(new FieldRelativeMoveCommand(swerveDrivetrain).withX(3).withR(Math.PI));
 
+    //return new TurnToHeadingCommand(swerveDrivetrain).withRotation(30);
+    return new TurnToHeadingCommand(swerveDrivetrain).withHeading(Math.PI/2);
+          
   }
 
   public Command getTeleCommand() {

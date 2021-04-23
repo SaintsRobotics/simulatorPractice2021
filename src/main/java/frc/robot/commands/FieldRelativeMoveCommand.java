@@ -14,21 +14,13 @@ import frc.robot.subsystems.SwerveDrivetrain;
  */
 public class FieldRelativeMoveCommand extends GoToPositionCommand {
   /** Creates a new FieldRelativeMoveCommand. */
-  private double m_targetX;
-  private double m_targetY;
-  private double m_targetR;
+  // private double m_targetX = m_drivetrain.getCurrentPosition().getX();
+  // private double m_targetY = m_drivetrain.getCurrentPosition().getY();
+  // private double m_targetR = m_drivetrain.getCurrentPosition().getRotation().getRadians();
 
   public FieldRelativeMoveCommand(SwerveDrivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
     super(drivetrain);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    m_xPID.setSetpoint(m_targetX);
-    m_yPID.setSetpoint(m_targetY);
-    m_rotationPID.setSetpoint(m_targetR);
   }
 
   /**
@@ -54,11 +46,11 @@ public class FieldRelativeMoveCommand extends GoToPositionCommand {
 
    /**
    * Updates command with new parameters
-   * @param tR Target field relative rotation
+   * @param tR Target field relative heading 
    * @return Returns updated FieldRelativeCommand 
    */
-  public FieldRelativeMoveCommand withR(double tR){
-    m_targetR = tR;
+  public FieldRelativeMoveCommand withHeading(double tR){
+    m_targetRotation = tR;
     return this;
 
   }

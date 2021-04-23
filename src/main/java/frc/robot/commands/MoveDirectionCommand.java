@@ -1,67 +1,75 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
 
-
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.SwerveDrivetrain;
 
 /**
- * Command to autonomously move the robot to a position relative to the robot
- */
+* Moves a specified distance in a specified field relative direction
+*/
 public class MoveDirectionCommand extends GoToPositionCommand {
-  /** Creates a new MoveDirectionCommand. */
+    private double m_direction = 0;
+    private double m_distance = 0;
 
-  private double m_targetX;
-  private double m_targetY;
-  private double m_targetR;
+    /**
+     * Constructs the command.
+     * 
+     * @param drivetrain required subsystem
+     */
+    public MoveDirectionCommand(SwerveDrivetrain drivetrain) {
+        super(drivetrain);
+        // TODO Auto-generated constructor stub
+    }
 
-  public MoveDirectionCommand(SwerveDrivetrain drivetrain) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    super(drivetrain);
-  }
+    @Override
+    /**
+     * Sets target setpoints for all three PIDs. 
+     * Target X position is the current position plus the x component of the desired displacement in a specified direction
+     * Target Y position is the current position plus the y component of the desired displacement in a specified direction
+     * Rotation can be set in withHeading()
+     */
+    public void initialize() {
+        m_targetX = m_drivetrain.getCurrentPosition().getX() + Math.cos(m_direction) * m_distance;
+        m_targetY = m_drivetrain.getCurrentPosition().getY() + Math.sin(m_direction) * m_distance;
+        super.initialize();
+    }
 
+    /**
+     * Specifies the target direction - the direction in which the robot travels
+     * 
+     * @param direction the desired direction (a value in radians)
+     * @return returning the object allows for method chaining
+     */
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    m_xPID.setSetpoint(m_drivetrain.getCurrentPosition().getX() + m_targetX);
-    m_yPID.setSetpoint(m_drivetrain.getCurrentPosition().getY() + m_targetY);
-    m_rotationPID.setSetpoint(m_drivetrain.getCurrentPosition().getRotation().getRadians() + m_targetR);
+    public MoveDirectionCommand withDirection (double direction) {
+        m_direction = direction;
+        return this;
+    }
 
-  }
-
-  /**
-   * Updates the robot relative target X 
-   * @param tX The desired displacement of the robot in the X direction
-   * @return Updated command
+   /**
+   * Specifies distance to travel
+   * @param distance the desired distance to travel
+   * @return returning the object allows for method chaining
    */
-  public MoveDirectionCommand withX(double tX){ //e.g. creates command with some "x"
-    m_targetX = tX;
-    return this;
-  }
+    public MoveDirectionCommand withDistance (double distance) {
+        m_distance = distance;    
+        return this;
+    }
 
-  /**
-   * Updates the robot relative target Y 
-   * @param tY The desired displacement of the robot in the Y direction
-   * @return Updated command
+   /**
+   * Changes robot heading - the angle the robot should turn to
+   * @param rotation desired field relative heading
+   * @return returning the object allows for method chaining
    */
-  public MoveDirectionCommand withY(double tY){
-    m_targetY = tY;
-    return this;
-
-  }
-
-  /**
-   * Updates the robot relative target rotation 
-   * @param tR The desired angular displacement of the robot 
-   * @return Updated command
-   */
-  public MoveDirectionCommand withR(double tR){
-    m_targetR = tR;
-    return this;
-  }
+    public MoveDirectionCommand withHeading (double rotation) {
+        m_targetRotation = rotation;    
+        return this;
+    }
+    
 
 }

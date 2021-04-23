@@ -1,42 +1,48 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
 
+
+/* ideas for default to current pos
+    1. use boolean flags when "with" commands are called combined with if statements in initialize
+         (might use two arrays to keep things neat instead of having like 6 variables)
+    2. could we use the thing where you passed in methods to use as values so they could be updated
+        so like instead of initially declaring them and setting them as the current VALUE
+        we could declare them and set them to be the most updated result of *this method*
+    3. how would we feel about gotoposition having a getcurrentpos method and a gettargetpos method
+        in gotoposition the targetpos is by default the currentpos
+        but child methods can override if necessary
+*/
 package frc.robot.commands;
 
 import frc.robot.subsystems.SwerveDrivetrain;
 
 /**
- * Command to rotate robot to a desired heading
- */
+* Turns robot to field relative heading
+*/
 public class TurnToHeadingCommand extends GoToPositionCommand {
-  /** Creates a new TurnToHeadingCommand. */
-  private double m_targetR;
+    /**
+     * Constructs the command.
+     * 
+     * @param drivetrain required subsystem
+     */
+    public TurnToHeadingCommand(SwerveDrivetrain drivetrain) {
+        super(drivetrain);
+    }
 
-
-  public TurnToHeadingCommand(SwerveDrivetrain drivetrain) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    super(drivetrain);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    m_rotationPID.setSetpoint(m_targetR);
-    //System.out.println(m_xPID.getSetpoint() + " " + m_yPID.getSetpoint());
-    m_xPID.setSetpoint(m_drivetrain.getCurrentPosition().getX());
-    m_yPID.setSetpoint(m_drivetrain.getCurrentPosition().getY());
-  }
-
-  /**
-   * Updates desired heading of robot
-   * @param tR Desired heading (field relative)
-   * @return Updated command
-   */
-  public TurnToHeadingCommand withR(double tR){
-    m_targetR = tR;
-    return this;
-
-  }
+    /**
+     * Sets the target rotation.
+     * 
+     * @param targetHeading the desired heading (a value in radians)
+     * @return returning the object allows for method chaining.
+     */
+    public TurnToHeadingCommand withHeading (double targetHeading){
+        m_targetRotation = targetHeading;
+        return this;
+    }
+    
 
 }
