@@ -165,6 +165,8 @@ public class SwerveDrivetrain extends SubsystemBase {
                 time++;
                 ChassisSpeeds desiredSpeed;
 
+                //direction we want to go, current direction, boolean isTurning, deadzone isTurning, rotationPID to drift correct
+
                 // convert to robot relative if in field relative
                 if (this.m_isFieldRelative) {
                         desiredSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed,
@@ -174,6 +176,14 @@ public class SwerveDrivetrain extends SubsystemBase {
                 }
 
                 SwerveModuleState[] desiredSwerveModuleStates = m_kinematics.toSwerveModuleStates(desiredSpeed);
+                
+                // If the robot is real, adds friction coefficient * max wheel speed to account for friction
+                if(Robot.isReal()){
+                        for (SwerveModuleState swerveModule: desiredSwerveModuleStates){
+                                swerveModule.speedMetersPerSecond += (SwerveConstants.TRANSLATIONAL_FRICTION*SwerveConstants.MAX_METERS_PER_SECOND);
+                        }
+                }
+
                 SwerveDriveKinematics.normalizeWheelSpeeds(desiredSwerveModuleStates,
                                 SwerveConstants.MAX_METERS_PER_SECOND);
 

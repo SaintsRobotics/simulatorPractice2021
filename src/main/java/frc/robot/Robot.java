@@ -10,8 +10,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
+import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.StopCommand;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 /**
@@ -66,10 +67,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    //new FieldRelativeMoveCommand(m_robotContainer.swerveDrivetrain).schedule();
+    if(Robot.isSimulation()){
+      m_robotContainer.swerveDrivetrain.move(0, 0, 0, false);
+    }
+    //new StopCommand(m_robotContainer.swerveDrivetrain).schedule();
   }
 
   @Override
   public void disabledPeriodic() {
+    
   }
 
   /**
@@ -93,6 +100,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
   }
 
+
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
@@ -114,7 +122,6 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
-
   }
 
   /**

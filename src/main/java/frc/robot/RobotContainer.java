@@ -36,6 +36,7 @@ import frc.robot.commands.GoToPositionCommand;
 import frc.robot.commands.MoveDirectionCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetOdometryCommand;
+import frc.robot.commands.StopCommand;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.commands.TurnToHeadingCommand;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -51,13 +52,13 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...the ones button
   // bound/fundamental
-  SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
-  SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
-  ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
-  ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
-  String trajectoryJSON = "output/Slalom.wpilib.json";
-  Trajectory trajectory = new Trajectory();
-  XboxController m_controller = new XboxController(0);
+  public SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
+  private SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
+  public ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
+  public ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
+  private String trajectoryJSON = "output/FirstOne.wpilib.json"; //change this to path following json
+  private Trajectory trajectory = new Trajectory();
+  private XboxController m_controller = new XboxController(0);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -90,7 +91,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 
     //return new TurnToHeadingCommand(swerveDrivetrain).withRotation(30);
-    return new TurnToHeadingCommand(swerveDrivetrain).withHeading(Math.PI/2);
+    //return new TurnToHeadingCommand(swerveDrivetrain).withHeading(Math.PI/2);
+    return pathFollowCommand().andThen(new StopCommand(swerveDrivetrain));
           
   }
 
