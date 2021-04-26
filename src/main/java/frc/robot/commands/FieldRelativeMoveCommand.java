@@ -9,6 +9,9 @@ import java.lang.reflect.Field;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveDrivetrain;
 
+/**
+ * Class to autonomously move the robot to a designated field relative position 
+ */
 public class FieldRelativeMoveCommand extends GoToPositionCommand {
   /** Creates a new FieldRelativeMoveCommand. */
   // private double m_targetX = m_drivetrain.getCurrentPosition().getX();
