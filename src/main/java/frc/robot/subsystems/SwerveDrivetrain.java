@@ -141,6 +141,20 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_rotationSpeed = rotationSpeed;
                 m_isFieldRelative = isFieldRelative;
 
+                // scales m_xSpeed and m_ySpeed such that the net speed is equal to
+                // MAX_METERS_PER_SECOND (only if the net speed is above MAX_METERS_PER_SECOND)
+                double m_netSpeed = Math.sqrt((m_xSpeed * m_xSpeed) + (m_ySpeed * m_ySpeed));
+                if (m_netSpeed > SwerveConstants.MAX_METERS_PER_SECOND) {
+
+                        // the scale factor will always be less than one
+                        double m_scaleFactor = SwerveConstants.MAX_METERS_PER_SECOND / m_netSpeed;
+                        m_xSpeed *= m_scaleFactor;
+                        m_ySpeed *= m_scaleFactor;
+                }
+
+                if (m_rotationSpeed > SwerveConstants.MAX_RADIANS_PER_SECOND) {
+                        m_rotationSpeed = SwerveConstants.MAX_RADIANS_PER_SECOND;
+                }
                 SmartDashboard.putNumber("X Speed", m_xSpeed);
                 SmartDashboard.putNumber("Y Speed", m_ySpeed);
                 SmartDashboard.putNumber("Rotation Speed", m_rotationSpeed);
@@ -165,7 +179,8 @@ public class SwerveDrivetrain extends SubsystemBase {
                 time++;
                 ChassisSpeeds desiredSpeed;
 
-                //direction we want to go, current direction, boolean isTurning, deadzone isTurning, rotationPID to drift correct
+                // direction we want to go, current direction, boolean isTurning, deadzone
+                // isTurning, rotationPID to drift correct
 
                 // convert to robot relative if in field relative
                 if (this.m_isFieldRelative) {
@@ -176,11 +191,13 @@ public class SwerveDrivetrain extends SubsystemBase {
                 }
 
                 SwerveModuleState[] desiredSwerveModuleStates = m_kinematics.toSwerveModuleStates(desiredSpeed);
-                
-                // If the robot is real, adds friction coefficient * max wheel speed to account for friction
-                if(Robot.isReal()){
-                        for (SwerveModuleState swerveModule: desiredSwerveModuleStates){
-                                swerveModule.speedMetersPerSecond += (SwerveConstants.TRANSLATIONAL_FRICTION*SwerveConstants.MAX_METERS_PER_SECOND);
+
+                // If the robot is real, adds friction coefficient * max wheel speed to account
+                // for friction
+                if (Robot.isReal()) {
+                        for (SwerveModuleState swerveModule : desiredSwerveModuleStates) {
+                                swerveModule.speedMetersPerSecond += (SwerveConstants.TRANSLATIONAL_FRICTION
+                                                * SwerveConstants.MAX_METERS_PER_SECOND);
                         }
                 }
 
