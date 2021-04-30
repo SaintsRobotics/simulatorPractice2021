@@ -16,4 +16,10 @@ public class ResetGyroCommand extends CommandBase {
     public void initialize() {
         m_drivetrain.resetGyro();
     }
+    
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }
