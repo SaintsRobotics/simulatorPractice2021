@@ -16,4 +16,9 @@ public class ResetOdometryCommand extends CommandBase {
     public void initialize() {
         m_drivetrain.resetOdometry();
     }
+    
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }
