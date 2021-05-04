@@ -51,13 +51,13 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...the ones button
   // bound/fundamental
-  SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
-  SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
-  ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
-  ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
-  String trajectoryJSON = "output/NoamRedPath.wpilib.json";
-  Trajectory trajectory = new Trajectory();
-  XboxController m_controller = new XboxController(0);
+  public SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
+  public SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
+  public ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
+  public ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
+  private String trajectoryJSON = "output/NoamRedPath.wpilib.json";
+  private Trajectory trajectory = new Trajectory();
+  private XboxController m_controller = new XboxController(0);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.

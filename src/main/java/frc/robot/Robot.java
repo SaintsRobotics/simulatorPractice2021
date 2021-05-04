@@ -10,7 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
+import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -66,6 +66,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+
+    if (Robot.isSimulation()) {
+      m_robotContainer.swerveDrivetrain.move(0, 0, 0, false);
+    }
+
   }
 
   @Override
