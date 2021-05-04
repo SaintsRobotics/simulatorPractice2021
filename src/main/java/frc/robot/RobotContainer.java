@@ -33,10 +33,11 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.commands.GoToPositionCommand;
-
+import frc.robot.commands.MoveDirectionCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetOdometryCommand;
 import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.commands.TurnToHeadingCommand;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 /**
@@ -54,7 +55,7 @@ public class RobotContainer {
   SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
   ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
   ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
-  String trajectoryJSON = "output/Slalom.wpilib.json";
+  String trajectoryJSON = "output/NoamRedPath.wpilib.json";
   Trajectory trajectory = new Trajectory();
   XboxController m_controller = new XboxController(0);
 
@@ -88,8 +89,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
-    return new FieldRelativeMoveCommand(swerveDrivetrain).withX(1).withY(1).withR(0)
-        .andThen(new FieldRelativeMoveCommand(swerveDrivetrain).withX(2).withY(2).withR(Math.PI));
+    // return new TurnToHeadingCommand(swerveDrivetrain).withRotation(30);
+    return pathFollowCommand();
+
   }
 
   public Command getTeleCommand() {

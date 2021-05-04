@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 public class ResetOdometryCommand extends CommandBase {
-    
+
     private SwerveDrivetrain m_drivetrain;
 
     public ResetOdometryCommand(SwerveDrivetrain drivetrain) {

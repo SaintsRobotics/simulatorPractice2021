@@ -1,49 +1,73 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
 
-import java.lang.reflect.Field;
-
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveDrivetrain;
 
+/**
+ * Moves robot a predefined x and y displacement
+ */
 public class RobotRelativeMoveCommand extends GoToPositionCommand {
-    /** Creates a new RobotRelativeMoveCommand. */
-    private double m_targetX;
-    private double m_targetY;
-    private double m_targetR;
+    private double m_xChange = 0;
+    private double m_yChange = 0;
 
+    /**
+     * Constructs the command.
+     * 
+     * @param drivetrain required subsystem
+     */
     public RobotRelativeMoveCommand(SwerveDrivetrain drivetrain) {
-        // Use addRequirements() here to declare subsystem dependencies.
         super(drivetrain);
+        // TODO Auto-generated constructor stub
     }
 
-    // Called when the command is initially scheduled.
     @Override
+    /**
+     * Sets target setpoints for all three PIDs. Target X position is the current
+     * position plus the change in x Target Y position is the current position plus
+     * the change in y Rotation does not change.
+     */
     public void initialize() {
-        m_xPID.setSetpoint(m_drivetrain.getCurrentPosition().getX() + m_targetX);
-        m_yPID.setSetpoint(m_drivetrain.getCurrentPosition().getY() + m_targetY);
-        m_rotationPID.setSetpoint(m_targetR);
+        m_targetX = m_drivetrain.getCurrentPosition().getX() + m_xChange;
+        m_targetY = m_drivetrain.getCurrentPosition().getY() + m_yChange;
+        super.initialize();
     }
 
-    // for method chaining
-    public RobotRelativeMoveCommand withX(double tX) { // e.g. creates command with some "x"
-        m_targetX = tX;
+    /**
+     * Sets the target change in x.
+     * 
+     * @param x the desired change in x
+     * @return returning the object allows for method chaining.
+     */
+    public RobotRelativeMoveCommand withChangeInX(double x) {
+        m_xChange = x;
         return this;
     }
 
-    public RobotRelativeMoveCommand withY(double tY) {
-        m_targetY = tY;
+    /**
+     * Sets the target change in y.
+     * 
+     * @param y the desired change in y
+     * @return returning the object allows for method chaining.
+     */
+    public RobotRelativeMoveCommand withChangeInY(double y) {
+        m_yChange = y;
         return this;
-
     }
 
-    public RobotRelativeMoveCommand withR(double tR) {
-        m_targetR = tR;
+    /**
+     * Sets the target change in rotation.
+     * 
+     * @param r the desired change in rotation
+     * @return returning the object allows for method chaining.
+     */
+    public RobotRelativeMoveCommand withHeading(double r) {
+        m_targetRotation = r;
         return this;
-
     }
-
 }
