@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.commands.ResetGyroCommand;
-import frc.robot.commands.StopCommand;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 /**
