@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.hal.SimDouble;
@@ -83,12 +84,17 @@ public class SwerveDrivetrain extends SubsystemBase {
 
                 m_frontLeftTurningMotor = new CANSparkMax(SwervePorts.FRONT_LEFT_TURNING_MOTOR_PORT,
                                 MotorType.kBrushless);
+                m_frontLeftTurningMotor.setIdleMode(IdleMode.kCoast);
                 m_frontRightTurningMotor = new CANSparkMax(SwervePorts.FRONT_RIGHT_TURNING_MOTOR_PORT,
                                 MotorType.kBrushless);
+                m_frontRightTurningMotor.setIdleMode(IdleMode.kCoast);
                 m_backLeftTurningMotor = new CANSparkMax(SwervePorts.BACK_LEFT_TURNING_MOTOR_PORT,
                                 MotorType.kBrushless);
+                m_backLeftTurningMotor.setIdleMode(IdleMode.kCoast);
                 m_backRightTurningMotor = new CANSparkMax(SwervePorts.BACK_RIGHT_TURNING_MOTOR_PORT,
                                 MotorType.kBrushless);
+                m_backRightTurningMotor.setIdleMode(IdleMode.kCoast);
+
 
                 m_frontLeftDriveMotor.setInverted(true);
                 m_backLeftDriveMotor.setInverted(true);
@@ -103,13 +109,13 @@ public class SwerveDrivetrain extends SubsystemBase {
                                 SwerveConstants.BACK_RIGHT_ROTATION_OFFSET);
 
                 // Robot is facing towards positive x direction
-                m_frontLeftSwerveWheel = new SwerveWheel(m_frontLeftDriveMotor, m_frontLeftTurningMotor,
+                m_frontLeftSwerveWheel = new SwerveWheel("frontleft", m_frontLeftDriveMotor, m_frontLeftTurningMotor,
                                 SwerveConstants.SWERVE_X, SwerveConstants.SWERVE_Y, m_frontLeftTurningEncoder);
-                m_frontRightSwerveWheel = new SwerveWheel(m_frontRightDriveMotor, m_frontRightTurningMotor,
+                m_frontRightSwerveWheel = new SwerveWheel("frontright", m_frontRightDriveMotor, m_frontRightTurningMotor,
                                 SwerveConstants.SWERVE_X, -SwerveConstants.SWERVE_Y, m_frontRightTurningEncoder);
-                m_backLeftSwerveWheel = new SwerveWheel(m_backLeftDriveMotor, m_backLeftTurningMotor,
+                m_backLeftSwerveWheel = new SwerveWheel("backleft", m_backLeftDriveMotor, m_backLeftTurningMotor,
                                 -SwerveConstants.SWERVE_X, SwerveConstants.SWERVE_Y, m_backLeftTurningEncoder);
-                m_backRightSwerveWheel = new SwerveWheel(m_backRightDriveMotor, m_backRightTurningMotor,
+                m_backRightSwerveWheel = new SwerveWheel("backright", m_backRightDriveMotor, m_backRightTurningMotor,
                                 -SwerveConstants.SWERVE_X, -SwerveConstants.SWERVE_Y, m_backRightTurningEncoder);
 
                 m_kinematics = new SwerveDriveKinematics(m_frontLeftSwerveWheel.getLocation(),
@@ -195,17 +201,23 @@ public class SwerveDrivetrain extends SubsystemBase {
                         m_backRightSwerveWheel.setVelocity(0);
                 } else {
 
-                        m_frontLeftSwerveWheel.setState(desiredSwerveModuleStates[0]);
-                        m_frontRightSwerveWheel.setState(desiredSwerveModuleStates[1]);
-                        m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
-                        m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
+                        //m_frontLeftSwerveWheel.setState(desiredSwerveModuleStates[0]);
+                        m_backLeftSwerveWheel.setState(new SwerveModuleState(1, new Rotation2d(0)));
+                        m_frontLeftSwerveWheel.setState(new SwerveModuleState(1, new Rotation2d(0)));
+                        m_backRightSwerveWheel.setState(new SwerveModuleState(1, new Rotation2d(0)));
+                        m_frontRightSwerveWheel.setState(new SwerveModuleState(1, new Rotation2d(0)));
+
+                        //m_frontRightSwerveWheel.setState(desiredSwerveModuleStates[1]);
+                        //m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
+                        //m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
                 }
                 // updates the gyro yaw value and prints it to the simulator
                 double m_degreeRotationSpeed = Math.toDegrees(m_rotationSpeed);
                 double m_degreesSinceLastTick = m_degreeRotationSpeed * Robot.kDefaultPeriod;
 
                 printSimulatedGyro(m_gyro.getYaw() + m_degreesSinceLastTick + m_gyroOffset);
-
+                
+                
                 SmartDashboard.putNumber("OdometryX", m_odometry.getPoseMeters().getX());
                 SmartDashboard.putNumber("OdometryY", m_odometry.getPoseMeters().getY());
                 SmartDashboard.putNumber("Odometryrot", m_odometry.getPoseMeters().getRotation().getDegrees());

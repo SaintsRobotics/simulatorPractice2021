@@ -44,6 +44,7 @@ public class AbsoluteEncoder {
         isInverted = inverted;
         m_offset = offset;
         polarity = isInverted ? -1 : 1;
+        
     }
 
     /**

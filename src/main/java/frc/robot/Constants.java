@@ -35,8 +35,8 @@ public final class Constants {
 
         public static final int FRONT_LEFT_TURNING_ENCODER_PORT = 0;
         public static final int FRONT_RIGHT_TURNING_ENCODER_PORT = 1;
-        public static final int BACK_LEFT_TURNING_ENCODER_PORT = 2;
-        public static final int BACK_RIGHT_TURNING_ENCODER_PORT = 3;
+        public static final int BACK_LEFT_TURNING_ENCODER_PORT = 3;
+        public static final int BACK_RIGHT_TURNING_ENCODER_PORT = 2;
 
     }
 
@@ -56,10 +56,10 @@ public final class Constants {
 
         public static final double TRANSLATIONAL_FRICTION = 0.0205;
 
-        public static final double FRONT_LEFT_ROTATION_OFFSET = 0;
-        public static final double FRONT_RIGHT_ROTATION_OFFSET = 0;
-        public static final double BACK_LEFT_ROTATION_OFFSET = 0;
-        public static final double BACK_RIGHT_ROTATION_OFFSET = 0;
+        public static final double FRONT_LEFT_ROTATION_OFFSET = -6.230825;
+        public static final double FRONT_RIGHT_ROTATION_OFFSET = -0.1570796;
+        public static final double BACK_LEFT_ROTATION_OFFSET = -6.091199;
+        public static final double BACK_RIGHT_ROTATION_OFFSET = -6.2482787;
     }
 
 }
