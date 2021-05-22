@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.commands.GoToPositionCommand;
 import frc.robot.commands.MoveDirectionCommand;
+import frc.robot.commands.MoveOneMeterCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetOdometryCommand;
 import frc.robot.commands.StopCommand;
@@ -92,8 +93,8 @@ public class RobotContainer {
 
     //return new TurnToHeadingCommand(swerveDrivetrain).withRotation(30);
     //return new TurnToHeadingCommand(swerveDrivetrain).withHeading(Math.PI/2);
-    return pathFollowCommand().andThen(new StopCommand(swerveDrivetrain));
-          
+    //return pathFollowCommand().andThen(new StopCommand(swerveDrivetrain));
+    return new MoveOneMeterCommand(swerveDrivetrain);    
   }
 
   public Command getTeleCommand() {

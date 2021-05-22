@@ -46,7 +46,7 @@ public class SwerveWheel {
     public void setState(SwerveModuleState state) {
 
         // literally just smart inversion
-        //state = SwerveModuleState.optimize(state, m_turningEncoder.getAngle());
+        state = SwerveModuleState.optimize(state, m_turningEncoder.getAngle());
 
         m_turningPIDController.setSetpoint(state.angle.getRadians());
 

@@ -171,8 +171,9 @@ public class SwerveDrivetrain extends SubsystemBase {
                 time++;
                 ChassisSpeeds desiredSpeed;
 
-                //direction we want to go, current direction, boolean isTurning, deadzone isTurning, rotationPID to drift correct
 
+                
+                
                 // convert to robot relative if in field relative
                 if (this.m_isFieldRelative) {
                         desiredSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed,
@@ -180,6 +181,10 @@ public class SwerveDrivetrain extends SubsystemBase {
                 } else {
                         desiredSpeed = new ChassisSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed);
                 }
+
+                //boolean isTurning = 
+                
+                //
 
                 SwerveModuleState[] desiredSwerveModuleStates = m_kinematics.toSwerveModuleStates(desiredSpeed);
                 
@@ -201,15 +206,10 @@ public class SwerveDrivetrain extends SubsystemBase {
                         m_backRightSwerveWheel.setVelocity(0);
                 } else {
 
-                        //m_frontLeftSwerveWheel.setState(desiredSwerveModuleStates[0]);
-                        m_backLeftSwerveWheel.setState(new SwerveModuleState(1, new Rotation2d(0)));
-                        m_frontLeftSwerveWheel.setState(new SwerveModuleState(1, new Rotation2d(0)));
-                        m_backRightSwerveWheel.setState(new SwerveModuleState(1, new Rotation2d(0)));
-                        m_frontRightSwerveWheel.setState(new SwerveModuleState(1, new Rotation2d(0)));
-
-                        //m_frontRightSwerveWheel.setState(desiredSwerveModuleStates[1]);
-                        //m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
-                        //m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
+                        m_frontLeftSwerveWheel.setState(desiredSwerveModuleStates[0]);
+                        m_frontRightSwerveWheel.setState(desiredSwerveModuleStates[1]);
+                        m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
+                        m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
                 }
                 // updates the gyro yaw value and prints it to the simulator
                 double m_degreeRotationSpeed = Math.toDegrees(m_rotationSpeed);
