@@ -59,6 +59,8 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double m_ySpeed;
         private double m_rotationSpeed;
         private boolean m_isFieldRelative;
+        private boolean isTurning = false;
+        private ChassisSpeeds prevSpeed;
         // private Gyro m_gyro;
         private double currentHeading; // for simulated current gyro reading (yaw)
         private AHRS m_gyro;
@@ -70,6 +72,8 @@ public class SwerveDrivetrain extends SubsystemBase {
         private PIDController m_rotationPID;
 
         private double m_gyroOffset = 0;
+
+        private double m_desiredHeading;
 
         /**
          * Creates a new SwerveDrivetrain.
@@ -122,13 +126,16 @@ public class SwerveDrivetrain extends SubsystemBase {
                                 m_frontRightSwerveWheel.getLocation(), m_backLeftSwerveWheel.getLocation(),
                                 m_backRightSwerveWheel.getLocation());
 
-                m_rotationPID = new PIDController(Math.toRadians((SwerveConstants.MAX_METERS_PER_SECOND / 180) * 5), 0,
-                                0);
+                //m_rotationPID = new PIDController(Math.toRadians((SwerveConstants.MAX_METERS_PER_SECOND / 180) * 5), 0,
+                                //0);
+                m_rotationPID = new PIDController(0.05, 0, 0);
                 m_rotationPID.enableContinuousInput(0, Math.PI * 2);
                 m_rotationPID.setTolerance(1 / 36); // if off by a lil bit, then dont do anything (is in radians)
 
                 m_gyro = new AHRS();
                 m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
+
+                m_desiredHeading = m_gyro.getAngle() * (Math.PI/180);
         }
 
         public SwerveDriveKinematics getKinematics() {
@@ -171,16 +178,29 @@ public class SwerveDrivetrain extends SubsystemBase {
                 time++;
                 ChassisSpeeds desiredSpeed;
 
+                if(Utils.deadZones(m_rotationSpeed, 0.05) != 0) {
+                        isTurning = true;
+                        m_desiredHeading = m_gyro.getAngle() * Math.PI / 180;
+                } else {
+                        isTurning = false;
+                        m_rotationPID.setSetpoint(m_desiredHeading);
+                        m_rotationSpeed = m_rotationPID.calculate(m_gyro.getAngle()*Math.PI/180);
 
+                }
+                               
                 
                 
                 // convert to robot relative if in field relative
                 if (this.m_isFieldRelative) {
                         desiredSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed,
                                         Rotation2d.fromDegrees(-gyroAngle));
+                        
                 } else {
                         desiredSpeed = new ChassisSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed);
+
                 }
+
+                prevSpeed = desiredSpeed;
 
                 //boolean isTurning = 
                 
@@ -229,6 +249,9 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("Back Right Turning Encoder",
                                 m_backRightTurningEncoder.getAngle().getRadians());
                 SmartDashboard.putNumber("Gyro Heading", m_gyro.getYaw());
+                SmartDashboard.putBoolean("Is it turning", isTurning);
+                SmartDashboard.putNumber("Gyro angle in degrees", m_gyro.getAngle());
+                SmartDashboard.putNumber("The desired angle", m_desiredHeading * (180 / Math.PI));
 
         }
 
