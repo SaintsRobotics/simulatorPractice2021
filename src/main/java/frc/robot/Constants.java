@@ -40,6 +40,13 @@ public final class Constants {
 
     }
 
+    public final class Shooter {
+        public static final int LEFT_SHOOTER_PORT = 16;
+        public static final int RIGHT_SHOOTER_PORT = 17;
+
+        public static final double SHOOTER_SPEED = 0.93;
+    }
+
     public final class SwerveConstants {
         public static final double MAX_METERS_PER_SECOND = 3.627;
         public static final double MAX_RADIANS_PER_SECOND = 8.76;
