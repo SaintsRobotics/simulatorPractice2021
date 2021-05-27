@@ -30,8 +30,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.commands.*;
+import frc.robot.commands.Shooter.FeederCommand;
+import frc.robot.commands.Shooter.ShooterCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -45,6 +48,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...the ones button
   // bound/fundamental
   public SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
+  public ShooterSubsystem m_shooter = new ShooterSubsystem();
   private SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
   public ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
   public ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
@@ -73,6 +77,11 @@ public class RobotContainer {
 
     JoystickButton resetOdometryButton = new JoystickButton(m_controller, 2);
     resetOdometryButton.whenPressed(m_resetOdometryCommand);
+
+    JoystickButton xButton = new JoystickButton(m_controller, 3);
+    JoystickButton rightBumper = new JoystickButton(m_controller, 6);
+    rightBumper.whenHeld(new ShooterCommand(m_shooter));
+    xButton.whenHeld(new FeederCommand(m_shooter));
   }
 
   /**
