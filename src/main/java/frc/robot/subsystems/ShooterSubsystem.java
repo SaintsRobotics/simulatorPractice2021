@@ -46,7 +46,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     SmartDashboard.putBoolean("Is Shooter On", m_isShooterOn);
     SmartDashboard.putNumber("Shooter Speed", m_shooter.get());
-    SmartDashboard.putBoolean("Is Feeder On", m_isShooterOn);
+    SmartDashboard.putBoolean("Is Feeder On", m_isFeederOn);
     SmartDashboard.putNumber("Feeder Speed", m_feeder.get());
   }
 
