@@ -33,8 +33,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.commands.*;
-import frc.robot.commands.Shooter.FeederCommand;
-import frc.robot.commands.Shooter.ShooterCommand;
+import frc.robot.commands.shooter.FeederCommand;
+import frc.robot.commands.shooter.ShooterCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
