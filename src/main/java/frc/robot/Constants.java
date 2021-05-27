@@ -43,11 +43,15 @@ public final class Constants {
     public final class Shooter {
         public static final int LEFT_SHOOTER_PORT = 16;
         public static final int RIGHT_SHOOTER_PORT = 17;
+
+        public static final double SHOOTER_SPEED = 0.93;
+    }
+
+    public final class Feeder {
         public static final int KICKER_PORT = 26;
         public static final int WHEELS_PORT = 27;
 
-        public static final double SHOOTER_SPEED = 0.93;
-		public static final double FEEDER_SPEED = 1;
+        public static final double FEEDER_SPEED = 1;
     }
 
     public final class SwerveConstants {

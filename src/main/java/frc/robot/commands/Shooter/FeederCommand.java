@@ -5,20 +5,20 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.FeederSubsystem;
 
 public class FeederCommand extends CommandBase {
-  private ShooterSubsystem m_shooter;
+  private FeederSubsystem m_feeder;
 
   /** Creates a new FeederCommand. */
-  public FeederCommand(ShooterSubsystem shooter) {
-    m_shooter = shooter;
-    addRequirements(m_shooter);
+  public FeederCommand(FeederSubsystem feeder) {
+    m_feeder = feeder;
+    addRequirements(m_feeder);
   }
 
   @Override
   public void initialize() {
-    m_shooter.turnOnFeeder();
+    m_feeder.turnOnFeeder();
   }
 
   @Override
@@ -27,7 +27,7 @@ public class FeederCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    m_shooter.turnOffFeeder();
+    m_feeder.turnOffFeeder();
   }
 
   @Override
