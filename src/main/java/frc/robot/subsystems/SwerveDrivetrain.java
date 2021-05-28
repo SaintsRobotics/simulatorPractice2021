@@ -129,13 +129,13 @@ public class SwerveDrivetrain extends SubsystemBase {
                 //m_rotationPID = new PIDController(Math.toRadians((SwerveConstants.MAX_METERS_PER_SECOND / 180) * 5), 0,
                                 //0);
                 m_rotationPID = new PIDController(0.05, 0, 0);
-                m_rotationPID.enableContinuousInput(0, Math.PI * 2);
+                m_rotationPID.enableContinuousInput(-Math.PI, Math.PI);
                 m_rotationPID.setTolerance(1 / 36); // if off by a lil bit, then dont do anything (is in radians)
 
                 m_gyro = new AHRS();
                 m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
 
-                m_desiredHeading = m_gyro.getAngle() * (Math.PI/180);
+                m_desiredHeading = 0;
         }
 
         public SwerveDriveKinematics getKinematics() {
@@ -153,6 +153,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_ySpeed = ySpeed;
                 m_rotationSpeed = rotationSpeed;
                 m_isFieldRelative = isFieldRelative;
+                //is rotationSpeed) !isTurning
 
                 SmartDashboard.putNumber("X Speed", m_xSpeed);
                 SmartDashboard.putNumber("Y Speed", m_ySpeed);
@@ -178,7 +179,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 time++;
                 ChassisSpeeds desiredSpeed;
 
-                if(Utils.deadZones(m_rotationSpeed, 0.05) != 0) {
+                if(m_rotationSpeed != 0) {
                         isTurning = true;
                         m_desiredHeading = m_gyro.getAngle() * Math.PI / 180;
                 } else {
@@ -187,6 +188,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                         m_rotationSpeed = m_rotationPID.calculate(m_gyro.getAngle()*Math.PI/180);
 
                 }
+                SmartDashboard.putNumber("rotation speed", m_rotationSpeed);
                                
                 
                 
@@ -252,6 +254,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putBoolean("Is it turning", isTurning);
                 SmartDashboard.putNumber("Gyro angle in degrees", m_gyro.getAngle());
                 SmartDashboard.putNumber("The desired angle", m_desiredHeading * (180 / Math.PI));
+                SmartDashboard.putNumber("Angular Offset", m_rotationPID.getPositionError());
 
         }
 
