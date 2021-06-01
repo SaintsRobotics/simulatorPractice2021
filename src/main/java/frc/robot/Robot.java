@@ -66,15 +66,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-
+    // new FieldRelativeMoveCommand(m_robotContainer.swerveDrivetrain).schedule();
     if (Robot.isSimulation()) {
       m_robotContainer.swerveDrivetrain.move(0, 0, 0, false);
     }
-
+    // new StopCommand(m_robotContainer.swerveDrivetrain).schedule();
   }
 
   @Override
   public void disabledPeriodic() {
+
   }
 
   /**
@@ -119,7 +120,6 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
-
   }
 
   /**

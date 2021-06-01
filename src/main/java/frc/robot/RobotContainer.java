@@ -28,17 +28,10 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.FieldRelativeMoveCommand;
-import frc.robot.commands.GoToPositionCommand;
-import frc.robot.commands.MoveDirectionCommand;
-import frc.robot.commands.ResetGyroCommand;
-import frc.robot.commands.ResetOdometryCommand;
-import frc.robot.commands.SwerveJoystickCommand;
-import frc.robot.commands.TurnToHeadingCommand;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.commands.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -52,10 +45,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...the ones button
   // bound/fundamental
   public SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
-  public SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
+  private SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
   public ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
   public ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
-  private String trajectoryJSON = "output/NoamRedPath.wpilib.json";
+  private String trajectoryJSON = "output/FirstOne.wpilib.json"; // change this to path following json
   private Trajectory trajectory = new Trajectory();
   private XboxController m_controller = new XboxController(0);
 
@@ -88,10 +81,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-
-    // return new TurnToHeadingCommand(swerveDrivetrain).withRotation(30);
-    return pathFollowCommand();
-
+    return new FieldRelativeMoveCommand(swerveDrivetrain).withX(3).withY(3).withHeading(Math.PI);
   }
 
   public Command getTeleCommand() {

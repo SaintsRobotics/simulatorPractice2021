@@ -1,11 +1,3 @@
-/*---------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
-
 /* ideas for default to current pos
     1. use boolean flags when "with" commands are called combined with if statements in initialize
          (might use two arrays to keep things neat instead of having like 6 variables)
@@ -21,8 +13,8 @@ package frc.robot.commands;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 /**
-* Turns robot to field relative heading
-*/
+ * Turns robot to field relative heading
+ */
 public class TurnToHeadingCommand extends GoToPositionCommand {
     /**
      * Constructs the command.
@@ -39,15 +31,8 @@ public class TurnToHeadingCommand extends GoToPositionCommand {
      * @param targetHeading the desired heading (a value in radians)
      * @return returning the object allows for method chaining.
      */
-    public TurnToHeadingCommand withHeading (double targetHeading){
+    public TurnToHeadingCommand withHeading(double targetHeading) {
         m_targetRotation = targetHeading;
         return this;
     }
-    
-
 }
-
- 
- 
-
-    
