@@ -21,7 +21,7 @@ import frc.robot.Constants.SwerveConstants;
 /**
  * Add your docs here.
  */
-public class SwerveWheel {
+public class SwerveWheel implements AutoCloseable {
     private CANSparkMax m_driveMotor;
     private CANSparkMax m_turningMotor;
     private Translation2d m_location;
@@ -70,5 +70,14 @@ public class SwerveWheel {
         m_state.speedMetersPerSecond = speed;
         m_driveMotor.set(speed / SwerveConstants.MAX_METERS_PER_SECOND);
         m_turningMotor.set(0);
+    }
+
+    @Override
+    public void close() throws Exception {
+        // TODO Auto-generated method stub
+        m_driveMotor.close();
+        m_turningEncoder.close();
+        m_turningMotor.close();
+        m_turningPIDController.close();
     }
 }

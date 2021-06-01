@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  * Add your docs here.
  */
-public class AbsoluteEncoder {
+public class AbsoluteEncoder implements AutoCloseable {
     private AnalogInput analogIn;
     private AnalogInputSim analogInSim;
     private boolean isInverted;
@@ -91,17 +91,22 @@ public class AbsoluteEncoder {
 
     /**
      * 
-     * @return the position of the as a Rotation2d. zero points toward the front
-     *         of the bot. the value increases as the swerve wheel is turned
-     *         clockwise.
+     * @return the position of the as a Rotation2d. zero points toward the front of
+     *         the bot. the value increases as the swerve wheel is turned clockwise.
      */
-    
+
     public Rotation2d getAngle() {
         if (isInverted) {
 
-            return new Rotation2d((5 - analogIn.getVoltage() ) * voltageToRadians - m_offset);
+            return new Rotation2d((5 - analogIn.getVoltage()) * voltageToRadians - m_offset);
         }
 
-        return new Rotation2d((analogIn.getVoltage() ) * voltageToRadians - m_offset);
+        return new Rotation2d((analogIn.getVoltage()) * voltageToRadians - m_offset);
+    }
+
+    @Override
+    public void close() throws Exception {
+        // TODO Auto-generated method stub
+        analogIn.close();
     }
 }

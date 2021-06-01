@@ -32,7 +32,7 @@ import frc.robot.Utils;
 import frc.robot.Constants.SwervePorts;
 import frc.robot.Constants.SwerveConstants;
 
-public class SwerveDrivetrain extends SubsystemBase {
+public class SwerveDrivetrain extends SubsystemBase implements AutoCloseable {
 
         private CANSparkMax m_frontLeftDriveMotor;
         private CANSparkMax m_frontRightDriveMotor;
@@ -263,6 +263,26 @@ public class SwerveDrivetrain extends SubsystemBase {
 
         public void resetOdometry(Pose2d position, Rotation2d angle) {
                 m_odometry.resetPosition(position, angle);
+        }
+
+        @Override
+        public void close() throws Exception {
+                // TODO Auto-generated method stub
+                m_frontLeftDriveMotor.close();
+                m_frontLeftTurningMotor.close();
+                m_frontLeftTurningEncoder.close();
+                m_frontLeftSwerveWheel.close();
+
+                m_frontRightSwerveWheel.close();
+                m_backLeftSwerveWheel.close();
+                m_backRightTurningMotor.close();
+                m_gyro.close();
+                m_rotationPID.close();
+
+        }
+
+        public double getGyroAngle() {
+                return m_gyro.getYaw();
         }
 
 }
