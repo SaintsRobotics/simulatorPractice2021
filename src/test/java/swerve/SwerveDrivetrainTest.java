@@ -25,10 +25,17 @@ public class SwerveDrivetrainTest {
         drivetrain.close();
     }
 
-    // @Test
-    // public void startGyroisZero() {
-    // assertEquals(drivetrain.getGyroAngle(), 0.0, DELTA);
-    // }
+    @Test
+    public void startGyroisZero() {
+        assertEquals(drivetrain.getGyroAngle(), 0.0, DELTA);
+    }
+
+    @Test
+    public void startOdometryisZero() {
+        assertEquals(0.0, drivetrain.getCurrentPosition().getX(), DELTA);
+        assertEquals(0.0, drivetrain.getCurrentPosition().getY(), DELTA);
+        assertEquals(0.0, drivetrain.getCurrentPosition().getRotation().getDegrees(), DELTA);
+    }
 
     @Test
     public void unitTestTest2() {

@@ -268,14 +268,11 @@ public class SwerveDrivetrain extends SubsystemBase implements AutoCloseable {
         @Override
         public void close() throws Exception {
                 // TODO Auto-generated method stub
-                m_frontLeftDriveMotor.close();
-                m_frontLeftTurningMotor.close();
-                m_frontLeftTurningEncoder.close();
-                m_frontLeftSwerveWheel.close();
 
+                m_frontLeftSwerveWheel.close();
                 m_frontRightSwerveWheel.close();
                 m_backLeftSwerveWheel.close();
-                m_backRightTurningMotor.close();
+                m_backRightSwerveWheel.close();
                 m_gyro.close();
                 m_rotationPID.close();
 
