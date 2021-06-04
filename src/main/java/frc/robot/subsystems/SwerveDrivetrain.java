@@ -99,7 +99,6 @@ public class SwerveDrivetrain extends SubsystemBase {
                                 MotorType.kBrushless);
                 m_backRightTurningMotor.setIdleMode(IdleMode.kCoast);
 
-
                 m_frontLeftDriveMotor.setInverted(true);
                 m_backLeftDriveMotor.setInverted(true);
 
@@ -115,8 +114,9 @@ public class SwerveDrivetrain extends SubsystemBase {
                 // Robot is facing towards positive x direction
                 m_frontLeftSwerveWheel = new SwerveWheel("frontleft", m_frontLeftDriveMotor, m_frontLeftTurningMotor,
                                 SwerveConstants.SWERVE_X, SwerveConstants.SWERVE_Y, m_frontLeftTurningEncoder);
-                m_frontRightSwerveWheel = new SwerveWheel("frontright", m_frontRightDriveMotor, m_frontRightTurningMotor,
-                                SwerveConstants.SWERVE_X, -SwerveConstants.SWERVE_Y, m_frontRightTurningEncoder);
+                m_frontRightSwerveWheel = new SwerveWheel("frontright", m_frontRightDriveMotor,
+                                m_frontRightTurningMotor, SwerveConstants.SWERVE_X, -SwerveConstants.SWERVE_Y,
+                                m_frontRightTurningEncoder);
                 m_backLeftSwerveWheel = new SwerveWheel("backleft", m_backLeftDriveMotor, m_backLeftTurningMotor,
                                 -SwerveConstants.SWERVE_X, SwerveConstants.SWERVE_Y, m_backLeftTurningEncoder);
                 m_backRightSwerveWheel = new SwerveWheel("backright", m_backRightDriveMotor, m_backRightTurningMotor,
@@ -126,8 +126,10 @@ public class SwerveDrivetrain extends SubsystemBase {
                                 m_frontRightSwerveWheel.getLocation(), m_backLeftSwerveWheel.getLocation(),
                                 m_backRightSwerveWheel.getLocation());
 
-                //m_rotationPID = new PIDController(Math.toRadians((SwerveConstants.MAX_METERS_PER_SECOND / 180) * 5), 0,
-                                //0);
+                // m_rotationPID = new
+                // PIDController(Math.toRadians((SwerveConstants.MAX_METERS_PER_SECOND / 180) *
+                // 5), 0,
+                // 0);
                 m_rotationPID = new PIDController(0.05, 0, 0);
                 m_rotationPID.enableContinuousInput(-Math.PI, Math.PI);
                 m_rotationPID.setTolerance(1 / 36); // if off by a lil bit, then dont do anything (is in radians)
@@ -153,7 +155,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_ySpeed = ySpeed;
                 m_rotationSpeed = rotationSpeed;
                 m_isFieldRelative = isFieldRelative;
-                //is rotationSpeed) !isTurning
+                isTurning = (m_rotationSpeed != 0);
 
                 SmartDashboard.putNumber("X Speed", m_xSpeed);
                 SmartDashboard.putNumber("Y Speed", m_ySpeed);
@@ -179,24 +181,20 @@ public class SwerveDrivetrain extends SubsystemBase {
                 time++;
                 ChassisSpeeds desiredSpeed;
 
-                if(m_rotationSpeed != 0) {
-                        isTurning = true;
-                        m_desiredHeading = m_gyro.getAngle() * Math.PI / 180;
+                if (isTurning) {
+                        m_desiredHeading = gyroAngle * Math.PI / 180;
                 } else {
-                        isTurning = false;
                         m_rotationPID.setSetpoint(m_desiredHeading);
-                        m_rotationSpeed = m_rotationPID.calculate(m_gyro.getAngle()*Math.PI/180);
+                        m_rotationSpeed = -m_rotationPID.calculate(gyroAngle * Math.PI / 180);
 
                 }
-                SmartDashboard.putNumber("rotation speed", m_rotationSpeed);
-                               
-                
-                
+                SmartDashboard.putNumber("rotation Speed", m_rotationSpeed);
+
                 // convert to robot relative if in field relative
                 if (this.m_isFieldRelative) {
                         desiredSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed,
                                         Rotation2d.fromDegrees(-gyroAngle));
-                        
+
                 } else {
                         desiredSpeed = new ChassisSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed);
 
@@ -204,16 +202,18 @@ public class SwerveDrivetrain extends SubsystemBase {
 
                 prevSpeed = desiredSpeed;
 
-                //boolean isTurning = 
-                
+                // boolean isTurning =
+
                 //
 
                 SwerveModuleState[] desiredSwerveModuleStates = m_kinematics.toSwerveModuleStates(desiredSpeed);
-                
-                // If the robot is real, adds friction coefficient * max wheel speed to account for friction
-                if(Robot.isReal()){
-                        for (SwerveModuleState swerveModule: desiredSwerveModuleStates){
-                                swerveModule.speedMetersPerSecond += (SwerveConstants.TRANSLATIONAL_FRICTION*SwerveConstants.MAX_METERS_PER_SECOND);
+
+                // If the robot is real, adds friction coefficient * max wheel speed to account
+                // for friction
+                if (Robot.isReal()) {
+                        for (SwerveModuleState swerveModule : desiredSwerveModuleStates) {
+                                swerveModule.speedMetersPerSecond += (SwerveConstants.TRANSLATIONAL_FRICTION
+                                                * SwerveConstants.MAX_METERS_PER_SECOND);
                         }
                 }
 
@@ -238,8 +238,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 double m_degreesSinceLastTick = m_degreeRotationSpeed * Robot.kDefaultPeriod;
 
                 printSimulatedGyro(m_gyro.getYaw() + m_degreesSinceLastTick + m_gyroOffset);
-                
-                
+
                 SmartDashboard.putNumber("OdometryX", m_odometry.getPoseMeters().getX());
                 SmartDashboard.putNumber("OdometryY", m_odometry.getPoseMeters().getY());
                 SmartDashboard.putNumber("Odometryrot", m_odometry.getPoseMeters().getRotation().getDegrees());
@@ -252,7 +251,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                                 m_backRightTurningEncoder.getAngle().getRadians());
                 SmartDashboard.putNumber("Gyro Heading", m_gyro.getYaw());
                 SmartDashboard.putBoolean("Is it turning", isTurning);
-                SmartDashboard.putNumber("Gyro angle in degrees", m_gyro.getAngle());
+                SmartDashboard.putNumber("Gyro angle in degrees", gyroAngle);
                 SmartDashboard.putNumber("The desired angle", m_desiredHeading * (180 / Math.PI));
                 SmartDashboard.putNumber("Angular Offset", m_rotationPID.getPositionError());
 
