@@ -169,7 +169,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 
         @Override
         public void periodic() {
-                double gyroAngle = m_gyro.getYaw();
+                double gyroAngle = m_gyro.getAngle();
                 if (time > 10) {
 
                         m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(),
@@ -185,15 +185,15 @@ public class SwerveDrivetrain extends SubsystemBase {
                         m_desiredHeading = gyroAngle * Math.PI / 180;
                 } else {
                         m_rotationPID.setSetpoint(m_desiredHeading);
-                        m_rotationSpeed = -m_rotationPID.calculate(gyroAngle * Math.PI / 180);
+                        m_rotationSpeed = m_rotationPID.calculate(gyroAngle * Math.PI / 180);
 
                 }
-                SmartDashboard.putNumber("rotation Speed", m_rotationSpeed);
+                SmartDashboard.putNumber("rotation Speed", Math.toDegrees(m_rotationSpeed));
 
                 // convert to robot relative if in field relative
                 if (this.m_isFieldRelative) {
                         desiredSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed,
-                                        Rotation2d.fromDegrees(-gyroAngle));
+                                        Rotation2d.fromDegrees(gyroAngle));
 
                 } else {
                         desiredSpeed = new ChassisSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed);
