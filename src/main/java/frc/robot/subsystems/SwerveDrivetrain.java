@@ -130,7 +130,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 // PIDController(Math.toRadians((SwerveConstants.MAX_METERS_PER_SECOND / 180) *
                 // 5), 0,
                 // 0);
-                m_rotationPID = new PIDController(0.05, 0, 0);
+                m_rotationPID = new PIDController(1, 0, 0);
                 m_rotationPID.enableContinuousInput(-Math.PI, Math.PI);
                 m_rotationPID.setTolerance(1 / 36); // if off by a lil bit, then dont do anything (is in radians)
 
@@ -183,10 +183,9 @@ public class SwerveDrivetrain extends SubsystemBase {
 
                 if (isTurning) {
                         m_desiredHeading = gyroAngle * Math.PI / 180;
-                } else {
                         m_rotationPID.setSetpoint(m_desiredHeading);
+                } else if (m_xSpeed != 0|| m_ySpeed != 0){
                         m_rotationSpeed = m_rotationPID.calculate(gyroAngle * Math.PI / 180);
-
                 }
                 SmartDashboard.putNumber("rotation Speed", Math.toDegrees(m_rotationSpeed));
 
