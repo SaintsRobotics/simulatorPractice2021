@@ -4,10 +4,10 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonSRXSimCollection;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.VictorSPXSimCollection;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,9 +18,9 @@ public class Intake extends SubsystemBase {
 
   // private WPI_TalonSRX m_armController;
   // private WPI_TalonSRX m_intakeController;
-  private TalonSRX intakeController;
-  private TalonSRX armController;
-  private TalonSRXSimCollection intakeSim;
+  private VictorSPX intakeController;
+  private VictorSPX armController;
+  private VictorSPXSimCollection intakeSim;
   private double desiredSpeed;
 
   // HardwareMap map = new HardwareMap();
@@ -47,13 +47,13 @@ public class Intake extends SubsystemBase {
   }
 
   public void arm(double speed) {
-    armController.set(TalonSRXControlMode.PercentOutput, speed);
+    armController.set(VictorSPXControlMode.PercentOutput, speed);
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Intake MotorSpeed", desiredSpeed);
-    intakeController.set(TalonSRXControlMode.PercentOutput, desiredSpeed);
+    intakeController.set(VictorSPXControlMode.PercentOutput, desiredSpeed);
   }
 
 }
