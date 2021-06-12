@@ -57,15 +57,16 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...the ones button
   // bound/fundamental
+  private HardwareMap hardwareMap = new HardwareMap();
   public SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
   private SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
   public ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
   public ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
-  private String trajectoryJSON = "output/FirstOne.wpilib.json"; //change this to path following json
+  private String trajectoryJSON = "output/FirstOne.wpilib.json"; // change this to path following json
   private Trajectory trajectory = new Trajectory();
   private XboxController m_controller = new XboxController(0);
   private XboxController m_operatorController = new XboxController(1);
-  private Intake m_intakeSubsystem = new Intake();
+  private Intake m_intakeSubsystem = new Intake(hardwareMap);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -74,8 +75,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     swerveDrivetrain.setDefaultCommand(swerveJoystickCommand);
-    m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem));
-    
+
   }
 
   /**
@@ -91,12 +91,11 @@ public class RobotContainer {
     JoystickButton resetOdometryButton = new JoystickButton(m_controller, 2);
     resetOdometryButton.whenPressed(m_resetOdometryCommand);
 
-    JoystickButton runIntakeXButton = new JoystickButton(m_controller, 3);
-    runIntakeXButton.whileHeld(new IntakeCommand(m_intakeSubsystem)); //X Button
+    JoystickButton runIntakeXButton = new JoystickButton(m_operatorController, 3);
+    runIntakeXButton.whileHeld(new IntakeCommand(m_intakeSubsystem)); // X Button
 
     JoystickButton runOuttakeYButton = new JoystickButton(m_operatorController, 4);
-    runOuttakeYButton.whileHeld(new OuttakeCommand(m_intakeSubsystem)); //Y Button
-
+    runOuttakeYButton.whileHeld(new OuttakeCommand(m_intakeSubsystem)); // Y Button
 
   }
 
@@ -107,10 +106,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
-    //return new TurnToHeadingCommand(swerveDrivetrain).withRotation(30);
-    //return new TurnToHeadingCommand(swerveDrivetrain).withHeading(Math.PI/2);
-    //return pathFollowCommand().andThen(new StopCommand(swerveDrivetrain));
-    return new MoveOneMeterCommand(swerveDrivetrain);    
+    // return new TurnToHeadingCommand(swerveDrivetrain).withRotation(30);
+    // return new TurnToHeadingCommand(swerveDrivetrain).withHeading(Math.PI/2);
+    // return pathFollowCommand().andThen(new StopCommand(swerveDrivetrain));
+    return new MoveOneMeterCommand(swerveDrivetrain);
   }
 
   public Command getTeleCommand() {

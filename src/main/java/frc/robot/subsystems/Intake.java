@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonSRXSimCollection;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Talon;
@@ -13,37 +16,44 @@ import frc.robot.HardwareMap;
 
 public class Intake extends SubsystemBase {
 
-  //private WPI_TalonSRX m_armController;  
-  //private WPI_TalonSRX m_intakeController;  
-  private WPI_TalonSRX intakeController;
-  private WPI_TalonSRX armController;
-  //HardwareMap map = new HardwareMap();
+  // private WPI_TalonSRX m_armController;
+  // private WPI_TalonSRX m_intakeController;
+  private TalonSRX intakeController;
+  private TalonSRX armController;
+  private TalonSRXSimCollection intakeSim;
+  private double desiredSpeed;
+
+  // HardwareMap map = new HardwareMap();
 
   /** Creates a new Intake. */
-  public Intake() {
-    intakeController = new WPI_TalonSRX(25);
-    armController = new WPI_TalonSRX(24);
+  public Intake(HardwareMap hardwareMap) {
+    intakeController = hardwareMap.intakeController;
+    armController = hardwareMap.armController;
+    intakeSim = intakeController.getSimCollection();
+    desiredSpeed = 0;
   }
 
   public void intake() {
-    intakeController.set(0.5);
+    desiredSpeed = 0.5;
+
   }
 
   public void outtake() {
-    intakeController.set(-0.5);
+    desiredSpeed = -0.5;
   }
 
   public void stopIntake() {
-    intakeController.set(0);
+    desiredSpeed = 0;
   }
 
   public void arm(double speed) {
-    armController.set(speed);
+    armController.set(TalonSRXControlMode.PercentOutput, speed);
   }
 
   @Override
-  public void periodic(){
-    SmartDashboard.putNumber("Intake Motor", intakeController.get());
+  public void periodic() {
+    SmartDashboard.putNumber("Intake MotorSpeed", desiredSpeed);
+    intakeController.set(TalonSRXControlMode.PercentOutput, desiredSpeed);
   }
 
 }
