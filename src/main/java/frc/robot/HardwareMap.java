@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj.XboxController;
 
 public class HardwareMap {
 
-    public static WPI_TalonSRX intakeController;
-    public static WPI_TalonSRX armController;
-    public static XboxController operatorJoystick; 
+    public WPI_TalonSRX intakeController;
+    public WPI_TalonSRX armController;
+    public XboxController operatorJoystick; 
 
     public HardwareMap() {
         //add a port for operatorJoystick

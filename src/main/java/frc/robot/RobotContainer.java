@@ -10,6 +10,7 @@ package frc.robot;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -33,13 +34,16 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.commands.GoToPositionCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveDirectionCommand;
 import frc.robot.commands.MoveOneMeterCommand;
+import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetOdometryCommand;
 import frc.robot.commands.StopCommand;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.commands.TurnToHeadingCommand;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 /**
@@ -60,6 +64,8 @@ public class RobotContainer {
   private String trajectoryJSON = "output/FirstOne.wpilib.json"; //change this to path following json
   private Trajectory trajectory = new Trajectory();
   private XboxController m_controller = new XboxController(0);
+  private XboxController m_operatorController = new XboxController(1);
+  private Intake m_intakeSubsystem = new Intake();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -68,6 +74,8 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     swerveDrivetrain.setDefaultCommand(swerveJoystickCommand);
+    m_intakeSubsystem.setDefaultCommand(new IntakeCommand(m_intakeSubsystem));
+    
   }
 
   /**
@@ -82,6 +90,14 @@ public class RobotContainer {
 
     JoystickButton resetOdometryButton = new JoystickButton(m_controller, 2);
     resetOdometryButton.whenPressed(m_resetOdometryCommand);
+
+    JoystickButton runIntakeXButton = new JoystickButton(m_controller, 3);
+    runIntakeXButton.whileHeld(new IntakeCommand(m_intakeSubsystem)); //X Button
+
+    JoystickButton runOuttakeYButton = new JoystickButton(m_operatorController, 4);
+    runOuttakeYButton.whileHeld(new OuttakeCommand(m_intakeSubsystem)); //Y Button
+
+
   }
 
   /**
