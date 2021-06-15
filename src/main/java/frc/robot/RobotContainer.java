@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.MoveArmCommand;
 import frc.robot.commands.MoveOneMeterCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ResetGyroCommand;
@@ -53,6 +54,8 @@ public class RobotContainer {
   private XboxController m_driverController = new XboxController(0);
   private XboxController m_operatorController = new XboxController(1);
   private Intake m_intakeSubsystem = new Intake(hardwareMap);
+  private MoveArmCommand m_moveArmCommand = new MoveArmCommand(m_operatorController, m_intakeSubsystem);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -61,7 +64,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     swerveDrivetrain.setDefaultCommand(swerveJoystickCommand);
-
+    m_intakeSubsystem.setDefaultCommand(m_moveArmCommand);
   }
 
   /**
