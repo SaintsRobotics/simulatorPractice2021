@@ -95,8 +95,8 @@ public class SwerveDrivetrain extends SubsystemBase {
                                 MotorType.kBrushless);
                 m_backRightTurningMotor.setIdleMode(IdleMode.kCoast);
 
-                m_frontLeftDriveMotor.setInverted(true);
-                m_backLeftDriveMotor.setInverted(true);
+                //m_frontLeftDriveMotor.setInverted(true);
+                //m_backLeftDriveMotor.setInverted(true);
 
                 m_frontLeftTurningEncoder = new AbsoluteEncoder(SwervePorts.FRONT_LEFT_TURNING_ENCODER_PORT, true,
                                 SwerveConstants.FRONT_LEFT_ROTATION_OFFSET);

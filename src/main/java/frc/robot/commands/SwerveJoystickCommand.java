@@ -46,7 +46,7 @@ public class SwerveJoystickCommand extends CommandBase {
     double rot = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kRight), 0.2))
         * SwerveConstants.MAX_RADIANS_PER_SECOND*0.2;
 
-    m_drivetrain.move(x, y, rot, m_controller.getBumper(Hand.kRight));
+    m_drivetrain.move(-x, y, rot, m_controller.getBumper(Hand.kRight));
   }
 
   // Called once the command ends or is interrupted.

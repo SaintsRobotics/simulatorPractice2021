@@ -44,7 +44,7 @@ public class Intake extends SubsystemBase {
     desiredSpeed = 0;
   }
 
-  public void arm(double speed) {
+  public void moveArm(double speed) {
     armController.set(VictorSPXControlMode.PercentOutput, speed);
   }
 
