@@ -153,6 +153,20 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_isFieldRelative = isFieldRelative;
                 isTurning = (m_rotationSpeed != 0);
 
+                // scales m_xSpeed and m_ySpeed such that the net speed is equal to
+                // MAX_METERS_PER_SECOND (only if the net speed is above MAX_METERS_PER_SECOND)
+                double m_netSpeed = Math.sqrt((m_xSpeed * m_xSpeed) + (m_ySpeed * m_ySpeed));
+                if (m_netSpeed > SwerveConstants.MAX_METERS_PER_SECOND) {
+
+                        // the scale factor will always be less than one
+                        double m_scaleFactor = SwerveConstants.MAX_METERS_PER_SECOND / m_netSpeed;
+                        m_xSpeed *= m_scaleFactor;
+                        m_ySpeed *= m_scaleFactor;
+                }
+
+                if (m_rotationSpeed > SwerveConstants.MAX_RADIANS_PER_SECOND) {
+                        m_rotationSpeed = SwerveConstants.MAX_RADIANS_PER_SECOND;
+                }
                 SmartDashboard.putNumber("X Speed", m_xSpeed);
                 SmartDashboard.putNumber("Y Speed", m_ySpeed);
                 SmartDashboard.putNumber("Rotation Speed", m_rotationSpeed);
@@ -177,6 +191,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 time++;
                 ChassisSpeeds desiredSpeed;
 
+
                 if (isTurning) {
                         m_desiredHeading = gyroAngle * Math.PI / 180;
                         m_rotationPID.setSetpoint(m_desiredHeading);
@@ -184,6 +199,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                         m_rotationSpeed = m_rotationPID.calculate(gyroAngle * Math.PI / 180);
                 }
                 SmartDashboard.putNumber("rotation Speed", Math.toDegrees(m_rotationSpeed));
+
 
                 // convert to robot relative if in field relative
                 if (this.m_isFieldRelative) {

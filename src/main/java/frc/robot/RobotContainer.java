@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveArmCommand;
 import frc.robot.commands.MoveOneMeterCommand;
@@ -31,7 +32,9 @@ import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetOdometryCommand;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.Intake;
+
 import frc.robot.subsystems.SwerveDrivetrain;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -94,10 +97,14 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
+
     // return new TurnToHeadingCommand(swerveDrivetrain).withRotation(30);
     // return new TurnToHeadingCommand(swerveDrivetrain).withHeading(Math.PI/2);
     // return pathFollowCommand().andThen(new StopCommand(swerveDrivetrain));
-    return new MoveOneMeterCommand(swerveDrivetrain);
+    //return new MoveOneMeterCommand(swerveDrivetrain);
+
+    return new FieldRelativeMoveCommand(swerveDrivetrain).withX(3).withY(3).withHeading(Math.PI);
+
   }
 
   public Command getTeleCommand() {
