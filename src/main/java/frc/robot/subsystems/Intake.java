@@ -14,13 +14,10 @@ import frc.robot.HardwareMap;
 
 public class Intake extends SubsystemBase {
 
-  // private WPI_TalonSRX m_armController;
-  // private WPI_TalonSRX m_intakeController;
   private VictorSPX intakeController;
   private VictorSPX armController;
   private double desiredSpeed;
 
-  // HardwareMap map = new HardwareMap();
 
   /** Creates a new Intake. */
   public Intake(HardwareMap hardwareMap) {
