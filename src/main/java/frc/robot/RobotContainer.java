@@ -31,6 +31,7 @@ import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetOdometryCommand;
 import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.subsystems.Intake;
 
 import frc.robot.subsystems.SwerveDrivetrain;
