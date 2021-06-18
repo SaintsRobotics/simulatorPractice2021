@@ -18,7 +18,6 @@ public class Intake extends SubsystemBase {
   // private WPI_TalonSRX m_intakeController;
   private VictorSPX intakeController;
   private VictorSPX armController;
-  private VictorSPXSimCollection intakeSim;
   private double desiredSpeed;
 
   // HardwareMap map = new HardwareMap();
@@ -27,7 +26,6 @@ public class Intake extends SubsystemBase {
   public Intake(HardwareMap hardwareMap) {
     intakeController = hardwareMap.intakeController;
     armController = hardwareMap.armController;
-    intakeSim = intakeController.getSimCollection();
     desiredSpeed = 0;
   }
 
