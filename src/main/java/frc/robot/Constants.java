@@ -19,7 +19,8 @@ package frc.robot;
  */
 public final class Constants {
     public static final double defaultNull = Double.MIN_VALUE;
-
+    public static final double intakeSpeed = 0.5;
+    
     public final class SwervePorts {
         public static final int FRONT_LEFT_DRIVE_MOTOR_PORT = 8;
         public static final int FRONT_LEFT_TURNING_MOTOR_PORT = 1;
