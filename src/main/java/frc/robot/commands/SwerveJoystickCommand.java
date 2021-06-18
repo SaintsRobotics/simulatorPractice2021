@@ -22,15 +22,24 @@ public class SwerveJoystickCommand extends CommandBase {
   }
 
   @Override
-  public void execute() {
-    double x = Utils.oddSquare(Utils.deadZones(-m_controller.getY(Hand.kLeft), 0.2))
-        * SwerveConstants.MAX_METERS_PER_SECOND;
-    double y = Utils.oddSquare(Utils.deadZones(-m_controller.getX(Hand.kLeft), 0.2))
-        * SwerveConstants.MAX_METERS_PER_SECOND;
-    double rotation = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kRight), 0.2))
-        * SwerveConstants.MAX_RADIANS_PER_SECOND;
 
-    m_drivetrain.move(x, y, rotation, m_controller.getBumper(Hand.kRight));
+  public void initialize() {
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() { // if dont apply deadzone, then relation between joystick/speed is linear and no
+                          // deadzones, we need these
+    double x = Utils.oddSquare(Utils.deadZones(m_controller.getY(Hand.kLeft), 0.2))
+        * SwerveConstants.MAX_METERS_PER_SECOND*0.2; // apply functions to controller values to 1) check deadzone 2) apply
+    // quadratic relation between controller/speed
+    double y = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kLeft), 0.2))
+        * SwerveConstants.MAX_METERS_PER_SECOND*0.2;
+    double rot = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kRight), 0.2))
+        * SwerveConstants.MAX_RADIANS_PER_SECOND*0.2;
+
+    m_drivetrain.move(-x, y, rot, m_controller.getBumper(Hand.kRight));
+
   }
 
   @Override

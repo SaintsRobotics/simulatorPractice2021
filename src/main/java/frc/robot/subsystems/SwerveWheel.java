@@ -10,13 +10,12 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.AbsoluteEncoder;
-import frc.robot.Robot;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Robot;
 
 /**
  * Add your docs here.
@@ -28,14 +27,17 @@ public class SwerveWheel {
     private PIDController m_turningPIDController;
     private AbsoluteEncoder m_turningEncoder;
     private SwerveModuleState m_state;
+    private String m_name;
 
-    public SwerveWheel(CANSparkMax driveMotor, CANSparkMax turningMotor, double x, double y, AbsoluteEncoder encoder) {
+    public SwerveWheel(String name, CANSparkMax driveMotor, CANSparkMax turningMotor, double x, double y, AbsoluteEncoder encoder) {
         m_driveMotor = driveMotor;
         m_turningMotor = turningMotor;
         m_location = new Translation2d(x, y);
-        m_turningPIDController = new PIDController(.3, 0, 0);
+        m_turningPIDController = new PIDController(0.3, 0, 0);
         m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        m_turningPIDController.setTolerance(Math.PI/18);
         m_turningEncoder = encoder;
+        m_name = name;
         m_state = new SwerveModuleState();
     }
 
@@ -56,6 +58,15 @@ public class SwerveWheel {
         m_driveMotor.set(state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
         m_turningMotor.set(percentVoltage);
         m_state = new SwerveModuleState(state.speedMetersPerSecond, m_turningEncoder.getAngle());
+
+        SmartDashboard.putNumber("Wheel " + m_name + " Voltage", percentVoltage);
+        SmartDashboard.putNumber("Wheel " + m_name + " Current Position", m_turningEncoder.getAngle().getDegrees());
+        SmartDashboard.putNumber("Wheel " + m_name + " Desired Position", state.angle.getDegrees());
+        SmartDashboard.putNumber("Wheel " + m_name + " Error", m_turningPIDController.getPositionError());
+
+
+        
+
     }
 
     public Translation2d getLocation() {
@@ -71,4 +82,5 @@ public class SwerveWheel {
         m_driveMotor.set(speed / SwerveConstants.MAX_METERS_PER_SECOND);
         m_turningMotor.set(0);
     }
+
 }

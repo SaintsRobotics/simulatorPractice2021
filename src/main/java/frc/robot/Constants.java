@@ -19,7 +19,8 @@ package frc.robot;
  */
 public final class Constants {
     public static final double defaultNull = Double.MIN_VALUE;
-
+    public static final double intakeSpeed = 0.5;
+    
     public final class SwervePorts {
         public static final int FRONT_LEFT_DRIVE_MOTOR_PORT = 8;
         public static final int FRONT_LEFT_TURNING_MOTOR_PORT = 1;
@@ -35,8 +36,8 @@ public final class Constants {
 
         public static final int FRONT_LEFT_TURNING_ENCODER_PORT = 0;
         public static final int FRONT_RIGHT_TURNING_ENCODER_PORT = 1;
-        public static final int BACK_LEFT_TURNING_ENCODER_PORT = 2;
-        public static final int BACK_RIGHT_TURNING_ENCODER_PORT = 3;
+        public static final int BACK_LEFT_TURNING_ENCODER_PORT = 3;
+        public static final int BACK_RIGHT_TURNING_ENCODER_PORT = 2;
 
     }
 
@@ -56,10 +57,10 @@ public final class Constants {
 
         public static final double TRANSLATIONAL_FRICTION = 0.0205;
 
-        public static final double FRONT_LEFT_ROTATION_OFFSET = 0;
-        public static final double FRONT_RIGHT_ROTATION_OFFSET = 0;
-        public static final double BACK_LEFT_ROTATION_OFFSET = 0;
-        public static final double BACK_RIGHT_ROTATION_OFFSET = 0;
+        public static final double FRONT_LEFT_ROTATION_OFFSET = 2.75 - (Math.PI/5);
+        public static final double FRONT_RIGHT_ROTATION_OFFSET = 2.573;
+        public static final double BACK_LEFT_ROTATION_OFFSET = -6.091199;
+        public static final double BACK_RIGHT_ROTATION_OFFSET = 3.9;
     }
 
 }
