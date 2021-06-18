@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.HardwareMap;
+import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
 
@@ -27,12 +28,12 @@ public class Intake extends SubsystemBase {
   }
 
   public void intake() {
-    desiredSpeed = 0.5;
+    desiredSpeed = Constants.intakeSpeed;
 
   }
 
   public void outtake() {
-    desiredSpeed = -0.5;
+    desiredSpeed = -Constants.intakeSpeed;
   }
 
   public void stopIntake() {
