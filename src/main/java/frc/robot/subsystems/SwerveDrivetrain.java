@@ -116,11 +116,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_kinematics = new SwerveDriveKinematics(m_frontLeftSwerveWheel.getLocation(),
                                 m_frontRightSwerveWheel.getLocation(), m_backLeftSwerveWheel.getLocation(),
                                 m_backRightSwerveWheel.getLocation());
-
-                // m_rotationPID = new
-                // PIDController(Math.toRadians((SwerveConstants.MAX_METERS_PER_SECOND / 180) *
-                // 5), 0,
-                // 0);
+                
                 m_rotationPID = new PIDController(1, 0, 0);
                 m_rotationPID.enableContinuousInput(-Math.PI, Math.PI);
                 m_rotationPID.setTolerance(1 / 36); // if off by a lil bit, then dont do anything (is in radians)
@@ -186,12 +182,14 @@ public class SwerveDrivetrain extends SubsystemBase {
                 time++;
                 ChassisSpeeds desiredSpeed;
 
-
+                // heading correction code
+                // if bot is turning, update setpoint
+                // if bot is only translating, use the pid to correct heading
                 if (isTurning) {
-                        m_desiredHeading = gyroAngle * Math.PI / 180;
+                        m_desiredHeading = Math.toRadians(gyroAngle);
                         m_rotationPID.setSetpoint(m_desiredHeading);
                 } else if (m_xSpeed != 0|| m_ySpeed != 0){
-                        m_rotationSpeed = m_rotationPID.calculate(gyroAngle * Math.PI / 180);
+                        m_rotationSpeed = m_rotationPID.calculate(Math.toRadians(gyroAngle));
                 }
                 SmartDashboard.putNumber("rotation Speed", Math.toDegrees(m_rotationSpeed));
 
