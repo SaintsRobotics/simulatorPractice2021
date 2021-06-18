@@ -56,7 +56,6 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double m_rotationSpeed;
         private boolean m_isFieldRelative;
         private boolean isTurning = false;
-        private ChassisSpeeds prevSpeed;
         private double currentHeading; // for simulated current gyro reading (yaw)
         private AHRS m_gyro;
         private SwerveDriveOdometry m_odometry;
