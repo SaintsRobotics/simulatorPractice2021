@@ -31,18 +31,20 @@ public class SwerveJoystickCommand extends CommandBase {
   public void execute() { // if dont apply deadzone, then relation between joystick/speed is linear and no
                           // deadzones, we need these
     double x = Utils.oddSquare(Utils.deadZones(m_controller.getY(Hand.kLeft), 0.2))
-        * SwerveConstants.MAX_METERS_PER_SECOND*0.2; // apply functions to controller values to 1) check deadzone 2) apply
+        * SwerveConstants.MAX_METERS_PER_SECOND; // apply functions to controller values to 1) check deadzone 2) apply
     // quadratic relation between controller/speed
     double y = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kLeft), 0.2))
-        * SwerveConstants.MAX_METERS_PER_SECOND*0.2;
+        * SwerveConstants.MAX_METERS_PER_SECOND;
     double rot = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kRight), 0.2))
-        * SwerveConstants.MAX_RADIANS_PER_SECOND*0.2;
+        * SwerveConstants.MAX_RADIANS_PER_SECOND;
 
-    m_drivetrain.move(-x, y, rot, m_controller.getBumper(Hand.kRight));
+    m_drivetrain.move(-x, -y, -rot, m_controller.getBumper(Hand.kRight));
 
   }
 
   @Override
+
+  
   public void end(boolean interrupted) {
     m_drivetrain.move(0, 0, 0, false);
   }

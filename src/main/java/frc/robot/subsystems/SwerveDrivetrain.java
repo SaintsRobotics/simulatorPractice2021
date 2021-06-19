@@ -186,13 +186,16 @@ public class SwerveDrivetrain extends SubsystemBase {
                 // heading correction code
                 // if bot is turning, update setpoint
                 // if bot is only translating, use the pid to correct heading
-                if (isTurning) {
-                        m_desiredHeading = Math.toRadians(gyroAngle);
-                        m_rotationPID.setSetpoint(m_desiredHeading);
-                } else if (m_xSpeed != 0|| m_ySpeed != 0){
-                        m_rotationSpeed = m_rotationPID.calculate(Math.toRadians(gyroAngle));
-                }
-                SmartDashboard.putNumber("rotation Speed", Math.toDegrees(m_rotationSpeed));
+
+                //Reactivate this when direction correction
+
+                // if (isTurning) {
+                //         m_desiredHeading = Math.toRadians(gyroAngle);
+                //         m_rotationPID.setSetpoint(m_desiredHeading);
+                // } else {
+                //         m_rotationSpeed = m_rotationPID.calculate(Math.toRadians(gyroAngle));
+                // }
+                // SmartDashboard.putNumber("rotation Speed", Math.toDegrees(m_rotationSpeed));
 
 
                 // convert to robot relative if in field relative

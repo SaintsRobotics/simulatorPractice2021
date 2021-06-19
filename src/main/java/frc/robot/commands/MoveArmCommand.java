@@ -40,7 +40,7 @@ public class MoveArmCommand extends CommandBase {
   public void execute() {
     //joystickOutput will be between 1 and -1
     double joystickOutput = m_controller.getY(Hand.kLeft);
-    m_intakeSubsystem.moveArm(-joystickOutput);
+    m_intakeSubsystem.moveArm(-0.75*joystickOutput);
     
   }
 
