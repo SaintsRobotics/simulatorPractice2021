@@ -1,9 +1,6 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
 
@@ -12,28 +9,24 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.AnalogInputSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * Add your docs here.
- */
+/** Absolute encoder. */
 public class AbsoluteEncoder {
     private AnalogInput analogIn;
     private AnalogInputSim analogInSim;
     private boolean isInverted;
-
     private double voltageToRadians = Math.PI * 2 / 5;
-
     private double m_offset;
     private int polarity;
 
     /**
      * Construct and absolute encoder, most likely a US Digital MA3 encoder.
      * 
-     * @param channel  analog in (sometimes also refered to as AIO) port on the
-     *                 roboRIO
-     * @param inverted set this to <i>TRUE</i> if physically turning the wheel
+     * @param channel  Analog in (sometimes also refered to as AIO) port on the
+     *                 roboRIO.
+     * @param inverted Set this to <i>TRUE</i> if physically turning the wheel
      *                 <i>CLOCKWISE</i> (looking down on it from the top of the bot)
-     *                 <i>INCREASES</i> the voltage it returns
-     * @param offset   swerve offset (in <i>DEGREES</i>), like we've been using for
+     *                 <i>INCREASES</i> the voltage it returns.
+     * @param offset   Swerve offset (in <i>DEGREES</i>), like we've been using for
      *                 the past three years. This value is <i>SUBTRACTED</i> from
      *                 the output.
      */
@@ -44,17 +37,15 @@ public class AbsoluteEncoder {
         isInverted = inverted;
         m_offset = offset;
         polarity = isInverted ? -1 : 1;
-        
     }
 
     /**
-     * Does some fancy mafs (mathematics) to figure out the value that the simulated
-     * absolute encoder should be at. Read comments in source code below.
+     * Figures out the value that the simulated absolute encoder should be at. Read
+     * comments in source code below.
      * 
-     * @param turnVoltage voltage that will go to the turning motor, range: [-1, 1]
+     * @param turnVoltage Voltage that will go to the turning motor, range: [-1, 1].
      */
     public void sendVoltage(double turnVoltage) {
-
         // gear ratio between motor and wheel / encoder
         double gearRatio = 12.8;
 
@@ -87,22 +78,17 @@ public class AbsoluteEncoder {
         // basically this "hijacks" the simulated absolute encoder to say that it's
         // reading the voltage that u give it, range: [0, 5]
         analogInSim.setVoltage(outputVoltage);
-
     }
 
     /**
      * 
-     * @return the position of the as a Rotation2d. zero points toward the front
-     *         of the bot. the value increases as the swerve wheel is turned
-     *         clockwise.
+     * @return The position of the as a Rotation2d. Zero points toward the front of
+     *         the bot. The value increases as the swerve wheel is turned clockwise.
      */
-    
     public Rotation2d getAngle() {
         if (isInverted) {
-
-            return new Rotation2d((5 - analogIn.getVoltage() ) * voltageToRadians - m_offset);
+            return new Rotation2d((5 - analogIn.getVoltage()) * voltageToRadians - m_offset);
         }
-
-        return new Rotation2d((analogIn.getVoltage() ) * voltageToRadians - m_offset);
+        return new Rotation2d((analogIn.getVoltage()) * voltageToRadians - m_offset);
     }
 }

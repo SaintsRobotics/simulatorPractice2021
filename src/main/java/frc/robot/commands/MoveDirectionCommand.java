@@ -1,18 +1,22 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.commands;
 
 import frc.robot.subsystems.SwerveDrivetrain;
 
 /**
- * Moves the robot a specified distance in a specified field relative direction
+ * Moves the robot a specified distance in a specified field relative direction.
  */
 public class MoveDirectionCommand extends GoToPositionCommand {
     private double m_direction = 0;
     private double m_distance = 0;
 
     /**
-     * Constructs the command.
+     * Creates a new {@link MoveDirectionCommand}.
      * 
-     * @param drivetrain required subsystem
+     * @param drivetrain The {@link SwerveDrivetrain} subsystem to use.
      */
     public MoveDirectionCommand(SwerveDrivetrain drivetrain) {
         super(drivetrain);
@@ -26,10 +30,10 @@ public class MoveDirectionCommand extends GoToPositionCommand {
     }
 
     /**
-     * Updates the command with a new direction.
+     * Updates the command with a new direction to move.
      * 
-     * @param direction The desired field relative direction.
-     * @return Returns updated MoveDirectionCommand.
+     * @param direction The desired field relative direction to move.
+     * @return The updated {@link MoveDirectionCommand} for method chaining.
      */
     public MoveDirectionCommand withDirection(double direction) {
         m_direction = direction;
@@ -37,10 +41,10 @@ public class MoveDirectionCommand extends GoToPositionCommand {
     }
 
     /**
-     * Updates the command with a new distance.
+     * Updates the command with a new distance to travel.
      * 
-     * @param distance The desired distance to travel
-     * @return Returns updated MoveDirectionCommand.
+     * @param distance The desired distance to travel.
+     * @return The updated {@link MoveDirectionCommand} for method chaining.
      */
     public MoveDirectionCommand withDistance(double distance) {
         m_distance = distance;
@@ -48,10 +52,10 @@ public class MoveDirectionCommand extends GoToPositionCommand {
     }
 
     /**
-     * Updates the command with a new heading.
+     * Updates the command with a new final target heading.
      * 
-     * @param rotation Desired field relative heading
-     * @return Returns updated MoveDirectionCommand.
+     * @param rotation The desired final field relative heading.
+     * @return The updated {@link MoveDirectionCommand} for method chaining.
      */
     public MoveDirectionCommand withHeading(double rotation) {
         m_targetRotation = rotation;

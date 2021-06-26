@@ -1,20 +1,12 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
-import frc.robot.commands.FieldRelativeMoveCommand;
-import frc.robot.commands.ResetGyroCommand;
-import frc.robot.subsystems.SwerveDrivetrain;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -35,8 +27,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer. This will perform all our button bindings,
-    // and put our
-    // autonomous chooser on the dashboard.
+    // and put our autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_robotContainer.m_resetGyroCommand.schedule();
     m_robotContainer.m_resetOdometryCommand.schedule();
@@ -68,16 +59,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    //new FieldRelativeMoveCommand(m_robotContainer.swerveDrivetrain).schedule();
-    if(Robot.isSimulation()){
+    if (Robot.isSimulation()) {
       m_robotContainer.swerveDrivetrain.move(0, 0, 0, false);
     }
-    //new StopCommand(m_robotContainer.swerveDrivetrain).schedule();
   }
 
   @Override
   public void disabledPeriodic() {
-    
   }
 
   /**
@@ -100,7 +88,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
   }
-
 
   @Override
   public void teleopInit() {

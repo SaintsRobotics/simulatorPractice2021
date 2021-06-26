@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -6,6 +10,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
 
+/**
+ * Parent class for moving the robot. Child classes pass in targetX, targetY,
+ * and targetRotation setpoints. If nothing is passed in, the current position
+ * is used as the setpoint.
+ */
 public class GoToPositionCommand extends CommandBase {
     protected SwerveDrivetrain m_drivetrain;
     protected PIDController m_xPID;
@@ -18,9 +27,9 @@ public class GoToPositionCommand extends CommandBase {
     private int m_counter;
 
     /**
-     * Creates a new GoToPositionCommand. Child classes pass in targetX, targetY,
-     * targetRotation setpoints. If nothing is passed in, the current position is
-     * used as the setpoint.
+     * Creates a new {@link GoToPositionCommand}.
+     * 
+     * @param drivetrain The {@link SwerveDrivetrain} subsystem to use.
      */
     public GoToPositionCommand(SwerveDrivetrain drivetrain) {
         addRequirements(drivetrain);

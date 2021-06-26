@@ -1,9 +1,6 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
 
@@ -29,8 +26,8 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.SwervePorts;
 import frc.robot.Robot;
 
+/** The drive subsystem of the robot. */
 public class SwerveDrivetrain extends SubsystemBase {
-
         private CANSparkMax m_frontLeftDriveMotor;
         private CANSparkMax m_frontRightDriveMotor;
         private CANSparkMax m_backLeftDriveMotor;
@@ -71,7 +68,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         private double m_desiredHeading;
 
         /**
-         * Creates a new SwerveDrivetrain.
+         * Creates a new {@link SwerveDrivetrain}.
          */
         public SwerveDrivetrain() {
                 SmartDashboard.putData("Field", m_field);
@@ -117,7 +114,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_kinematics = new SwerveDriveKinematics(m_frontLeftSwerveWheel.getLocation(),
                                 m_frontRightSwerveWheel.getLocation(), m_backLeftSwerveWheel.getLocation(),
                                 m_backRightSwerveWheel.getLocation());
-                
+
                 m_rotationPID = new PIDController(1, 0, 0);
                 m_rotationPID.enableContinuousInput(-Math.PI, Math.PI);
                 m_rotationPID.setTolerance(1 / 36); // if off by a lil bit, then dont do anything (is in radians)
@@ -128,6 +125,11 @@ public class SwerveDrivetrain extends SubsystemBase {
                 m_desiredHeading = 0;
         }
 
+        /**
+         * Returns the current {@link SwerveDriveKinematics}.
+         * 
+         * @return The current {@link SwerveDriveKinematics}.
+         */
         public SwerveDriveKinematics getKinematics() {
                 return m_kinematics;
         }
@@ -138,6 +140,15 @@ public class SwerveDrivetrain extends SubsystemBase {
         // angular speed: omegaRad/Sec multiply by sec, add on
         // manipulate in radians, convert to 2d again -> print radians
 
+        /**
+         * Method to drive the robot using joystick info.
+         *
+         * @param xSpeed          Speed of the robot in the x direction (forward).
+         * @param ySpeed          Speed of the robot in the y direction (sideways).
+         * @param rotationSpeed   Angular rate of the robot.
+         * @param isFieldRelative Whether the provided x and y speeds are relative to
+         *                        the field.
+         */
         public void move(double xSpeed, double ySpeed, double rotationSpeed, boolean isFieldRelative) {
                 m_xSpeed = xSpeed;
                 m_ySpeed = ySpeed;
@@ -149,7 +160,6 @@ public class SwerveDrivetrain extends SubsystemBase {
                 // MAX_METERS_PER_SECOND (only if the net speed is above MAX_METERS_PER_SECOND)
                 double m_netSpeed = Math.sqrt((m_xSpeed * m_xSpeed) + (m_ySpeed * m_ySpeed));
                 if (m_netSpeed > SwerveConstants.MAX_METERS_PER_SECOND) {
-
                         // the scale factor will always be less than one
                         double m_scaleFactor = SwerveConstants.MAX_METERS_PER_SECOND / m_netSpeed;
                         m_xSpeed *= m_scaleFactor;
@@ -164,6 +174,11 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("Rotation Speed", m_rotationSpeed);
         }
 
+        /**
+         * Sets the swerve ModuleStates.
+         *
+         * @param moduleStates The desired SwerveModule states.
+         */
         public void move(SwerveModuleState... moduleStates) {
                 ChassisSpeeds speeds = m_kinematics.toChassisSpeeds(moduleStates);
                 move(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
@@ -173,12 +188,10 @@ public class SwerveDrivetrain extends SubsystemBase {
         public void periodic() {
                 double gyroAngle = m_gyro.getAngle();
                 if (time > 10) {
-
                         m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(),
                                         m_frontRightSwerveWheel.getState(), m_backLeftSwerveWheel.getState(),
                                         m_backRightSwerveWheel.getState());
                         m_field.setRobotPose(m_odometry.getPoseMeters());
-                        // m_field.setRobotPose(new Pose2d(10.0, 10.0, new Rotation2d(0)));
                 }
                 time++;
                 ChassisSpeeds desiredSpeed;
@@ -189,27 +202,20 @@ public class SwerveDrivetrain extends SubsystemBase {
                 if (isTurning) {
                         m_desiredHeading = Math.toRadians(gyroAngle);
                         m_rotationPID.setSetpoint(m_desiredHeading);
-                } else if (m_xSpeed != 0|| m_ySpeed != 0){
+                } else if (m_xSpeed != 0 || m_ySpeed != 0) {
                         m_rotationSpeed = m_rotationPID.calculate(Math.toRadians(gyroAngle));
                 }
                 SmartDashboard.putNumber("rotation Speed", Math.toDegrees(m_rotationSpeed));
-
 
                 // convert to robot relative if in field relative
                 if (this.m_isFieldRelative) {
                         desiredSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed,
                                         Rotation2d.fromDegrees(gyroAngle));
-
                 } else {
                         desiredSpeed = new ChassisSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed);
-
                 }
 
                 prevSpeed = desiredSpeed;
-
-                // boolean isTurning =
-
-                //
 
                 SwerveModuleState[] desiredSwerveModuleStates = m_kinematics.toSwerveModuleStates(desiredSpeed);
 
@@ -232,12 +238,12 @@ public class SwerveDrivetrain extends SubsystemBase {
                         m_backLeftSwerveWheel.setVelocity(0);
                         m_backRightSwerveWheel.setVelocity(0);
                 } else {
-
                         m_frontLeftSwerveWheel.setState(desiredSwerveModuleStates[0]);
                         m_frontRightSwerveWheel.setState(desiredSwerveModuleStates[1]);
                         m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
                         m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
                 }
+
                 // updates the gyro yaw value and prints it to the simulator
                 double m_degreeRotationSpeed = Math.toDegrees(m_rotationSpeed);
                 double m_degreesSinceLastTick = m_degreeRotationSpeed * Robot.kDefaultPeriod;
@@ -259,21 +265,29 @@ public class SwerveDrivetrain extends SubsystemBase {
                 SmartDashboard.putNumber("Gyro angle in degrees", gyroAngle);
                 SmartDashboard.putNumber("The desired angle", m_desiredHeading * (180 / Math.PI));
                 SmartDashboard.putNumber("Angular Offset", m_rotationPID.getPositionError());
-
         }
 
+        /**
+         * Prints the estimated gyro value to the simulator.
+         * 
+         * @param printHeading The estimated gyro value.
+         */
         public void printSimulatedGyro(double printHeading) {
                 int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
                 SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
                 angle.set(printHeading);
-
         }
 
+        /**
+         * Returns the currently-estimated pose of the robot.
+         *
+         * @return The pose.
+         */
         public Pose2d getCurrentPosition() {
                 return m_odometry.getPoseMeters();
         }
 
-        // this is kinda broken
+        /** Zeroes the heading of the robot. */
         public void resetGyro() {
                 if (Robot.isReal()) {
                         m_gyro.reset();
@@ -282,12 +296,20 @@ public class SwerveDrivetrain extends SubsystemBase {
                 }
         }
 
+        /**
+         * Zeroes the odometry.
+         */
         public void resetOdometry() {
                 m_odometry.resetPosition(new Pose2d(), new Rotation2d());
         }
 
+        /**
+         * Resets the odometry to the specified pose.
+         *
+         * @param position The pose to which to set the odometry.
+         * @param angle    The angle to which to set the odometry.
+         */
         public void resetOdometry(Pose2d position, Rotation2d angle) {
                 m_odometry.resetPosition(position, angle);
         }
-
 }

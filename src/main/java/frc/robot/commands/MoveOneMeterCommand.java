@@ -1,15 +1,21 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.commands;
 
 import frc.robot.subsystems.SwerveDrivetrain;
 
 /**
- * Command to move the robot one meter in a designated direction
+ * Command to move the robot one meter in a designated direction.
  */
 public class MoveOneMeterCommand extends GoToPositionCommand {
   private double m_direction;
 
   /**
-   * Creates a new MoveOneMeterCommand.
+   * Creates a new {@link MoveOneMeterCommand}.
+   * 
+   * @param drivetrain The {@link SwerveDrivetrain} subsystem to use.
    */
   public MoveOneMeterCommand(SwerveDrivetrain drivetrain) {
     super(drivetrain);
@@ -23,10 +29,10 @@ public class MoveOneMeterCommand extends GoToPositionCommand {
   }
 
   /**
-   * Sets the desired robot direction (field relative)
+   * Sets the desired field relative direction.
    * 
-   * @param direction Desired robot direction
-   * @return Updated command
+   * @param direction The desired field relative direction.
+   * @return The updated {@link MoveOneMeterCommand} for method chaining.
    */
   public MoveOneMeterCommand withDirection(double direction) {
     m_direction = direction;
