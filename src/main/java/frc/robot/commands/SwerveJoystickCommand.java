@@ -13,36 +13,36 @@ import frc.robot.Constants.SwerveConstants;
 
 /** Controls the drivetrain with an Xbox controller. */
 public class SwerveJoystickCommand extends CommandBase {
-  private SwerveDrivetrain m_drivetrain;
-  private XboxController m_controller;
+	private SwerveDrivetrain m_drivetrain;
+	private XboxController m_controller;
 
-  /**
-   * Creates a new {@link SwerveJoystickCommand}.
-   * 
-   * @param drivetrain The {@link SwerveDrivetrain} subsystem to use.
-   */
-  public SwerveJoystickCommand(SwerveDrivetrain drivetrain) {
-    addRequirements(drivetrain);
-    m_drivetrain = drivetrain;
-    m_controller = new XboxController(0);
-  }
+	/**
+	 * Creates a new {@link SwerveJoystickCommand}.
+	 * 
+	 * @param drivetrain The {@link SwerveDrivetrain} subsystem to use.
+	 */
+	public SwerveJoystickCommand(SwerveDrivetrain drivetrain) {
+		addRequirements(drivetrain);
+		m_drivetrain = drivetrain;
+		m_controller = new XboxController(0);
+	}
 
-  @Override
-  public void execute() {
-    // apply functions to controller values to 1) check deadzone 2) apply quadratic
-    // relation between controller/speed
-    double x = Utils.oddSquare(Utils.deadZones(m_controller.getY(Hand.kLeft), 0.2))
-        * SwerveConstants.MAX_METERS_PER_SECOND * 0.2;
-    double y = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kLeft), 0.2))
-        * SwerveConstants.MAX_METERS_PER_SECOND * 0.2;
-    double rot = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kRight), 0.2))
-        * SwerveConstants.MAX_RADIANS_PER_SECOND * 0.2;
+	@Override
+	public void execute() {
+		// apply functions to controller values to 1) check deadzone 2) apply quadratic
+		// relation between controller/speed
+		double x = Utils.oddSquare(Utils.deadZones(m_controller.getY(Hand.kLeft), 0.2))
+				* SwerveConstants.MAX_METERS_PER_SECOND * 0.2;
+		double y = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kLeft), 0.2))
+				* SwerveConstants.MAX_METERS_PER_SECOND * 0.2;
+		double rot = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kRight), 0.2))
+				* SwerveConstants.MAX_RADIANS_PER_SECOND * 0.2;
 
-    m_drivetrain.move(-x, y, rot, m_controller.getBumper(Hand.kRight));
-  }
+		m_drivetrain.move(-x, y, rot, m_controller.getBumper(Hand.kRight));
+	}
 
-  @Override
-  public void end(boolean interrupted) {
-    m_drivetrain.move(0, 0, 0, false);
-  }
+	@Override
+	public void end(boolean interrupted) {
+		m_drivetrain.move(0, 0, 0, false);
+	}
 }

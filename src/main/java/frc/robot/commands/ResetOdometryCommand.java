@@ -9,25 +9,25 @@ import frc.robot.subsystems.SwerveDrivetrain;
 
 /** Resets the odometry of the drivetrain. */
 public class ResetOdometryCommand extends CommandBase {
-    private SwerveDrivetrain m_drivetrain;
+	private SwerveDrivetrain m_drivetrain;
 
-    /**
-     * Creates a new {@link ResetOdometryCommand}.
-     * 
-     * @param drivetrain The {@link SwerveDrivetrain} subsystem to use.
-     */
-    public ResetOdometryCommand(SwerveDrivetrain drivetrain) {
-        addRequirements(drivetrain);
-        m_drivetrain = drivetrain;
-    }
+	/**
+	 * Creates a new {@link ResetOdometryCommand}.
+	 * 
+	 * @param drivetrain The {@link SwerveDrivetrain} subsystem to use.
+	 */
+	public ResetOdometryCommand(SwerveDrivetrain drivetrain) {
+		addRequirements(drivetrain);
+		m_drivetrain = drivetrain;
+	}
 
-    @Override
-    public void initialize() {
-        m_drivetrain.resetOdometry();
-    }
+	@Override
+	public void initialize() {
+		m_drivetrain.resetOdometry();
+	}
 
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
+	@Override
+	public boolean isFinished() {
+		return true;
+	}
 }

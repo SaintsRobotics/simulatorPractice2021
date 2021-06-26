@@ -9,25 +9,25 @@ import frc.robot.subsystems.Intake;
 
 /** Runs the intake in reverse to get rid of balls. */
 public class OuttakeCommand extends CommandBase {
-  private Intake m_intakeSubsystem;
+	private Intake m_intakeSubsystem;
 
-  /**
-   * Creates a new {@link OuttakeCommand}.
-   * 
-   * @param intake The {@link Intake} subsystem to use.
-   */
-  public OuttakeCommand(Intake intake) {
-    m_intakeSubsystem = intake;
-    addRequirements(m_intakeSubsystem);
-  }
+	/**
+	 * Creates a new {@link OuttakeCommand}.
+	 * 
+	 * @param intake The {@link Intake} subsystem to use.
+	 */
+	public OuttakeCommand(Intake intake) {
+		m_intakeSubsystem = intake;
+		addRequirements(m_intakeSubsystem);
+	}
 
-  @Override
-  public void execute() {
-    m_intakeSubsystem.outtake();
-  }
+	@Override
+	public void execute() {
+		m_intakeSubsystem.outtake();
+	}
 
-  @Override
-  public void end(boolean interrupted) {
-    m_intakeSubsystem.stopIntake();
-  }
+	@Override
+	public void end(boolean interrupted) {
+		m_intakeSubsystem.stopIntake();
+	}
 }

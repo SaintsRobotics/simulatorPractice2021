@@ -9,20 +9,20 @@ import frc.robot.subsystems.SwerveDrivetrain;
 
 /** Stops the drivetrain. */
 public class StopCommand extends InstantCommand {
-  private SwerveDrivetrain m_drivetrain;
+	private SwerveDrivetrain m_drivetrain;
 
-  /**
-   * Creates a new {@link StopCommand}.
-   * 
-   * @param drivetrain The {@link SwerveDrivetrain} subsystem to use.
-   */
-  public StopCommand(SwerveDrivetrain drivetrain) {
-    addRequirements(drivetrain);
-    m_drivetrain = drivetrain;
-  }
+	/**
+	 * Creates a new {@link StopCommand}.
+	 * 
+	 * @param drivetrain The {@link SwerveDrivetrain} subsystem to use.
+	 */
+	public StopCommand(SwerveDrivetrain drivetrain) {
+		addRequirements(drivetrain);
+		m_drivetrain = drivetrain;
+	}
 
-  @Override
-  public void initialize() {
-    m_drivetrain.move(0, 0, 0, false);
-  }
+	@Override
+	public void initialize() {
+		m_drivetrain.move(0, 0, 0, false);
+	}
 }

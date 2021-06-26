@@ -9,25 +9,25 @@ import frc.robot.subsystems.SwerveDrivetrain;
 
 /** Resets the gyro of the drivetrain. */
 public class ResetGyroCommand extends CommandBase {
-    private SwerveDrivetrain m_drivetrain;
+	private SwerveDrivetrain m_drivetrain;
 
-    /**
-     * Creates a new {@link ResetGyroCommand}.
-     * 
-     * @param drivetrain The {@link SwerveDrivetrain} subsystem to use.
-     */
-    public ResetGyroCommand(SwerveDrivetrain drivetrain) {
-        addRequirements(drivetrain);
-        m_drivetrain = drivetrain;
-    }
+	/**
+	 * Creates a new {@link ResetGyroCommand}.
+	 * 
+	 * @param drivetrain The {@link SwerveDrivetrain} subsystem to use.
+	 */
+	public ResetGyroCommand(SwerveDrivetrain drivetrain) {
+		addRequirements(drivetrain);
+		m_drivetrain = drivetrain;
+	}
 
-    @Override
-    public void initialize() {
-        m_drivetrain.resetGyro();
-    }
+	@Override
+	public void initialize() {
+		m_drivetrain.resetGyro();
+	}
 
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
+	@Override
+	public boolean isFinished() {
+		return true;
+	}
 }
