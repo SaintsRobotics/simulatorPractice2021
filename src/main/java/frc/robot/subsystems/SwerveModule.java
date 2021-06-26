@@ -15,7 +15,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 
 /** An individual swerve module. */
-public class SwerveWheel {
+public class SwerveModule {
 	private CANSparkMax m_driveMotor;
 	private CANSparkMax m_turningMotor;
 	private Translation2d m_location;
@@ -25,16 +25,16 @@ public class SwerveWheel {
 	private String m_name;
 
 	/**
-	 * Constructs a {@link SwerveWheel}.
+	 * Constructs a {@link SwerveModule}.
 	 * 
-	 * @param name         The name of the {@link SwerveWheel}.
+	 * @param name         The name of the {@link SwerveModule}.
 	 * @param driveMotor   The motor controller for the drive motor.
 	 * @param turningMotor The motor controller for the turning motor.
-	 * @param x            The x position of the {@link SwerveWheel}.
-	 * @param y            The y position of the {@link SwerveWheel}.
-	 * @param encoder      The encoder for the {@link SwerveWheel}.
+	 * @param x            The x position of the {@link SwerveModule}.
+	 * @param y            The y position of the {@link SwerveModule}.
+	 * @param encoder      The encoder for the {@link SwerveModule}.
 	 */
-	public SwerveWheel(String name, CANSparkMax driveMotor, CANSparkMax turningMotor, double x, double y,
+	public SwerveModule(String name, CANSparkMax driveMotor, CANSparkMax turningMotor, double x, double y,
 			AbsoluteEncoder encoder) {
 		m_driveMotor = driveMotor;
 		m_turningMotor = turningMotor;
