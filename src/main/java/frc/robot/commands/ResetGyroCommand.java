@@ -23,7 +23,7 @@ public class ResetGyroCommand extends CommandBase {
 
 	@Override
 	public void initialize() {
-		m_drivetrain.resetGyro();
+		m_drivetrain.zeroHeading();
 	}
 
 	@Override

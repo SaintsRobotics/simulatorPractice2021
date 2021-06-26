@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		if (Robot.isSimulation()) {
-			m_robotContainer.swerveDrivetrain.move(0, 0, 0, false);
+			m_robotContainer.swerveDrivetrain.drive(0, 0, 0, false);
 		}
 	}
 

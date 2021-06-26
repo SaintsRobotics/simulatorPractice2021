@@ -23,6 +23,6 @@ public class StopCommand extends InstantCommand {
 
 	@Override
 	public void initialize() {
-		m_drivetrain.move(0, 0, 0, false);
+		m_drivetrain.drive(0, 0, 0, false);
 	}
 }

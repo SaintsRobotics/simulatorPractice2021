@@ -115,7 +115,7 @@ public class RobotContainer {
 		yPID.setTolerance(0.05);
 		rotPID.setTolerance(Math.PI / 24);
 		rotPID.enableContinuousInput(-Math.PI, Math.PI);
-		return new SwerveControllerCommand(trajectory, swerveDrivetrain::getCurrentPosition,
-				swerveDrivetrain.getKinematics(), xPID, yPID, rotPID, swerveDrivetrain::move, swerveDrivetrain);
+		return new SwerveControllerCommand(trajectory, swerveDrivetrain::getPose, swerveDrivetrain.getKinematics(), xPID,
+				yPID, rotPID, swerveDrivetrain::setModuleStates, swerveDrivetrain);
 	}
 }

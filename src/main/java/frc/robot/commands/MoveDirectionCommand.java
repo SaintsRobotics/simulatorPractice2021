@@ -24,8 +24,8 @@ public class MoveDirectionCommand extends GoToPositionCommand {
 
 	@Override
 	public void initialize() {
-		m_targetX = m_drivetrain.getCurrentPosition().getX() + Math.cos(m_direction) * m_distance;
-		m_targetY = m_drivetrain.getCurrentPosition().getY() + Math.sin(m_direction) * m_distance;
+		m_targetX = m_drivetrain.getPose().getX() + Math.cos(m_direction) * m_distance;
+		m_targetY = m_drivetrain.getPose().getY() + Math.sin(m_direction) * m_distance;
 		super.initialize();
 	}
 

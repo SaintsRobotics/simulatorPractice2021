@@ -22,8 +22,8 @@ public class RobotRelativeMoveCommand extends GoToPositionCommand {
 
 	@Override
 	public void initialize() {
-		m_targetX = m_drivetrain.getCurrentPosition().getX() + m_xChange;
-		m_targetY = m_drivetrain.getCurrentPosition().getY() + m_yChange;
+		m_targetX = m_drivetrain.getPose().getX() + m_xChange;
+		m_targetY = m_drivetrain.getPose().getY() + m_yChange;
 		super.initialize();
 	}
 

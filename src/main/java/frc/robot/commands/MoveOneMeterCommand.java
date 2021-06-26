@@ -23,8 +23,8 @@ public class MoveOneMeterCommand extends GoToPositionCommand {
 
 	@Override
 	public void initialize() {
-		m_xPID.setSetpoint(m_drivetrain.getCurrentPosition().getX() + Math.cos(m_direction));
-		m_yPID.setSetpoint(m_drivetrain.getCurrentPosition().getY() + Math.sin(m_direction));
+		m_xPID.setSetpoint(m_drivetrain.getPose().getX() + Math.cos(m_direction));
+		m_yPID.setSetpoint(m_drivetrain.getPose().getY() + Math.sin(m_direction));
 		m_rotationPID.setSetpoint(m_direction);
 	}
 

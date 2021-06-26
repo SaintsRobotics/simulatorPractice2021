@@ -50,32 +50,32 @@ public class GoToPositionCommand extends CommandBase {
 		if (m_targetX != Constants.defaultNull) {
 			m_xPID.setSetpoint(m_targetX);
 		} else {
-			m_xPID.setSetpoint(m_drivetrain.getCurrentPosition().getX());
+			m_xPID.setSetpoint(m_drivetrain.getPose().getX());
 		}
 
 		if (m_targetY != Constants.defaultNull) {
 			m_yPID.setSetpoint(m_targetY);
 		} else {
-			m_yPID.setSetpoint(m_drivetrain.getCurrentPosition().getY());
+			m_yPID.setSetpoint(m_drivetrain.getPose().getY());
 		}
 
 		if (m_targetRotation != Constants.defaultNull) {
 			m_rotationPID.setSetpoint(m_targetRotation);
 		} else {
-			m_rotationPID.setSetpoint(m_drivetrain.getCurrentPosition().getRotation().getRadians());
+			m_rotationPID.setSetpoint(m_drivetrain.getPose().getRotation().getRadians());
 		}
 	}
 
 	@Override
 	public void execute() {
-		m_currentPosition = m_drivetrain.getCurrentPosition();
-		m_drivetrain.move(m_xPID.calculate(m_currentPosition.getX()), m_yPID.calculate(m_currentPosition.getY()),
+		m_currentPosition = m_drivetrain.getPose();
+		m_drivetrain.drive(m_xPID.calculate(m_currentPosition.getX()), m_yPID.calculate(m_currentPosition.getY()),
 				-m_rotationPID.calculate(m_currentPosition.getRotation().getRadians()), true);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		m_drivetrain.move(0, 0, 0, false);
+		m_drivetrain.drive(0, 0, 0, false);
 	}
 
 	@Override

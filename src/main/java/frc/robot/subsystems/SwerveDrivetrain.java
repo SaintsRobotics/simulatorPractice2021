@@ -200,17 +200,17 @@ public class SwerveDrivetrain extends SubsystemBase {
 	/**
 	 * Method to drive the robot using joystick info.
 	 *
-	 * @param xSpeed          Speed of the robot in the x direction (forward).
-	 * @param ySpeed          Speed of the robot in the y direction (sideways).
-	 * @param rotationSpeed   Angular rate of the robot.
-	 * @param isFieldRelative Whether the provided x and y speeds are relative to
-	 *                        the field.
+	 * @param xSpeed        Speed of the robot in the x direction (forward).
+	 * @param ySpeed        Speed of the robot in the y direction (sideways).
+	 * @param rot           Angular rate of the robot.
+	 * @param fieldRelative Whether the provided x and y speeds are relative to the
+	 *                      field.
 	 */
-	public void move(double xSpeed, double ySpeed, double rotationSpeed, boolean isFieldRelative) {
+	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
 		m_xSpeed = xSpeed;
 		m_ySpeed = ySpeed;
-		m_rotationSpeed = rotationSpeed;
-		m_isFieldRelative = isFieldRelative;
+		m_rotationSpeed = rot;
+		m_isFieldRelative = fieldRelative;
 		isTurning = (m_rotationSpeed != 0);
 
 		// scales m_xSpeed and m_ySpeed such that the net speed is equal to
@@ -236,9 +236,9 @@ public class SwerveDrivetrain extends SubsystemBase {
 	 *
 	 * @param moduleStates The desired SwerveModule states.
 	 */
-	public void move(SwerveModuleState... moduleStates) {
+	public void setModuleStates(SwerveModuleState... moduleStates) {
 		ChassisSpeeds speeds = m_kinematics.toChassisSpeeds(moduleStates);
-		move(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
+		drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
 	}
 
 	/**
@@ -246,7 +246,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 	 *
 	 * @return The pose.
 	 */
-	public Pose2d getCurrentPosition() {
+	public Pose2d getPose() {
 		return m_odometry.getPoseMeters();
 	}
 
@@ -260,7 +260,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 	}
 
 	/** Zeroes the heading of the robot. */
-	public void resetGyro() {
+	public void zeroHeading() {
 		if (Robot.isReal()) {
 			m_gyro.reset();
 		} else {
@@ -276,11 +276,11 @@ public class SwerveDrivetrain extends SubsystemBase {
 	/**
 	 * Resets the odometry to the specified pose.
 	 *
-	 * @param position The pose to which to set the odometry.
-	 * @param angle    The angle to which to set the odometry.
+	 * @param pose  The pose to which to set the odometry.
+	 * @param angle The angle to which to set the odometry.
 	 */
-	public void resetOdometry(Pose2d position, Rotation2d angle) {
-		m_odometry.resetPosition(position, angle);
+	public void resetOdometry(Pose2d pose, Rotation2d angle) {
+		m_odometry.resetPosition(pose, angle);
 	}
 
 	/**
