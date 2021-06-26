@@ -119,65 +119,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 		m_desiredHeading = 0;
 	}
 
-	/**
-	 * Returns the current {@link SwerveDriveKinematics}.
-	 * 
-	 * @return The current {@link SwerveDriveKinematics}.
-	 */
-	public SwerveDriveKinematics getKinematics() {
-		return m_kinematics;
-	}
-
-	// gyro should update in periodic
-	// previous reading would be gyroAngle -> get in radians
-	// want calculate how gyro changes based on rotation
-	// angular speed: omegaRad/Sec multiply by sec, add on
-	// manipulate in radians, convert to 2d again -> print radians
-
-	/**
-	 * Method to drive the robot using joystick info.
-	 *
-	 * @param xSpeed          Speed of the robot in the x direction (forward).
-	 * @param ySpeed          Speed of the robot in the y direction (sideways).
-	 * @param rotationSpeed   Angular rate of the robot.
-	 * @param isFieldRelative Whether the provided x and y speeds are relative to
-	 *                        the field.
-	 */
-	public void move(double xSpeed, double ySpeed, double rotationSpeed, boolean isFieldRelative) {
-		m_xSpeed = xSpeed;
-		m_ySpeed = ySpeed;
-		m_rotationSpeed = rotationSpeed;
-		m_isFieldRelative = isFieldRelative;
-		isTurning = (m_rotationSpeed != 0);
-
-		// scales m_xSpeed and m_ySpeed such that the net speed is equal to
-		// MAX_METERS_PER_SECOND (only if the net speed is above MAX_METERS_PER_SECOND)
-		double m_netSpeed = Math.sqrt((m_xSpeed * m_xSpeed) + (m_ySpeed * m_ySpeed));
-		if (m_netSpeed > SwerveConstants.MAX_METERS_PER_SECOND) {
-			// the scale factor will always be less than one
-			double m_scaleFactor = SwerveConstants.MAX_METERS_PER_SECOND / m_netSpeed;
-			m_xSpeed *= m_scaleFactor;
-			m_ySpeed *= m_scaleFactor;
-		}
-
-		if (m_rotationSpeed > SwerveConstants.MAX_RADIANS_PER_SECOND) {
-			m_rotationSpeed = SwerveConstants.MAX_RADIANS_PER_SECOND;
-		}
-		SmartDashboard.putNumber("X Speed", m_xSpeed);
-		SmartDashboard.putNumber("Y Speed", m_ySpeed);
-		SmartDashboard.putNumber("Rotation Speed", m_rotationSpeed);
-	}
-
-	/**
-	 * Sets the swerve ModuleStates.
-	 *
-	 * @param moduleStates The desired SwerveModule states.
-	 */
-	public void move(SwerveModuleState... moduleStates) {
-		ChassisSpeeds speeds = m_kinematics.toChassisSpeeds(moduleStates);
-		move(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
-	}
-
 	@Override
 	public void periodic() {
 		double gyroAngle = m_gyro.getAngle();
@@ -257,14 +198,47 @@ public class SwerveDrivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Prints the estimated gyro value to the simulator.
-	 * 
-	 * @param printHeading The estimated gyro value.
+	 * Method to drive the robot using joystick info.
+	 *
+	 * @param xSpeed          Speed of the robot in the x direction (forward).
+	 * @param ySpeed          Speed of the robot in the y direction (sideways).
+	 * @param rotationSpeed   Angular rate of the robot.
+	 * @param isFieldRelative Whether the provided x and y speeds are relative to
+	 *                        the field.
 	 */
-	public void printSimulatedGyro(double printHeading) {
-		int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
-		SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-		angle.set(printHeading);
+	public void move(double xSpeed, double ySpeed, double rotationSpeed, boolean isFieldRelative) {
+		m_xSpeed = xSpeed;
+		m_ySpeed = ySpeed;
+		m_rotationSpeed = rotationSpeed;
+		m_isFieldRelative = isFieldRelative;
+		isTurning = (m_rotationSpeed != 0);
+
+		// scales m_xSpeed and m_ySpeed such that the net speed is equal to
+		// MAX_METERS_PER_SECOND (only if the net speed is above MAX_METERS_PER_SECOND)
+		double m_netSpeed = Math.sqrt((m_xSpeed * m_xSpeed) + (m_ySpeed * m_ySpeed));
+		if (m_netSpeed > SwerveConstants.MAX_METERS_PER_SECOND) {
+			// the scale factor will always be less than one
+			double m_scaleFactor = SwerveConstants.MAX_METERS_PER_SECOND / m_netSpeed;
+			m_xSpeed *= m_scaleFactor;
+			m_ySpeed *= m_scaleFactor;
+		}
+
+		if (m_rotationSpeed > SwerveConstants.MAX_RADIANS_PER_SECOND) {
+			m_rotationSpeed = SwerveConstants.MAX_RADIANS_PER_SECOND;
+		}
+		SmartDashboard.putNumber("X Speed", m_xSpeed);
+		SmartDashboard.putNumber("Y Speed", m_ySpeed);
+		SmartDashboard.putNumber("Rotation Speed", m_rotationSpeed);
+	}
+
+	/**
+	 * Sets the swerve ModuleStates.
+	 *
+	 * @param moduleStates The desired SwerveModule states.
+	 */
+	public void move(SwerveModuleState... moduleStates) {
+		ChassisSpeeds speeds = m_kinematics.toChassisSpeeds(moduleStates);
+		move(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
 	}
 
 	/**
@@ -276,6 +250,15 @@ public class SwerveDrivetrain extends SubsystemBase {
 		return m_odometry.getPoseMeters();
 	}
 
+	/**
+	 * Returns the current {@link SwerveDriveKinematics}.
+	 * 
+	 * @return The current {@link SwerveDriveKinematics}.
+	 */
+	public SwerveDriveKinematics getKinematics() {
+		return m_kinematics;
+	}
+
 	/** Zeroes the heading of the robot. */
 	public void resetGyro() {
 		if (Robot.isReal()) {
@@ -285,9 +268,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 		}
 	}
 
-	/**
-	 * Zeroes the odometry.
-	 */
+	/** Zeroes the odometry. */
 	public void resetOdometry() {
 		m_odometry.resetPosition(new Pose2d(), new Rotation2d());
 	}
@@ -300,5 +281,16 @@ public class SwerveDrivetrain extends SubsystemBase {
 	 */
 	public void resetOdometry(Pose2d position, Rotation2d angle) {
 		m_odometry.resetPosition(position, angle);
+	}
+
+	/**
+	 * Prints the estimated gyro value to the simulator.
+	 * 
+	 * @param printHeading The estimated gyro value.
+	 */
+	public void printSimulatedGyro(double printHeading) {
+		int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+		SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+		angle.set(printHeading);
 	}
 }
