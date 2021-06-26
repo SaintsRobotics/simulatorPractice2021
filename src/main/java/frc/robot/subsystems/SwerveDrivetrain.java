@@ -96,14 +96,14 @@ public class SwerveDrivetrain extends SubsystemBase {
 				SwerveConstants.BACK_RIGHT_ROTATION_OFFSET);
 
 		// Robot is facing towards positive x direction
-		m_frontLeftSwerveWheel = new SwerveModule("Front Left", m_frontLeftDriveMotor, m_frontLeftTurningMotor,
-				SwerveConstants.SWERVE_X, SwerveConstants.SWERVE_Y, m_frontLeftTurningEncoder);
-		m_frontRightSwerveWheel = new SwerveModule("Front Right", m_frontRightDriveMotor, m_frontRightTurningMotor,
-				SwerveConstants.SWERVE_X, -SwerveConstants.SWERVE_Y, m_frontRightTurningEncoder);
-		m_backLeftSwerveWheel = new SwerveModule("Back Left", m_backLeftDriveMotor, m_backLeftTurningMotor,
+		m_frontLeftSwerveWheel = new SwerveModule("Front Left Swerve Module", m_frontLeftDriveMotor,
+				m_frontLeftTurningMotor, SwerveConstants.SWERVE_X, SwerveConstants.SWERVE_Y, m_frontLeftTurningEncoder);
+		m_frontRightSwerveWheel = new SwerveModule("Front Right Swerve Module", m_frontRightDriveMotor,
+				m_frontRightTurningMotor, SwerveConstants.SWERVE_X, -SwerveConstants.SWERVE_Y, m_frontRightTurningEncoder);
+		m_backLeftSwerveWheel = new SwerveModule("Back Left Swerve Module", m_backLeftDriveMotor, m_backLeftTurningMotor,
 				-SwerveConstants.SWERVE_X, SwerveConstants.SWERVE_Y, m_backLeftTurningEncoder);
-		m_backRightSwerveWheel = new SwerveModule("Back Right", m_backRightDriveMotor, m_backRightTurningMotor,
-				-SwerveConstants.SWERVE_X, -SwerveConstants.SWERVE_Y, m_backRightTurningEncoder);
+		m_backRightSwerveWheel = new SwerveModule("Back Right Swerve Module", m_backRightDriveMotor,
+				m_backRightTurningMotor, -SwerveConstants.SWERVE_X, -SwerveConstants.SWERVE_Y, m_backRightTurningEncoder);
 
 		m_kinematics = new SwerveDriveKinematics(m_frontLeftSwerveWheel.getLocation(),
 				m_frontRightSwerveWheel.getLocation(), m_backLeftSwerveWheel.getLocation(),
