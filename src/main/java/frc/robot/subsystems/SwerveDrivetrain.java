@@ -201,7 +201,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 		SmartDashboard.putNumber("rotation Speed", Math.toDegrees(m_rotationSpeed));
 
 		// convert to robot relative if in field relative
-		if (this.m_isFieldRelative) {
+		if (m_isFieldRelative) {
 			desiredSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed,
 					Rotation2d.fromDegrees(gyroAngle));
 		} else {
