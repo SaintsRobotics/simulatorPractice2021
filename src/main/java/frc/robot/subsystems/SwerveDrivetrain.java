@@ -171,10 +171,10 @@ public class SwerveDrivetrain extends SubsystemBase {
 			m_backLeftSwerveWheel.setVelocity(0);
 			m_backRightSwerveWheel.setVelocity(0);
 		} else {
-			m_frontLeftSwerveWheel.setState(desiredSwerveModuleStates[0]);
-			m_frontRightSwerveWheel.setState(desiredSwerveModuleStates[1]);
-			m_backLeftSwerveWheel.setState(desiredSwerveModuleStates[2]);
-			m_backRightSwerveWheel.setState(desiredSwerveModuleStates[3]);
+			m_frontLeftSwerveWheel.setDesiredState(desiredSwerveModuleStates[0]);
+			m_frontRightSwerveWheel.setDesiredState(desiredSwerveModuleStates[1]);
+			m_backLeftSwerveWheel.setDesiredState(desiredSwerveModuleStates[2]);
+			m_backRightSwerveWheel.setDesiredState(desiredSwerveModuleStates[3]);
 		}
 
 		// updates the gyro yaw value and prints it to the simulator

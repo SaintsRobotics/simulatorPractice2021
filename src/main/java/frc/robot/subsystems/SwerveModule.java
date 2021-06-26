@@ -16,13 +16,17 @@ import frc.robot.Robot;
 
 /** An individual swerve module. */
 public class SwerveModule {
-	private CANSparkMax m_driveMotor;
-	private CANSparkMax m_turningMotor;
-	private Translation2d m_location;
-	private PIDController m_turningPIDController;
-	private AbsoluteEncoder m_turningEncoder;
+	private final CANSparkMax m_driveMotor;
+	private final CANSparkMax m_turningMotor;
+
+	private final AbsoluteEncoder m_turningEncoder;
+
+	private final PIDController m_turningPIDController = new PIDController(0.3, 0, 0);
+
+	private final Translation2d m_location;
+	private final String m_name;
+	
 	private SwerveModuleState m_state;
-	private String m_name;
 
 	/**
 	 * Constructs a {@link SwerveModule}.
@@ -38,11 +42,13 @@ public class SwerveModule {
 			AbsoluteEncoder encoder) {
 		m_driveMotor = driveMotor;
 		m_turningMotor = turningMotor;
-		m_location = new Translation2d(x, y);
-		m_turningPIDController = new PIDController(0.3, 0, 0);
-		m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
-		m_turningPIDController.setTolerance(Math.PI / 18);
+
 		m_turningEncoder = encoder;
+
+		m_location = new Translation2d(x, y);
+
+		m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+
 		m_name = name;
 		m_state = new SwerveModuleState();
 	}
@@ -52,27 +58,27 @@ public class SwerveModule {
 	 *
 	 * @param state Desired state with speed and angle.
 	 */
-	public void setState(SwerveModuleState state) {
-		// literally just smart inversion
-		state = SwerveModuleState.optimize(state, m_turningEncoder.getAngle());
+	public void setDesiredState(SwerveModuleState desiredState) {
+		// Optimize the reference state to avoid spinning further than 90 degrees.
+		SwerveModuleState state = SwerveModuleState.optimize(desiredState, m_turningEncoder.getAngle());
 
-		m_turningPIDController.setSetpoint(state.angle.getRadians());
+		final double driveOutput = state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND;
 
-		// desired turn voltage to send to turning motor, range: [-1, 1]
-		double percentVoltage = m_turningPIDController.calculate(m_turningEncoder.getAngle().getRadians());
+		final double turnOutput = m_turningPIDController.calculate(m_turningEncoder.getAngle().getRadians(),
+				state.angle.getRadians());
 
 		if (Robot.isSimulation()) {
-			m_turningEncoder.sendVoltage(percentVoltage);
+			m_turningEncoder.sendVoltage(turnOutput);
 		}
 
-		m_driveMotor.set(state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND);
-		m_turningMotor.set(percentVoltage);
+		m_driveMotor.set(driveOutput);
+		m_turningMotor.set(turnOutput);
 		m_state = new SwerveModuleState(state.speedMetersPerSecond, m_turningEncoder.getAngle());
 
-		SmartDashboard.putNumber("Wheel " + m_name + " Voltage", percentVoltage);
-		SmartDashboard.putNumber("Wheel " + m_name + " Current Position", m_turningEncoder.getAngle().getDegrees());
-		SmartDashboard.putNumber("Wheel " + m_name + " Desired Position", state.angle.getDegrees());
-		SmartDashboard.putNumber("Wheel " + m_name + " Error", m_turningPIDController.getPositionError());
+		SmartDashboard.putNumber(m_name + " Voltage", turnOutput);
+		SmartDashboard.putNumber(m_name + " Current Angle", m_turningEncoder.getAngle().getDegrees());
+		SmartDashboard.putNumber(m_name + " Desired Angle", state.angle.getDegrees());
+		SmartDashboard.putNumber(m_name + " Error", m_turningPIDController.getPositionError());
 	}
 
 	/**
