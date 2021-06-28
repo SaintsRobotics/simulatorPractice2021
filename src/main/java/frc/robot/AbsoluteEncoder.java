@@ -72,7 +72,7 @@ public class AbsoluteEncoder {
 
 		SmartDashboard.putNumber("turning voltage" + analogIn.getChannel(), turnVoltage);
 
-		// convert output to a number between 0 and 5
+		// convert output to a number between 0 and 5 (continuous unit circle)
 		outputVoltage = (((outputVoltage % 5) + 5) % 5);
 
 		// basically this "hijacks" the simulated absolute encoder to say that it's
