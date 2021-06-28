@@ -137,7 +137,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 			m_desiredHeading = Math.toRadians(gyroAngle);
 			m_rotationPID.setSetpoint(m_desiredHeading);
 		} else if (m_xSpeed != 0 || m_ySpeed != 0) {
-			m_rotationSpeed = m_rotationPID.calculate(Math.toRadians(gyroAngle));
+			//m_rotationSpeed = m_rotationPID.calculate(Math.toRadians(gyroAngle));
 		}
 		SmartDashboard.putNumber("rotation Speed", Math.toDegrees(m_rotationSpeed));
 
