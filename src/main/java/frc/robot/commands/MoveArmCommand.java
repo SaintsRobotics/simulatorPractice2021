@@ -31,4 +31,15 @@ public class MoveArmCommand extends CommandBase {
 		double joystickOutput = m_controller.getY(Hand.kLeft);
 		m_intakeSubsystem.moveArm(-joystickOutput);
 	}
+	
+	// Called once the command ends or is interrupted.
+	@Override
+	public void end(boolean interrupted) {
+	}
+
+	// Returns true when the command should end.
+	@Override
+	public boolean isFinished() {
+	  return false;
+	}
 }
