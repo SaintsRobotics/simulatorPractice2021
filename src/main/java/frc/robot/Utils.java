@@ -25,7 +25,7 @@ public class Utils {
 	}
 
 	/**
-	 * Makes lower inputs smaller which allows for finer control.
+	 * Makes lower inputs smaller which allows for finer joystick control.
 	 * 
 	 * @param input The number to apply odd square to.
 	 * @return The odd squared number.
@@ -35,7 +35,7 @@ public class Utils {
 	}
 
 	/**
-	 * Returns an angle between 0 and max
+	 * Returns an angle between 0 and max if the angle exceeds normal bounds
 	 * 
 	 * @param angle The angle to use.
 	 * @param max   The maximum possible value.
