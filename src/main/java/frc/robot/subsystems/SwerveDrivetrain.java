@@ -113,8 +113,9 @@ public class SwerveDrivetrain extends SubsystemBase {
 	public void periodic() {
 		double gyroAngle = m_gyro.getAngle();
 		if (time > 10) {
-			m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(), m_frontRightSwerveWheel.getState(),
-					m_backLeftSwerveWheel.getState(), m_backRightSwerveWheel.getState());
+			m_odometry.update(m_gyro.getRotation2d(), m_frontLeftSwerveWheel.getState(),
+					m_frontRightSwerveWheel.getState(), m_backLeftSwerveWheel.getState(),
+					m_backRightSwerveWheel.getState());
 			m_field.setRobotPose(m_odometry.getPoseMeters());
 		}
 		time++;
@@ -139,7 +140,8 @@ public class SwerveDrivetrain extends SubsystemBase {
 			}
 		}
 
-		SwerveDriveKinematics.normalizeWheelSpeeds(desiredSwerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
+		SwerveDriveKinematics.normalizeWheelSpeeds(desiredSwerveModuleStates,
+				DriveConstants.MAX_SPEED_METERS_PER_SECOND);
 
 		if (desiredSpeed.vxMetersPerSecond == 0 && desiredSpeed.vyMetersPerSecond == 0
 				&& desiredSpeed.omegaRadiansPerSecond == 0) {
@@ -176,15 +178,19 @@ public class SwerveDrivetrain extends SubsystemBase {
 	 * Method to drive the robot using joystick info.
 	 *
 	 * @param xSpeed        Speed of the robot in the x direction (forward).
+	 *                      Positive values are forwards and negative values are
+	 *                      backwards.
 	 * @param ySpeed        Speed of the robot in the y direction (sideways).
-	 * @param rot           Angular rate of the robot.
+	 *                      Positive values are left and negative values are right.
+	 * @param rot           Angular rate of the robot. Positive values are
+	 *                      counterclockwise and negative values are clockwise.
 	 * @param fieldRelative Whether the provided x and y speeds are relative to the
 	 *                      field.
 	 */
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
 		m_xSpeed = xSpeed;
-		m_ySpeed = ySpeed;
-		m_rotationSpeed = rot;
+		m_ySpeed = -ySpeed;
+		m_rotationSpeed = -rot;
 		m_isFieldRelative = fieldRelative;
 
 		// scales m_xSpeed and m_ySpeed such that the net speed is equal to

@@ -32,14 +32,14 @@ public class SwerveJoystickCommand extends CommandBase {
 	public void execute() {
 		// apply functions to controller values to 1) check deadzone 2) apply quadratic
 		// relation between controller/speed
-		double x = Utils.oddSquare(Utils.deadZones(m_controller.getY(Hand.kLeft), 0.2))
+		double x = Utils.oddSquare(Utils.deadZones(-m_controller.getY(Hand.kLeft), 0.2))
 				* DriveConstants.MAX_SPEED_METERS_PER_SECOND * 0.2;
 		double y = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kLeft), 0.2))
 				* DriveConstants.MAX_SPEED_METERS_PER_SECOND * 0.2;
-		double rot = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kRight), 0.2))
+		double rot = Utils.oddSquare(Utils.deadZones(-m_controller.getX(Hand.kRight), 0.2))
 				* ModuleConstants.MAX_MODULE_ANGULAR_SPEED_RADIANS_PER_SECOND * 0.2;
 
-		m_drivetrain.drive(-x, y, rot, m_controller.getBumper(Hand.kRight));
+		m_drivetrain.drive(x, y, rot, m_controller.getBumper(Hand.kRight));
 	}
 
 	@Override
