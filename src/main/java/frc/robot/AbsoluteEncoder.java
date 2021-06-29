@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Absolute encoder. */
 public class AbsoluteEncoder {
-	private AnalogInput analogIn;
-	private AnalogInputSim analogInSim;
-	private boolean isInverted;
-	private double voltageToRadians = Math.PI * 2 / 5;
+	private AnalogInput m_analogIn;
+	private AnalogInputSim m_analogSim;
+	private boolean m_isInverted;
+	private double m_voltageToRadians = Math.PI * 2 / 5;
 	private double m_offset;
-	private int polarity;
+	private int m_polarity;
 
 	/**
 	 * Construct and absolute encoder, most likely a US Digital MA3 encoder.
@@ -31,12 +31,12 @@ public class AbsoluteEncoder {
 	 *                 the output.
 	 */
 	public AbsoluteEncoder(int channel, boolean inverted, double offset) {
-		analogIn = new AnalogInput(channel);
-		analogInSim = new AnalogInputSim(analogIn);
-		analogInSim.setVoltage(0);
-		isInverted = inverted;
+		m_analogIn = new AnalogInput(channel);
+		m_analogSim = new AnalogInputSim(m_analogIn);
+		m_analogSim.setVoltage(0);
+		m_isInverted = inverted;
 		m_offset = offset;
-		polarity = isInverted ? -1 : 1;
+		m_polarity = m_isInverted ? -1 : 1;
 	}
 
 	/**
@@ -66,18 +66,18 @@ public class AbsoluteEncoder {
 		double wheelRotationsPerTick = motorRPM / 60 * tickPeriod / gearRatio; // 0.143
 		double wheelRotationsSinceLastTick = wheelRotationsPerTick * turnVoltage;
 		double voltsSinceLastTick = 5 * wheelRotationsSinceLastTick;
-		voltsSinceLastTick *= polarity;
+		voltsSinceLastTick *= m_polarity;
 
-		double outputVoltage = analogIn.getVoltage() + voltsSinceLastTick;
+		double outputVoltage = m_analogIn.getVoltage() + voltsSinceLastTick;
 
-		SmartDashboard.putNumber("turning voltage" + analogIn.getChannel(), turnVoltage);
+		SmartDashboard.putNumber("turning voltage" + m_analogIn.getChannel(), turnVoltage);
 
 		// convert output to a number between 0 and 5
 		outputVoltage = (((outputVoltage % 5) + 5) % 5);
 
 		// basically this "hijacks" the simulated absolute encoder to say that it's
 		// reading the voltage that u give it, range: [0, 5]
-		analogInSim.setVoltage(outputVoltage);
+		m_analogSim.setVoltage(outputVoltage);
 	}
 
 	/**
@@ -86,9 +86,9 @@ public class AbsoluteEncoder {
 	 *         the bot. The value increases as the swerve wheel is turned clockwise.
 	 */
 	public Rotation2d getAngle() {
-		if (isInverted) {
-			return new Rotation2d((5 - analogIn.getVoltage()) * voltageToRadians - m_offset);
+		if (m_isInverted) {
+			return new Rotation2d((5 - m_analogIn.getVoltage()) * m_voltageToRadians - m_offset);
 		}
-		return new Rotation2d((analogIn.getVoltage()) * voltageToRadians - m_offset);
+		return new Rotation2d((m_analogIn.getVoltage()) * m_voltageToRadians - m_offset);
 	}
 }
