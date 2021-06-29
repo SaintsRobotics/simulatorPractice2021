@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.AbsoluteEncoder;
-import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 
 /** An individual swerve module. */
@@ -62,7 +62,7 @@ public class SwerveModule {
 		// Optimize the reference state to avoid spinning further than 90 degrees.
 		SwerveModuleState state = SwerveModuleState.optimize(desiredState, m_turningEncoder.getAngle());
 
-		final double driveOutput = state.speedMetersPerSecond / SwerveConstants.MAX_METERS_PER_SECOND;
+		final double driveOutput = state.speedMetersPerSecond / DriveConstants.MAX_SPEED_METERS_PER_SECOND;
 
 		final double turnOutput = m_turningPIDController.calculate(m_turningEncoder.getAngle().getRadians(),
 				state.angle.getRadians());
@@ -106,7 +106,7 @@ public class SwerveModule {
 	 */
 	public void setVelocity(double speed) {
 		m_state.speedMetersPerSecond = speed;
-		m_driveMotor.set(speed / SwerveConstants.MAX_METERS_PER_SECOND);
+		m_driveMotor.set(speed / DriveConstants.MAX_SPEED_METERS_PER_SECOND);
 		m_turningMotor.set(0);
 	}
 }

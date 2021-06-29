@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveArmCommand;
@@ -107,10 +109,10 @@ public class RobotContainer {
 			DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
 		}
 
-		PIDController xPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
-		PIDController yPID = new PIDController(Constants.SwerveConstants.MAX_METERS_PER_SECOND, 0, 0);
+		PIDController xPID = new PIDController(DriveConstants.MAX_SPEED_METERS_PER_SECOND, 0, 0);
+		PIDController yPID = new PIDController(DriveConstants.MAX_SPEED_METERS_PER_SECOND, 0, 0);
 		ProfiledPIDController rotPID = new ProfiledPIDController(-Math.PI * 6, 0.0, 0.0,
-				new TrapezoidProfile.Constraints(Constants.SwerveConstants.MAX_RADIANS_PER_SECOND, 2.6));
+				new TrapezoidProfile.Constraints(ModuleConstants.MAX_MODULE_ANGULAR_SPEED_RADIANS_PER_SECOND, 2.6));
 		xPID.setTolerance(.05);
 		yPID.setTolerance(0.05);
 		rotPID.setTolerance(Math.PI / 24);

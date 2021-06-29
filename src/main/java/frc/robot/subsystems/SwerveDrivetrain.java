@@ -21,8 +21,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AbsoluteEncoder;
-import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.SwervePorts;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 import frc.robot.Robot;
 
 /** The drive subsystem of the robot. */
@@ -66,38 +66,38 @@ public class SwerveDrivetrain extends SubsystemBase {
 	 */
 	public SwerveDrivetrain() {
 		SmartDashboard.putData("Field", m_field);
-		m_frontLeftDriveMotor = new CANSparkMax(SwervePorts.FRONT_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
-		m_frontRightDriveMotor = new CANSparkMax(SwervePorts.FRONT_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
-		m_backLeftDriveMotor = new CANSparkMax(SwervePorts.BACK_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
-		m_backRightDriveMotor = new CANSparkMax(SwervePorts.BACK_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
+		m_frontLeftDriveMotor = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
+		m_frontRightDriveMotor = new CANSparkMax(DriveConstants.FRONT_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
+		m_backLeftDriveMotor = new CANSparkMax(DriveConstants.REAR_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
+		m_backRightDriveMotor = new CANSparkMax(DriveConstants.REAR_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
 
-		m_frontLeftTurningMotor = new CANSparkMax(SwervePorts.FRONT_LEFT_TURNING_MOTOR_PORT, MotorType.kBrushless);
+		m_frontLeftTurningMotor = new CANSparkMax(DriveConstants.FRONT_LEFT_TURNING_MOTOR_PORT, MotorType.kBrushless);
 		m_frontLeftTurningMotor.setIdleMode(IdleMode.kCoast);
-		m_frontRightTurningMotor = new CANSparkMax(SwervePorts.FRONT_RIGHT_TURNING_MOTOR_PORT, MotorType.kBrushless);
+		m_frontRightTurningMotor = new CANSparkMax(DriveConstants.FRONT_RIGHT_TURNING_MOTOR_PORT, MotorType.kBrushless);
 		m_frontRightTurningMotor.setIdleMode(IdleMode.kCoast);
-		m_backLeftTurningMotor = new CANSparkMax(SwervePorts.BACK_LEFT_TURNING_MOTOR_PORT, MotorType.kBrushless);
+		m_backLeftTurningMotor = new CANSparkMax(DriveConstants.REAR_LEFT_TURNING_MOTOR_PORT, MotorType.kBrushless);
 		m_backLeftTurningMotor.setIdleMode(IdleMode.kCoast);
-		m_backRightTurningMotor = new CANSparkMax(SwervePorts.BACK_RIGHT_TURNING_MOTOR_PORT, MotorType.kBrushless);
+		m_backRightTurningMotor = new CANSparkMax(DriveConstants.REAR_RIGHT_TURNING_MOTOR_PORT, MotorType.kBrushless);
 		m_backRightTurningMotor.setIdleMode(IdleMode.kCoast);
 
-		m_frontLeftTurningEncoder = new AbsoluteEncoder(SwervePorts.FRONT_LEFT_TURNING_ENCODER_PORT, true,
-				SwerveConstants.FRONT_LEFT_ROTATION_OFFSET);
-		m_frontRightTurningEncoder = new AbsoluteEncoder(SwervePorts.FRONT_RIGHT_TURNING_ENCODER_PORT, true,
-				SwerveConstants.FRONT_RIGHT_ROTATION_OFFSET);
-		m_backLeftTurningEncoder = new AbsoluteEncoder(SwervePorts.BACK_LEFT_TURNING_ENCODER_PORT, true,
-				SwerveConstants.BACK_LEFT_ROTATION_OFFSET);
-		m_backRightTurningEncoder = new AbsoluteEncoder(SwervePorts.BACK_RIGHT_TURNING_ENCODER_PORT, true,
-				SwerveConstants.BACK_RIGHT_ROTATION_OFFSET);
+		m_frontLeftTurningEncoder = new AbsoluteEncoder(DriveConstants.FRONT_LEFT_TURNING_ENCODER_PORT, true,
+				ModuleConstants.FRONT_LEFT_ROTATION_OFFSET);
+		m_frontRightTurningEncoder = new AbsoluteEncoder(DriveConstants.FRONT_RIGHT_TURNING_ENCODER_PORT, true,
+				ModuleConstants.FRONT_RIGHT_ROTATION_OFFSET);
+		m_backLeftTurningEncoder = new AbsoluteEncoder(DriveConstants.REAR_LEFT_TURNING_ENCODER_PORT, true,
+				ModuleConstants.REAR_LEFT_ROTATION_OFFSET);
+		m_backRightTurningEncoder = new AbsoluteEncoder(DriveConstants.REAR_RIGHT_TURNING_ENCODER_PORT, true,
+				ModuleConstants.REAR_RIGHT_ROTATION_OFFSET);
 
 		// Robot is facing towards positive x direction
 		m_frontLeftSwerveWheel = new SwerveModule("Front Left Swerve Module", m_frontLeftDriveMotor,
-				m_frontLeftTurningMotor, SwerveConstants.SWERVE_X, SwerveConstants.SWERVE_Y, m_frontLeftTurningEncoder);
+				m_frontLeftTurningMotor, ModuleConstants.TRACK_WIDTH / 2, ModuleConstants.WHEEL_BASE, m_frontLeftTurningEncoder);
 		m_frontRightSwerveWheel = new SwerveModule("Front Right Swerve Module", m_frontRightDriveMotor,
-				m_frontRightTurningMotor, SwerveConstants.SWERVE_X, -SwerveConstants.SWERVE_Y, m_frontRightTurningEncoder);
+				m_frontRightTurningMotor, ModuleConstants.TRACK_WIDTH, -ModuleConstants.WHEEL_BASE, m_frontRightTurningEncoder);
 		m_backLeftSwerveWheel = new SwerveModule("Back Left Swerve Module", m_backLeftDriveMotor, m_backLeftTurningMotor,
-				-SwerveConstants.SWERVE_X, SwerveConstants.SWERVE_Y, m_backLeftTurningEncoder);
+				-ModuleConstants.TRACK_WIDTH, ModuleConstants.WHEEL_BASE, m_backLeftTurningEncoder);
 		m_backRightSwerveWheel = new SwerveModule("Back Right Swerve Module", m_backRightDriveMotor,
-				m_backRightTurningMotor, -SwerveConstants.SWERVE_X, -SwerveConstants.SWERVE_Y, m_backRightTurningEncoder);
+				m_backRightTurningMotor, -ModuleConstants.TRACK_WIDTH, -ModuleConstants.WHEEL_BASE, m_backRightTurningEncoder);
 
 		m_kinematics = new SwerveDriveKinematics(m_frontLeftSwerveWheel.getLocation(),
 				m_frontRightSwerveWheel.getLocation(), m_backLeftSwerveWheel.getLocation(),
@@ -134,12 +134,12 @@ public class SwerveDrivetrain extends SubsystemBase {
 		// for friction
 		if (Robot.isReal()) {
 			for (SwerveModuleState swerveModule : desiredSwerveModuleStates) {
-				swerveModule.speedMetersPerSecond += (SwerveConstants.TRANSLATIONAL_FRICTION
-						* SwerveConstants.MAX_METERS_PER_SECOND);
+				swerveModule.speedMetersPerSecond += (ModuleConstants.TRANSLATIONAL_FRICTION
+						* DriveConstants.MAX_SPEED_METERS_PER_SECOND);
 			}
 		}
 
-		SwerveDriveKinematics.normalizeWheelSpeeds(desiredSwerveModuleStates, SwerveConstants.MAX_METERS_PER_SECOND);
+		SwerveDriveKinematics.normalizeWheelSpeeds(desiredSwerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
 
 		if (desiredSpeed.vxMetersPerSecond == 0 && desiredSpeed.vyMetersPerSecond == 0
 				&& desiredSpeed.omegaRadiansPerSecond == 0) {
@@ -190,15 +190,15 @@ public class SwerveDrivetrain extends SubsystemBase {
 		// scales m_xSpeed and m_ySpeed such that the net speed is equal to
 		// MAX_METERS_PER_SECOND (only if the net speed is above MAX_METERS_PER_SECOND)
 		double m_netSpeed = Math.sqrt((m_xSpeed * m_xSpeed) + (m_ySpeed * m_ySpeed));
-		if (m_netSpeed > SwerveConstants.MAX_METERS_PER_SECOND) {
+		if (m_netSpeed > DriveConstants.MAX_SPEED_METERS_PER_SECOND) {
 			// the scale factor will always be less than one
-			double m_scaleFactor = SwerveConstants.MAX_METERS_PER_SECOND / m_netSpeed;
+			double m_scaleFactor = DriveConstants.MAX_SPEED_METERS_PER_SECOND / m_netSpeed;
 			m_xSpeed *= m_scaleFactor;
 			m_ySpeed *= m_scaleFactor;
 		}
 
-		if (m_rotationSpeed > SwerveConstants.MAX_RADIANS_PER_SECOND) {
-			m_rotationSpeed = SwerveConstants.MAX_RADIANS_PER_SECOND;
+		if (m_rotationSpeed > ModuleConstants.MAX_MODULE_ANGULAR_SPEED_RADIANS_PER_SECOND) {
+			m_rotationSpeed = ModuleConstants.MAX_MODULE_ANGULAR_SPEED_RADIANS_PER_SECOND;
 		}
 		SmartDashboard.putNumber("X Speed", m_xSpeed);
 		SmartDashboard.putNumber("Y Speed", m_ySpeed);

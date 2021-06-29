@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Utils;
 import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 
 /** Controls the drivetrain with an Xbox controller. */
 public class SwerveJoystickCommand extends CommandBase {
@@ -32,11 +33,11 @@ public class SwerveJoystickCommand extends CommandBase {
 		// apply functions to controller values to 1) check deadzone 2) apply quadratic
 		// relation between controller/speed
 		double x = Utils.oddSquare(Utils.deadZones(m_controller.getY(Hand.kLeft), 0.2))
-				* SwerveConstants.MAX_METERS_PER_SECOND * 0.2;
+				* DriveConstants.MAX_SPEED_METERS_PER_SECOND * 0.2;
 		double y = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kLeft), 0.2))
-				* SwerveConstants.MAX_METERS_PER_SECOND * 0.2;
+				* DriveConstants.MAX_SPEED_METERS_PER_SECOND * 0.2;
 		double rot = Utils.oddSquare(Utils.deadZones(m_controller.getX(Hand.kRight), 0.2))
-				* SwerveConstants.MAX_RADIANS_PER_SECOND * 0.2;
+				* ModuleConstants.MAX_MODULE_ANGULAR_SPEED_RADIANS_PER_SECOND * 0.2;
 
 		m_drivetrain.drive(-x, y, rot, m_controller.getBumper(Hand.kRight));
 	}
