@@ -11,7 +11,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
@@ -52,16 +51,11 @@ public class SwerveDrivetrain extends SubsystemBase {
 	private double m_ySpeed;
 	private double m_rotationSpeed;
 	private boolean m_isFieldRelative;
-	private boolean isTurning = false;
-	private ChassisSpeeds prevSpeed;
-	private double currentHeading; // for simulated current gyro reading (yaw)
 	private AHRS m_gyro;
 	private SwerveDriveOdometry m_odometry;
 	public SwerveDriveKinematics m_kinematics;
 	private double time;
 	private final Field2d m_field = new Field2d();
-	// need pid to save headings/dynamic controls
-	private PIDController m_rotationPID;
 
 	private double m_gyroOffset = 0;
 
@@ -109,10 +103,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 				m_frontRightSwerveWheel.getLocation(), m_backLeftSwerveWheel.getLocation(),
 				m_backRightSwerveWheel.getLocation());
 
-		m_rotationPID = new PIDController(1, 0, 0);
-		m_rotationPID.enableContinuousInput(-Math.PI, Math.PI);
-		m_rotationPID.setTolerance(1 / 36); // if off by a lil bit, then dont do anything (is in radians)
-
 		m_gyro = new AHRS();
 		m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d());
 
@@ -130,17 +120,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 		time++;
 		ChassisSpeeds desiredSpeed;
 
-		// heading correction code
-		// if bot is turning, update setpoint
-		// if bot is only translating, use the pid to correct heading
-		if (isTurning) {
-			m_desiredHeading = Math.toRadians(gyroAngle);
-			m_rotationPID.setSetpoint(m_desiredHeading);
-		} else if (m_xSpeed != 0 || m_ySpeed != 0) {
-			m_rotationSpeed = m_rotationPID.calculate(Math.toRadians(gyroAngle));
-		}
-		SmartDashboard.putNumber("rotation Speed", Math.toDegrees(m_rotationSpeed));
-
 		// convert to robot relative if in field relative
 		if (m_isFieldRelative) {
 			desiredSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed,
@@ -148,8 +127,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 		} else {
 			desiredSpeed = new ChassisSpeeds(m_xSpeed, m_ySpeed, m_rotationSpeed);
 		}
-
-		prevSpeed = desiredSpeed;
 
 		SwerveModuleState[] desiredSwerveModuleStates = m_kinematics.toSwerveModuleStates(desiredSpeed);
 
@@ -191,10 +168,8 @@ public class SwerveDrivetrain extends SubsystemBase {
 		SmartDashboard.putNumber("Back Left Turning Encoder", m_backLeftTurningEncoder.getAngle().getRadians());
 		SmartDashboard.putNumber("Back Right Turning Encoder", m_backRightTurningEncoder.getAngle().getRadians());
 		SmartDashboard.putNumber("Gyro Heading", m_gyro.getYaw());
-		SmartDashboard.putBoolean("Is it turning", isTurning);
 		SmartDashboard.putNumber("Gyro angle in degrees", gyroAngle);
 		SmartDashboard.putNumber("The desired angle", m_desiredHeading * (180 / Math.PI));
-		SmartDashboard.putNumber("Angular Offset", m_rotationPID.getPositionError());
 	}
 
 	/**
@@ -211,7 +186,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 		m_ySpeed = ySpeed;
 		m_rotationSpeed = rot;
 		m_isFieldRelative = fieldRelative;
-		isTurning = (m_rotationSpeed != 0);
 
 		// scales m_xSpeed and m_ySpeed such that the net speed is equal to
 		// MAX_METERS_PER_SECOND (only if the net speed is above MAX_METERS_PER_SECOND)
