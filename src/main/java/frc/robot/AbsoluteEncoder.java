@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj.simulation.AnalogInputSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Absolute encoder. */
-public class AbsoluteEncoder {
+public class AbsoluteEncoder implements AutoCloseable {
 	private AnalogInput m_analogIn;
-	private AnalogInputSim m_analogSim;
+	public AnalogInputSim m_analogSim;
 	private boolean m_isInverted;
 	private double m_voltageToRadians = Math.PI * 2 / 5;
 	private double m_offset;
@@ -90,5 +90,12 @@ public class AbsoluteEncoder {
 			return new Rotation2d((5 - m_analogIn.getVoltage()) * m_voltageToRadians - m_offset);
 		}
 		return new Rotation2d((m_analogIn.getVoltage()) * m_voltageToRadians - m_offset);
+	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		m_analogIn.close();
+
 	}
 }

@@ -43,7 +43,7 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...the ones button
 	// bound/fundamental
 	private HardwareMap hardwareMap = new HardwareMap();
-	public SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain();
+	public SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(hardwareMap);
 	private SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(swerveDrivetrain);
 	public ResetGyroCommand m_resetGyroCommand = new ResetGyroCommand(swerveDrivetrain);
 	public ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
@@ -117,7 +117,7 @@ public class RobotContainer {
 		yPID.setTolerance(0.05);
 		rotPID.setTolerance(Math.PI / 24);
 		rotPID.enableContinuousInput(-Math.PI, Math.PI);
-		return new SwerveControllerCommand(trajectory, swerveDrivetrain::getPose, swerveDrivetrain.getKinematics(), xPID,
-				yPID, rotPID, swerveDrivetrain::setModuleStates, swerveDrivetrain);
+		return new SwerveControllerCommand(trajectory, swerveDrivetrain::getPose, swerveDrivetrain.getKinematics(),
+				xPID, yPID, rotPID, swerveDrivetrain::setModuleStates, swerveDrivetrain);
 	}
 }

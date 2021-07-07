@@ -21,31 +21,18 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AbsoluteEncoder;
+import frc.robot.HardwareMap;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Robot;
 
 /** The drive subsystem of the robot. */
-public class SwerveDrivetrain extends SubsystemBase {
-	private CANSparkMax m_frontLeftDriveMotor;
-	private CANSparkMax m_frontRightDriveMotor;
-	private CANSparkMax m_backLeftDriveMotor;
-	private CANSparkMax m_backRightDriveMotor;
-
-	private CANSparkMax m_frontLeftTurningMotor;
-	private CANSparkMax m_frontRightTurningMotor;
-	private CANSparkMax m_backLeftTurningMotor;
-	private CANSparkMax m_backRightTurningMotor;
+public class SwerveDrivetrain extends SubsystemBase implements AutoCloseable {
 
 	private SwerveModule m_frontLeftSwerveWheel;
 	private SwerveModule m_frontRightSwerveWheel;
 	private SwerveModule m_backLeftSwerveWheel;
 	private SwerveModule m_backRightSwerveWheel;
-
-	private AbsoluteEncoder m_frontLeftTurningEncoder;
-	private AbsoluteEncoder m_frontRightTurningEncoder;
-	private AbsoluteEncoder m_backLeftTurningEncoder;
-	private AbsoluteEncoder m_backRightTurningEncoder;
 
 	private double m_xSpeed;
 	private double m_ySpeed;
@@ -64,40 +51,14 @@ public class SwerveDrivetrain extends SubsystemBase {
 	/**
 	 * Creates a new {@link SwerveDrivetrain}.
 	 */
-	public SwerveDrivetrain() {
+	public SwerveDrivetrain(HardwareMap map) {
 		SmartDashboard.putData("Field", m_field);
-		m_frontLeftDriveMotor = new CANSparkMax(DriveConstants.FRONT_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
-		m_frontRightDriveMotor = new CANSparkMax(DriveConstants.FRONT_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
-		m_backLeftDriveMotor = new CANSparkMax(DriveConstants.REAR_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
-		m_backRightDriveMotor = new CANSparkMax(DriveConstants.REAR_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
-
-		m_frontLeftTurningMotor = new CANSparkMax(DriveConstants.FRONT_LEFT_TURNING_MOTOR_PORT, MotorType.kBrushless);
-		m_frontLeftTurningMotor.setIdleMode(IdleMode.kCoast);
-		m_frontRightTurningMotor = new CANSparkMax(DriveConstants.FRONT_RIGHT_TURNING_MOTOR_PORT, MotorType.kBrushless);
-		m_frontRightTurningMotor.setIdleMode(IdleMode.kCoast);
-		m_backLeftTurningMotor = new CANSparkMax(DriveConstants.REAR_LEFT_TURNING_MOTOR_PORT, MotorType.kBrushless);
-		m_backLeftTurningMotor.setIdleMode(IdleMode.kCoast);
-		m_backRightTurningMotor = new CANSparkMax(DriveConstants.REAR_RIGHT_TURNING_MOTOR_PORT, MotorType.kBrushless);
-		m_backRightTurningMotor.setIdleMode(IdleMode.kCoast);
-
-		m_frontLeftTurningEncoder = new AbsoluteEncoder(DriveConstants.FRONT_LEFT_TURNING_ENCODER_PORT, true,
-				ModuleConstants.FRONT_LEFT_ROTATION_OFFSET);
-		m_frontRightTurningEncoder = new AbsoluteEncoder(DriveConstants.FRONT_RIGHT_TURNING_ENCODER_PORT, true,
-				ModuleConstants.FRONT_RIGHT_ROTATION_OFFSET);
-		m_backLeftTurningEncoder = new AbsoluteEncoder(DriveConstants.REAR_LEFT_TURNING_ENCODER_PORT, true,
-				ModuleConstants.REAR_LEFT_ROTATION_OFFSET);
-		m_backRightTurningEncoder = new AbsoluteEncoder(DriveConstants.REAR_RIGHT_TURNING_ENCODER_PORT, true,
-				ModuleConstants.REAR_RIGHT_ROTATION_OFFSET);
 
 		// Robot is facing towards positive x direction
-		m_frontLeftSwerveWheel = new SwerveModule("Front Left Swerve Module", m_frontLeftDriveMotor,
-				m_frontLeftTurningMotor, ModuleConstants.TRACK_WIDTH / 2, ModuleConstants.WHEEL_BASE, m_frontLeftTurningEncoder);
-		m_frontRightSwerveWheel = new SwerveModule("Front Right Swerve Module", m_frontRightDriveMotor,
-				m_frontRightTurningMotor, ModuleConstants.TRACK_WIDTH, -ModuleConstants.WHEEL_BASE, m_frontRightTurningEncoder);
-		m_backLeftSwerveWheel = new SwerveModule("Back Left Swerve Module", m_backLeftDriveMotor, m_backLeftTurningMotor,
-				-ModuleConstants.TRACK_WIDTH, ModuleConstants.WHEEL_BASE, m_backLeftTurningEncoder);
-		m_backRightSwerveWheel = new SwerveModule("Back Right Swerve Module", m_backRightDriveMotor,
-				m_backRightTurningMotor, -ModuleConstants.TRACK_WIDTH, -ModuleConstants.WHEEL_BASE, m_backRightTurningEncoder);
+		m_frontLeftSwerveWheel = map.frontLeftSwerveModule;
+		m_frontRightSwerveWheel = map.frontRightSwerveModule;
+		m_backLeftSwerveWheel = map.backLeftSwerveModule;
+		m_backRightSwerveWheel = map.backRightSwerveModule;
 
 		m_kinematics = new SwerveDriveKinematics(m_frontLeftSwerveWheel.getLocation(),
 				m_frontRightSwerveWheel.getLocation(), m_backLeftSwerveWheel.getLocation(),
@@ -165,10 +126,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 		SmartDashboard.putNumber("OdometryX", m_odometry.getPoseMeters().getX());
 		SmartDashboard.putNumber("OdometryY", m_odometry.getPoseMeters().getY());
 		SmartDashboard.putNumber("Odometryrot", m_odometry.getPoseMeters().getRotation().getDegrees());
-		SmartDashboard.putNumber("Front Left Turning Encoder", m_frontLeftTurningEncoder.getAngle().getRadians());
-		SmartDashboard.putNumber("Front Right Turning Encoder", m_frontRightTurningEncoder.getAngle().getRadians());
-		SmartDashboard.putNumber("Back Left Turning Encoder", m_backLeftTurningEncoder.getAngle().getRadians());
-		SmartDashboard.putNumber("Back Right Turning Encoder", m_backRightTurningEncoder.getAngle().getRadians());
+
 		SmartDashboard.putNumber("Gyro Heading", m_gyro.getYaw());
 		SmartDashboard.putNumber("Gyro angle in degrees", gyroAngle);
 		SmartDashboard.putNumber("The desired angle", m_desiredHeading * (180 / Math.PI));
@@ -272,5 +230,11 @@ public class SwerveDrivetrain extends SubsystemBase {
 		int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
 		SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
 		angle.set(printHeading);
+	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+
 	}
 }
