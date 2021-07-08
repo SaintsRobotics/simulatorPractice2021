@@ -25,6 +25,7 @@ import frc.robot.Constants.ModuleConstants;
 import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveArmCommand;
+import frc.robot.commands.MoveOneMeterCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetOdometryCommand;
@@ -90,7 +91,7 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
-		return new FieldRelativeMoveCommand(swerveDrivetrain).withX(3).withY(3).withHeading(Math.PI);
+		return new MoveOneMeterCommand(swerveDrivetrain);
 	}
 
 	public Command getTeleCommand() {

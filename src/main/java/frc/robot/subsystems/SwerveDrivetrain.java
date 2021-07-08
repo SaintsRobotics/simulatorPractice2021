@@ -91,13 +91,13 @@ public class SwerveDrivetrain extends SubsystemBase {
 
 		// Robot is facing towards positive x direction
 		m_frontLeftSwerveWheel = new SwerveModule("Front Left Swerve Module", m_frontLeftDriveMotor,
-				m_frontLeftTurningMotor, ModuleConstants.TRACK_WIDTH / 2, ModuleConstants.WHEEL_BASE, m_frontLeftTurningEncoder);
+				m_frontLeftTurningMotor, ModuleConstants.TRACK_WIDTH / 2, ModuleConstants.WHEEL_BASE / 2, m_frontLeftTurningEncoder);
 		m_frontRightSwerveWheel = new SwerveModule("Front Right Swerve Module", m_frontRightDriveMotor,
-				m_frontRightTurningMotor, ModuleConstants.TRACK_WIDTH, -ModuleConstants.WHEEL_BASE, m_frontRightTurningEncoder);
+				m_frontRightTurningMotor, ModuleConstants.TRACK_WIDTH / 2, -ModuleConstants.WHEEL_BASE / 2, m_frontRightTurningEncoder);
 		m_backLeftSwerveWheel = new SwerveModule("Back Left Swerve Module", m_backLeftDriveMotor, m_backLeftTurningMotor,
-				-ModuleConstants.TRACK_WIDTH, ModuleConstants.WHEEL_BASE, m_backLeftTurningEncoder);
+				-ModuleConstants.TRACK_WIDTH / 2, ModuleConstants.WHEEL_BASE / 2, m_backLeftTurningEncoder);
 		m_backRightSwerveWheel = new SwerveModule("Back Right Swerve Module", m_backRightDriveMotor,
-				m_backRightTurningMotor, -ModuleConstants.TRACK_WIDTH, -ModuleConstants.WHEEL_BASE, m_backRightTurningEncoder);
+				m_backRightTurningMotor, -ModuleConstants.TRACK_WIDTH / 2, -ModuleConstants.WHEEL_BASE / 2, m_backRightTurningEncoder);
 
 		m_kinematics = new SwerveDriveKinematics(m_frontLeftSwerveWheel.getLocation(),
 				m_frontRightSwerveWheel.getLocation(), m_backLeftSwerveWheel.getLocation(),

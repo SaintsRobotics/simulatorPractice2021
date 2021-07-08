@@ -36,8 +36,8 @@ public class GoToPositionCommand extends CommandBase {
 		addRequirements(drivetrain);
 		m_drivetrain = drivetrain;
 
-		m_xPID = new PIDController(DriveConstants.MAX_SPEED_METERS_PER_SECOND, 0, 0);
-		m_yPID = new PIDController(DriveConstants.MAX_SPEED_METERS_PER_SECOND, 0, 0);
+		m_xPID = new PIDController(DriveConstants.MAX_SPEED_METERS_PER_SECOND*0.2, 0, 0);//Changing Speed for testing
+		m_yPID = new PIDController(DriveConstants.MAX_SPEED_METERS_PER_SECOND*0.2, 0, 0);
 		m_rotationPID = new PIDController(Math.PI * 6, 0, 0);
 
 		m_xPID.setTolerance(0.05);
@@ -71,7 +71,7 @@ public class GoToPositionCommand extends CommandBase {
 	public void execute() {
 		m_currentPosition = m_drivetrain.getPose();
 		m_drivetrain.drive(m_xPID.calculate(m_currentPosition.getX()), m_yPID.calculate(m_currentPosition.getY()),
-				-m_rotationPID.calculate(m_currentPosition.getRotation().getRadians()), true);
+				0, true);
 	}
 
 	@Override

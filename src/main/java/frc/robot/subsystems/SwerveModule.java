@@ -76,8 +76,8 @@ public class SwerveModule {
 		m_state = new SwerveModuleState(state.speedMetersPerSecond, m_turningEncoder.getAngle());
 
 		SmartDashboard.putNumber(m_name + " Voltage", turnOutput);
-		SmartDashboard.putNumber(m_name + " Current Angle", m_turningEncoder.getAngle().getDegrees());
-		SmartDashboard.putNumber(m_name + " Desired Angle", state.angle.getDegrees());
+		SmartDashboard.putNumber(m_name + " Current Angle", m_turningEncoder.getAngle().getRadians());
+		SmartDashboard.putNumber(m_name + " Desired Angle", state.angle.getRadians());
 		SmartDashboard.putNumber(m_name + " Error", m_turningPIDController.getPositionError());
 	}
 

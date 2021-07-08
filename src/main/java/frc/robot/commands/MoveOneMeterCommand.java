@@ -10,7 +10,7 @@ import frc.robot.subsystems.SwerveDrivetrain;
  * Command to move the robot one meter in a designated direction.
  */
 public class MoveOneMeterCommand extends GoToPositionCommand {
-	private double m_direction;
+	private double m_direction = 0;
 
 	/**
 	 * Creates a new {@link MoveOneMeterCommand}.
