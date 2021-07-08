@@ -30,12 +30,13 @@ import frc.robot.commands.MoveOneMeterCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetOdometryCommand;
+import frc.robot.commands.ShooterOffCommand;
+import frc.robot.commands.ShooterOnCommand;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.subsystems.Intake;
 
 import frc.robot.subsystems.SwerveDrivetrain;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -89,6 +90,12 @@ public class RobotContainer {
 
     // runs the intake backwards while Y is held
     new JoystickButton(m_operatorController, Button.kY.value).whenHeld(new OuttakeCommand(m_intakeSubsystem));
+    
+    // turns on shooter when A is pressed
+    new JoystickButton(m_operatorController, Button.kA.value).whenPressed(new ShooterOnCommand());
+
+    // turns off shooter when B is pressed
+    new JoystickButton(m_operatorController, Button.kB.value).whenPressed(new ShooterOffCommand());
   }
 
   /**
