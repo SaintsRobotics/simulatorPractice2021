@@ -9,42 +9,33 @@ package frc.robot;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.XboxController;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.FieldRelativeMoveCommand;
-import frc.robot.commands.GoToPositionCommand;
+
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.MoveDirectionCommand;
+import frc.robot.commands.MoveArmCommand;
 import frc.robot.commands.MoveOneMeterCommand;
 import frc.robot.commands.OuttakeCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.ResetOdometryCommand;
-import frc.robot.commands.StopCommand;
 import frc.robot.commands.SwerveJoystickCommand;
-import frc.robot.commands.TurnToHeadingCommand;
+import frc.robot.commands.FieldRelativeMoveCommand;
 import frc.robot.subsystems.Intake;
+
 import frc.robot.subsystems.SwerveDrivetrain;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -64,9 +55,11 @@ public class RobotContainer {
   public ResetOdometryCommand m_resetOdometryCommand = new ResetOdometryCommand(swerveDrivetrain);
   private String trajectoryJSON = "output/FirstOne.wpilib.json"; // change this to path following json
   private Trajectory trajectory = new Trajectory();
-  private XboxController m_controller = new XboxController(0);
+  private XboxController m_driverController = new XboxController(0);
   private XboxController m_operatorController = new XboxController(1);
   private Intake m_intakeSubsystem = new Intake(hardwareMap);
+  private MoveArmCommand m_moveArmCommand = new MoveArmCommand(m_operatorController, m_intakeSubsystem);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -75,7 +68,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     swerveDrivetrain.setDefaultCommand(swerveJoystickCommand);
-
+    m_intakeSubsystem.setDefaultCommand(m_moveArmCommand);
   }
 
   /**
@@ -85,18 +78,17 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    JoystickButton resetGyroButton = new JoystickButton(m_controller, 1);
-    resetGyroButton.whenPressed(m_resetGyroCommand);
+    // resets gyro when A is pressed
+    new JoystickButton(m_driverController, Button.kA.value).whenPressed(m_resetGyroCommand);
 
-    JoystickButton resetOdometryButton = new JoystickButton(m_controller, 2);
-    resetOdometryButton.whenPressed(m_resetOdometryCommand);
+    // resets odometry when B is pressed
+    new JoystickButton(m_driverController, Button.kB.value).whenPressed(m_resetOdometryCommand);
 
-    JoystickButton runIntakeXButton = new JoystickButton(m_operatorController, 3);
-    runIntakeXButton.whileHeld(new IntakeCommand(m_intakeSubsystem)); // X Button
+    // runs intake forwards while X is held
+    new JoystickButton(m_operatorController, Button.kX.value).whenHeld(new IntakeCommand(m_intakeSubsystem));
 
-    JoystickButton runOuttakeYButton = new JoystickButton(m_operatorController, 4);
-    runOuttakeYButton.whileHeld(new OuttakeCommand(m_intakeSubsystem)); // Y Button
-
+    // runs the intake backwards while Y is held
+    new JoystickButton(m_operatorController, Button.kY.value).whenHeld(new OuttakeCommand(m_intakeSubsystem));
   }
 
   /**
@@ -106,10 +98,14 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
+
     // return new TurnToHeadingCommand(swerveDrivetrain).withRotation(30);
     // return new TurnToHeadingCommand(swerveDrivetrain).withHeading(Math.PI/2);
     // return pathFollowCommand().andThen(new StopCommand(swerveDrivetrain));
-    return new MoveOneMeterCommand(swerveDrivetrain);
+    //return new MoveOneMeterCommand(swerveDrivetrain);
+
+    return new FieldRelativeMoveCommand(swerveDrivetrain).withX(3).withY(3).withHeading(Math.PI);
+
   }
 
   public Command getTeleCommand() {
