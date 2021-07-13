@@ -71,6 +71,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 		m_backLeftDriveMotor = new CANSparkMax(DriveConstants.REAR_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
 		m_backRightDriveMotor = new CANSparkMax(DriveConstants.REAR_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless);
 
+		// consider these as already inverted (can bus)
 		m_frontLeftTurningMotor = new CANSparkMax(DriveConstants.FRONT_LEFT_TURNING_MOTOR_PORT, MotorType.kBrushless);
 		m_frontLeftTurningMotor.setIdleMode(IdleMode.kCoast);
 		m_frontRightTurningMotor = new CANSparkMax(DriveConstants.FRONT_RIGHT_TURNING_MOTOR_PORT, MotorType.kBrushless);

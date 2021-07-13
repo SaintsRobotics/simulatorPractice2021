@@ -33,7 +33,7 @@ public class SwerveModule {
 	 * 
 	 * @param name         The name of the {@link SwerveModule}.
 	 * @param driveMotor   The motor controller for the drive motor.
-	 * @param turningMotor The motor controller for the turning motor.
+	 * @param turningMotor The motor controller for the turning motor. Explain field of reference (counterclockwise & clockwise)
 	 * @param x            The x position of the {@link SwerveModule}.
 	 * @param y            The y position of the {@link SwerveModule}.
 	 * @param encoder      The encoder for the {@link SwerveModule}.
@@ -60,7 +60,7 @@ public class SwerveModule {
 	 */
 	public void setDesiredState(SwerveModuleState desiredState) {
 		// Optimize the reference state to avoid spinning further than 90 degrees.
-		SwerveModuleState state = SwerveModuleState.optimize(desiredState, m_turningEncoder.getAngle());
+		SwerveModuleState state = SwerveModuleState.optimize(desiredState, m_turningEncoder.getAngle()); //this var is unneeded
 
 		final double driveOutput = state.speedMetersPerSecond / DriveConstants.MAX_SPEED_METERS_PER_SECOND;
 
@@ -73,7 +73,7 @@ public class SwerveModule {
 
 		m_driveMotor.set(driveOutput);
 		m_turningMotor.set(turnOutput);
-		m_state = new SwerveModuleState(state.speedMetersPerSecond, m_turningEncoder.getAngle());
+		m_state = new SwerveModuleState(m_driveMotor.getSpeed(), m_turningEncoder.getAngle()); //for reality, sometimes intended state is not robot's actual state
 
 		SmartDashboard.putNumber(m_name + " Voltage", turnOutput);
 		SmartDashboard.putNumber(m_name + " Current Angle", m_turningEncoder.getAngle().getDegrees());
